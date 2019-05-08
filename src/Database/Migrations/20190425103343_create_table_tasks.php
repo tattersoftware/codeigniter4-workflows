@@ -1,4 +1,4 @@
-<?php namespace App\Database\Migrations;
+<?php namespace Tatter\Workflows\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
@@ -7,10 +7,10 @@ class Migration_create_table_tasks extends Migration
 	public function up()
 	{
 		$fields = [
-			'name'           => ['type' => 'varchar', 'constraint' => 31],
 			'category'       => ['type' => 'varchar', 'constraint' => 31],
+			'name'           => ['type' => 'varchar', 'constraint' => 31],
 			'uid'            => ['type' => 'varchar', 'constraint' => 31],
-			'route'          => ['type' => 'varchar', 'constraint' => 31],
+			'class'          => ['type' => 'varchar', 'constraint' => 63],
 			'icon'           => ['type' => 'varchar', 'constraint' => 31],
 			'summary'        => ['type' => 'varchar', 'constraint' => 255],
 			'description'    => ['type' => 'text'],

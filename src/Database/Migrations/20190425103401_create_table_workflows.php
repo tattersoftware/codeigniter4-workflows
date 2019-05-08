@@ -1,4 +1,4 @@
-<?php namespace App\Database\Migrations;
+<?php namespace Tatter\Workflows\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 

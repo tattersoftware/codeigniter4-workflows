@@ -1,4 +1,4 @@
-<?php namespace App\Database\Migrations;
+<?php namespace Tatter\Workflows\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
@@ -30,8 +30,9 @@ class Migration_create_table_jobs extends Migration
 		// add changelog
 		$fields = [
 			'job_id'         => ['type' => 'int', 'unsigned' => true],
+			'workflow_id'    => ['type' => 'int', 'unsigned' => true],
 			'task_from'      => ['type' => 'int', 'unsigned' => true, 'null' => true],
-			'task_to'        => ['type' => 'int', 'unsigned' => true],
+			'task_to'        => ['type' => 'int', 'unsigned' => true, 'null' => true],
 			'created_by'     => ['type' => 'int', 'unsigned' => true],
 			'created_at'     => ['type' => 'datetime', 'null' => true],
 		];
@@ -39,10 +40,9 @@ class Migration_create_table_jobs extends Migration
 		$this->forge->addField('id');
 		$this->forge->addField($fields);
 
-		$this->forge->addKey(['job_id', 'task_from']);
+		$this->forge->addKey(['job_id', 'task_from', 'workflow_id']);
 		$this->forge->addKey(['job_id', 'task_to']);
-		$this->forge->addKey(['task_to', 'job_id']);
-		$this->forge->addKey(['task_from', 'job_id']);
+		$this->forge->addKey(['workflow_id', 'job_id']);
 		
 		$this->forge->createTable('joblogs');
 	}
