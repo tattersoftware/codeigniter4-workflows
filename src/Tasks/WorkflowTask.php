@@ -28,7 +28,6 @@ class WorkflowTask implements TaskInterface
 
 		// get the library instance
 		//$this->lib = Services::workflows();
-	
 	}
 	
 	// run when job arrives while progressing through the workflow
@@ -43,20 +42,8 @@ class WorkflowTask implements TaskInterface
 	
 	}
 	
-	// display a view or form for user interaction
-	public function ui()
-	{
-	
-	}
-	
-	// process user/form input
-	public function process($data)
-	{
-	
-	}
-	
 	// handle anything that needs to happen before the task finishes
-	public function finalize()
+	public function finish()
 	{
 	
 	}

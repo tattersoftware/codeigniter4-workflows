@@ -26,9 +26,13 @@ class Workflows extends Controller
 		return view('Tatter\Workflows\Views\index', $data);
 	}
 	
-	public function add()
+	public function new()
 	{
 		$data['config'] = $this->config;
-		return view('Tatter\Workflows\Views\add', $data);		
+		$data['tasks'] = $this->tasks
+			->orderBy('category', 'asc')
+			->orderBy('name', 'asc')
+			->findAll();
+		return view('Tatter\Workflows\Views\new', $data);		
 	}
 }

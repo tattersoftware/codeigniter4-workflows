@@ -14,12 +14,6 @@ interface TaskInterface
 	// run when job returns while regressing back through the workflow
 	public function down();
 	
-	// display a view or form for user interaction
-	public function ui();
-	
-	// process user/form input
-	public function process($data);
-	
 	// handle anything that needs to happen before the task finishes
-	public function finalize();
+	public function finish();
 }
