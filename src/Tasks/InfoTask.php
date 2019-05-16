@@ -10,10 +10,10 @@ class InfoTask implements TaskInterface
 	use \Tatter\Workflows\Traits\TasksTrait;
 	
 	public $definition = [
-		'name'     => 'Info',
 		'category' => 'Core',
+		'name'     => 'Info',
 		'uid'      => 'info',
-		'icon'     => 'fa-info-circle',
+		'icon'     => 'fas fa-info-circle',
 		'summary'  => 'Set basic details of a job',
 	];
 	

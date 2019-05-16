@@ -10,7 +10,7 @@ class Migration_create_table_jobs extends Migration
 			'name'           => ['type' => 'varchar', 'constraint' => 31],
 			'source'         => ['type' => 'varchar', 'constraint' => 31],
 			'workflow_id'    => ['type' => 'int', 'unsigned' => true],
-			'task_id'        => ['type' => 'int', 'unsigned' => true, 'null' => true],
+			'stage_id'       => ['type' => 'int', 'unsigned' => true, 'null' => true],
 			'summary'        => ['type' => 'varchar', 'constraint' => 255],
 			'description'    => ['type' => 'text'],
 			'deleted'        => ['type' => 'boolean', 'default' => 0],
@@ -22,17 +22,15 @@ class Migration_create_table_jobs extends Migration
 		$this->forge->addField($fields);
 
 		$this->forge->addKey('name');
-		$this->forge->addKey(['workflow_id', 'task_id']);
-		$this->forge->addKey(['task_id', 'workflow_id']);
+		$this->forge->addKey('stage_id');
 
 		$this->forge->createTable('jobs');
 	
 		// add changelog
 		$fields = [
 			'job_id'         => ['type' => 'int', 'unsigned' => true],
-			'workflow_id'    => ['type' => 'int', 'unsigned' => true],
-			'task_from'      => ['type' => 'int', 'unsigned' => true, 'null' => true],
-			'task_to'        => ['type' => 'int', 'unsigned' => true, 'null' => true],
+			'stage_from'     => ['type' => 'int', 'unsigned' => true, 'null' => true],
+			'stage_to'       => ['type' => 'int', 'unsigned' => true, 'null' => true],
 			'created_by'     => ['type' => 'int', 'unsigned' => true],
 			'created_at'     => ['type' => 'datetime', 'null' => true],
 		];
@@ -40,9 +38,8 @@ class Migration_create_table_jobs extends Migration
 		$this->forge->addField('id');
 		$this->forge->addField($fields);
 
-		$this->forge->addKey(['job_id', 'task_from', 'workflow_id']);
-		$this->forge->addKey(['job_id', 'task_to']);
-		$this->forge->addKey(['workflow_id', 'job_id']);
+		$this->forge->addKey(['job_id', 'stage_from', 'stage_to']);
+		$this->forge->addKey(['job_id', 'stage_to']);
 		
 		$this->forge->createTable('joblogs');
 	}

@@ -13,7 +13,8 @@ class WorkflowTask implements TaskInterface
 		'category' => 'Core',
 		'name'     => 'Workflow',
 		'uid'      => 'workflow',
-		'icon'     => 'fa-project-diagram',
+		'input'    => 'workflow',
+		'icon'     => 'fas fa-project-diagram',
 		'summary'  => 'Run another workflow as a subordinate task',
 	];
 		

@@ -9,6 +9,7 @@ class Task extends Entity
 	protected $name;
 	protected $uid;
 	protected $class;
+	protected $input;
 	protected $icon;
 	protected $summary;
 	protected $description;

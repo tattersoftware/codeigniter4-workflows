@@ -2,17 +2,16 @@
 
 use CodeIgniter\Model;
 
-class TaskModel extends Model
+class StageModel extends Model
 {
-	protected $table      = 'tasks';
+	protected $table      = 'stages';
 	protected $primaryKey = 'id';
 
-	protected $returnType = 'Tatter\Workflows\Entities\Task';
-	protected $useSoftDeletes = true;
+	protected $returnType = 'object';
+	protected $useSoftDeletes = false;
 
 	protected $allowedFields = [
-		'category', 'name', 'uid', 'class', 'input',
-		'icon', 'summary', 'description',
+		'task_id', 'workflow_id', 'required',
 	];
 
 	protected $useTimestamps = true;
@@ -21,4 +20,3 @@ class TaskModel extends Model
 	protected $validationMessages = [];
 	protected $skipValidation     = false;
 }
-
