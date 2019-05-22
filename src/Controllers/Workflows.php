@@ -89,6 +89,24 @@ class Workflows extends Controller
 			$this->stages->save($stage);
 		endforeach;
 		
-		return redirect()->to('workflows/' . $workflowId)->with('success', lang('Workflows.newWorkflowSuccess'));
+		return redirect()->to('/workflows/' . $workflowId)->with('success', lang('Workflows.newWorkflowSuccess'));
+	}
+	
+	public function update($workflowId)
+	{		
+		// validate
+		$rules = [
+			'name'     => 'required|max_length[255]',
+			'summary'  => 'required|max_length[255]',
+		];
+		if (! $this->validate($rules))
+			return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+		
+		// try to update the workflow
+		$workflow = $this->request->getPost();
+		if (! $this->model->update($workflowId, $workflow))
+            return redirect()->back()->withInput()->with('errors', $this->model->errors());
+        		
+		return redirect()->to('/workflows/' . $workflowId)->with('success', lang('Workflows.updateWorkflowSuccess'));
 	}
 }

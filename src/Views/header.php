@@ -42,3 +42,29 @@
 	</nav>
 
 	<main role="main" class="container my-5">
+
+<?php
+// check for error messages
+if (session()->has('errors')):
+?>
+	<ul class="alert alert-danger">
+<?php
+	foreach (session('errors') as $error):
+?>
+		<li><?= $error ?></li>
+<?php
+endforeach
+?>
+	</ul>
+<?php
+endif;
+
+// check for success message
+if (session()->has('success')):
+?>
+	<ul class="alert alert-success">
+		<li><?= session('success'); ?></li>
+	</ul>
+<?php
+endif;
+?>

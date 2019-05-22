@@ -9,25 +9,33 @@ endif;
 	
 	<h2>Workflow</h2>
 
-<?php
-// check for messages
-if (session()->has('success')):
-?>
-	<ul class="alert alert-success">
-		<li><?= session('success'); ?></li>
-	</ul>
-<?php
-endif;
-?>
 	<h3 class="mt-3">Details</h3>
 	<div class="row mt-4">
-		<div class="col-xl-4">
+		<div id="workflow-card" class="col-xl-4">
 			<div class="card">
 				<div class="card-body">
 					<h5 class="card-title"><i class="<?= $workflow->icon ?: 'far fa-circle' ?>"></i> <?= $workflow->name ?></h5>
 					<h6 class="card-subtitle mb-2 text-muted"><?= $workflow->category ?: 'No' ?> Category</h6>
 					<p class="card-text"><?= $workflow->summary ?></p>
+					<a href="#" class="card-link" onclick="$('#workflow-card .card').toggle(); return false;">Edit</a>
 				</div>
+			</div>
+			<div class="card" style="display:none;">
+				<form name="update-workflow" action="<?= site_url('workflows/' . $workflow->id) ?>" method="post">
+					<div class="card-body">
+						<h5 class="card-title">
+							<input name="icon" type="text" class="form-control" id="icon" aria-describedby="iconHelp" placeholder="Workflow icon" value="<?= $workflow->icon ?>">
+							<input name="name" type="text" class="form-control" id="name" placeholder="Workflow name" value="<?= $workflow->name ?>" required>
+						</h5>
+						<input name="category" type="text" class="form-control" id="category" placeholder="Workflow category" value="<?= $workflow->category ?>">
+						<p class="card-text">
+							<input name="summary" type="text" class="form-control" id="icon" placeholder="Workflow summary" value="<?= $workflow->summary ?>" required>
+						</p>
+						<input type="hidden" name="_method" value="PUT" />
+						<input class="card-link btn btn-primary" type="submit" value="Submit">
+						<a href="#" class="card-link" onclick="$('#workflow-card .card').toggle(); return false;">Cancel</a>
+					</div>
+				</form>
 			</div>
 		</div>
 		
@@ -84,9 +92,12 @@ else:
 						</select>
 <?php
 					break;
-				
+					
+					case '':
+					break;
+					
 					default:
-						echo "<span class='text-muted'>n/a</span>";
+						echo "<input name='input' type='{$task->input}' class='form-control' value='<?= $stage->input ?>'>";
 				endswitch;
 ?>
 					</td>

@@ -20,20 +20,6 @@ if (empty($tasks)):
 <?php
 	return;
 endif;
-
-// check for error messages
-if (session()->has('errors')):
-?>
-	<ul class="alert alert-danger">
-<?php
-	foreach (session('errors') as $error):
-?>
-		<li><?= $error ?></li>
-<?php
-endforeach ?>
-	</ul>
-<?php
-endif;
 ?>
 
 	<form name="create-workflow" action="<?= site_url('workflows') ?>" method="post" onsubmit="this.tasks.value = sortable.toArray();">
