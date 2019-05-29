@@ -9,7 +9,8 @@ class Migration_create_table_stages extends Migration
 		$fields = [
 			'task_id'        => ['type' => 'int', 'unsigned' => true],
 			'workflow_id'    => ['type' => 'int', 'unsigned' => true],
-			'required'       => ['type' => 'boolean', 'default' => 0],
+			'input'          => ['type' => 'varchar', 'constraint' => 31],
+			'required'       => ['type' => 'boolean', 'default' => 1],
 			'created_at'     => ['type' => 'datetime', 'null' => true],
 			'updated_at'     => ['type' => 'datetime', 'null' => true],
 		];

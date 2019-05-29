@@ -11,7 +11,7 @@ class StageModel extends Model
 	protected $useSoftDeletes = false;
 
 	protected $allowedFields = [
-		'task_id', 'workflow_id', 'required',
+		'task_id', 'workflow_id', 'input', 'required',
 	];
 
 	protected $useTimestamps = true;

@@ -39,7 +39,7 @@ endif;
 			</div>
 		</div>
 		
-		<div class="col-xl-8">
+		<div class="col-xl-8" id="response">
 			<p><?= $workflow->description ?></p>
 		</div>
 	</div>
@@ -77,7 +77,7 @@ else:
 				switch ($task->input):
 					case 'workflow':
 ?>
-						<select class="custom-select small" onchange="setStageInput(<?= $stage->id ?>, this.value);" required>
+						<select class="custom-select small" onchange="return setStageInput(<?= $stage->id ?>, this.value);" required>
 							<option></option>
 <?php
 						foreach ($workflows as $workflowOpt):
@@ -85,7 +85,7 @@ else:
 								continue;
 							endif;
 ?>
-							<option value="<?= $workflowOpt->id ?>"><?= $workflowOpt->name ?></option>
+							<option value="<?= $workflowOpt->id ?>" <?= ($workflowOpt->id == $stage->input) ? 'selected' : '' ?>><?= $workflowOpt->name ?></option>
 <?php
 						endforeach;
 ?>
@@ -97,13 +97,13 @@ else:
 					break;
 					
 					default:
-						echo "<input name='input' type='{$task->input}' class='form-control' value='<?= $stage->input ?>'>";
+						echo "<input name='input' type='{$task->input}' class='form-control' value='<?= $stage->input ?>' onchange='return setStageInput(<?= $stage->id ?>, this.value);' required>";
 				endswitch;
 ?>
 					</td>
 					<td>
 						<div class="custom-control custom-switch">
-							<input type="checkbox" class="custom-control-input" id="required-<?= $stage->id ?>" value="1" <?= $stage->required ? 'checked' : '' ?> onchange="toggleStage(<?= $stage->id ?>);">
+							<input type="checkbox" class="custom-control-input" id="required-<?= $stage->id ?>" value="1" <?= $stage->required ? 'checked' : '' ?> onclick="return setStageRequired(<?= $stage->id ?>, this.checked);">
 							<label class="custom-control-label" for="required-<?= $stage->id ?>"></label>
 						</div>
 					</td>
@@ -122,12 +122,34 @@ endif;
 	</div>
 
 <script>
-	function toggleStage(stageId) {
-		alert('toggled '+stageId);
+	var baseUrl = '<?= base_url() ?>';
+	
+	function setStageRequired(stageId, checked) {
+		checked = checked ? 1 : 0;
+		return updateStage(stageId, { required: checked });
 	}
 
 	function setStageInput(stageId, value) {
-		alert('set '+stageId+' input to '+value);
+		return updateStage(stageId, { input: value });
+	}
+
+	function updateStage(stageId, data) {
+		// set the method spoof
+		data._method = "PUT";
+		
+		$.ajax({
+			type: "POST",
+			url: baseUrl + "stages/" + stageId,
+			data: data,
+			datatype: "text"		
+		}).done(function( data ) {
+			if (data) {
+				alert(data);
+				return false;
+			}
+
+			return true;
+		});
 	}
 </script>
 

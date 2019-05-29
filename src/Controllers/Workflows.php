@@ -17,9 +17,6 @@ class Workflows extends Controller
 		
 		$this->config = class_exists('\Config\Workflows') ?
 			new \Config\Workflows() : new \Tatter\Workflows\Config\Workflows();
-
-		// get the library instance
-		//$this->lib = Services::workflows();
 	}
 	
 	public function index()
