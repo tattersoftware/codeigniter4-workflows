@@ -17,6 +17,13 @@ class InfoTask implements TaskInterface
 		'summary'  => 'Set basic details of a job',
 	];
 	
+	// all tasks need an unqualified `get` method
+	public function get()
+	{
+		print_r($this->definition);
+		die('yes');
+	}
+	
 	// handle anything that needs to happen before this task can run
 	// NOTE: called during job progression *and* regression
 	public function init()

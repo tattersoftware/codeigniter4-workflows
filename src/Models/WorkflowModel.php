@@ -2,12 +2,14 @@
 
 use CodeIgniter\Model;
 
+use Tatter\Workflows\Models\StageModel;
+
 class WorkflowModel extends Model
 {
 	protected $table      = 'workflows';
 	protected $primaryKey = 'id';
 
-	protected $returnType = 'object';
+	protected $returnType = '\Tatter\Workflows\Entities\Workflow';
 	protected $useSoftDeletes = true;
 
 	protected $allowedFields = [
@@ -22,10 +24,11 @@ class WorkflowModel extends Model
 	];
 	protected $validationMessages = [];
 	protected $skipValidation     = false;
-
+	
+	// batch load stages for a group of workflows
 	public function fetchStages($workflows)
 	{
-		$stages = new \Tatter\Workflows\Models\StageModel();
+		$stages = new StageModel();
 		$workflowIds = array_column($workflows, 'id');
 		
 		$result = [];

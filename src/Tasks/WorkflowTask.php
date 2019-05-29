@@ -17,6 +17,12 @@ class WorkflowTask implements TaskInterface
 		'icon'     => 'fas fa-project-diagram',
 		'summary'  => 'Run another workflow as a subordinate task',
 	];
+	
+	// all tasks need an unqualified `get` method
+	public function get()
+	{
+	
+	}
 		
 	// handle anything that needs to happen before this task can run
 	// NOTE: called during job progression *and* regression

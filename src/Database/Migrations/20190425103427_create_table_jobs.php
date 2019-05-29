@@ -8,11 +8,9 @@ class Migration_create_table_jobs extends Migration
 	{
 		$fields = [
 			'name'           => ['type' => 'varchar', 'constraint' => 31],
-			'source'         => ['type' => 'varchar', 'constraint' => 31],
+			'summary'        => ['type' => 'varchar', 'constraint' => 255],
 			'workflow_id'    => ['type' => 'int', 'unsigned' => true],
 			'stage_id'       => ['type' => 'int', 'unsigned' => true, 'null' => true],
-			'summary'        => ['type' => 'varchar', 'constraint' => 255],
-			'description'    => ['type' => 'text'],
 			'deleted'        => ['type' => 'boolean', 'default' => 0],
 			'created_at'     => ['type' => 'datetime', 'null' => true],
 			'updated_at'     => ['type' => 'datetime', 'null' => true],
@@ -31,7 +29,7 @@ class Migration_create_table_jobs extends Migration
 			'job_id'         => ['type' => 'int', 'unsigned' => true],
 			'stage_from'     => ['type' => 'int', 'unsigned' => true, 'null' => true],
 			'stage_to'       => ['type' => 'int', 'unsigned' => true, 'null' => true],
-			'created_by'     => ['type' => 'int', 'unsigned' => true],
+			'created_by'     => ['type' => 'int', 'unsigned' => true, 'null' => true],
 			'created_at'     => ['type' => 'datetime', 'null' => true],
 		];
 		

@@ -30,28 +30,10 @@ class Migration_create_table_tasks extends Migration
 		$this->forge->addKey('created_at');
 		
 		$this->forge->createTable('tasks');
-		
-		// add workflows pivot table
-		$fields = [
-			'task_id'        => ['type' => 'int', 'unsigned' => true],
-			'workflow_id'    => ['type' => 'int', 'unsigned' => true],
-			'required'       => ['type' => 'boolean', 'default' => 0],
-			'created_by'     => ['type' => 'int', 'unsigned' => true],
-			'created_at'     => ['type' => 'datetime', 'null' => true],
-		];
-		
-		$this->forge->addField('id');
-		$this->forge->addField($fields);
-
-		$this->forge->addUniqueKey(['task_id', 'workflow_id']);
-		$this->forge->addUniqueKey(['workflow_id', 'task_id']);
-		
-		$this->forge->createTable('tasks_workflows');
 	}
 
 	public function down()
 	{
 		$this->forge->dropTable('tasks');
-		$this->forge->dropTable('tasks_workflows');
 	}
 }

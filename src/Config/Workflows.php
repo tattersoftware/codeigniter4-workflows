@@ -10,6 +10,9 @@ class Workflows extends BaseConfig
 	// faux-controller to route off of
 	public $routeBase = 'jobs';
 	
+	// the session variable to check for a logged-in user ID
+	public $userSource = 'workflowsUserId';
+	
 	// views to display for each function
 	public $views = [
 		'header'    => 'Tatter\Workflows\Views\header',

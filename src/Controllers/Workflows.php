@@ -33,7 +33,7 @@ class Workflows extends Controller
 		$data['config'] = $this->config;
 		$data['workflow'] = $this->model->find($workflowId);
 		$data['workflows'] = $this->model->orderBy('name', 'asc')->findAll();
-		$data['stages'] = $this->stages->where('workflow_id', $workflowId)->findAll();
+		$data['stages'] = $data['workflow']->stages;
 		$data['tasks'] = $this->tasks
 			->orderBy('category', 'asc')
 			->orderBy('name', 'asc')
