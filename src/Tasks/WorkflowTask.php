@@ -18,7 +18,6 @@ class WorkflowTask implements TaskInterface
 		'summary'  => 'Run another workflow as a subordinate task',
 	];
 	
-	// all tasks need an unqualified `get` method
 	public function get()
 	{
 	
@@ -37,20 +36,14 @@ class WorkflowTask implements TaskInterface
 		//$this->lib = Services::workflows();
 	}
 	
-	// run when job arrives while progressing through the workflow
+	// run when a job progresses forward through the workflow
 	public function up()
 	{
 	
 	}
 	
-	// run when job returns while regressing back through the workflow
+	// run when job regresses back through the workflow
 	public function down()
-	{
-	
-	}
-	
-	// handle anything that needs to happen before the task finishes
-	public function finish()
 	{
 	
 	}

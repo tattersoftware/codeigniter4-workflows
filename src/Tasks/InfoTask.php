@@ -17,34 +17,20 @@ class InfoTask implements TaskInterface
 		'summary'  => 'Set basic details of a job',
 	];
 	
-	// all tasks need an unqualified `get` method
 	public function get()
 	{
 		print_r($this->definition);
 		die('yes');
 	}
 	
-	// handle anything that needs to happen before this task can run
-	// NOTE: called during job progression *and* regression
-	public function init()
-	{
-	
-	}
-	
-	// run when job arrives while progressing through the workflow
+	// run when a job progresses forward through the workflow
 	public function up()
 	{
 	
 	}
 	
-	// run when job returns while regressing back through the workflow
+	// run when job regresses back through the workflow
 	public function down()
-	{
-	
-	}
-	
-	// handle anything that needs to happen before the task finishes
-	public function finish()
 	{
 	
 	}

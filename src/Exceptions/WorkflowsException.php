@@ -30,6 +30,11 @@ class WorkflowsException extends \RuntimeException implements ExceptionInterface
 		return new static(lang('Workflows.workflowNoStages'));
 	}
 	
+	public static function forSkipRequiredStage($name)
+	{
+		return new static(lang('Workflows.skipRequiredStage', [$name]));
+	}
+	
 	public static function forMissingJobId($route = '')
 	{
 		return new static(lang('Workflows.routeMissingJobId', [$route]));
