@@ -78,19 +78,27 @@ class Runner extends Controller
 		if ($this->task->id != $this->stage->task_id)
 			$this->travel();
 		
-		// determine request method
+		// determine request method & run corresponding method on the task
 		$request = Services::request();
 		$method = $request->getMethod();
+		$result = $this->callTaskMethod($this->task, $method);
 		
-		// make sure this task supports the requested method
-		$instance = new $task->class();
-		if (! is_callable([$instance, $method]))
-			throw WorkflowsException::forUnsupportedTaskMethod($task->name, $method);
+		// string: display
+		if (is_string($result)):
+			return $result;
 		
-		// set the job reference and run the task method
-		$instance->job = $job;
-		$result = $instance->{$method}();
+		// true: task complete, move on
+		elseif ($result === true):
+			return $this->progress();
+			
+		// array: treat as error messages
+		elseif (is_array($result)):
+			throw new \RuntimeException(implode('. ', $result));
 		
+		// borked
+		else:
+			throw new \RuntimeException('fatal error');
+		endif;
 	}
 	
 	// validate and parse values from a route
@@ -149,7 +157,7 @@ class Runner extends Controller
 				->where('required', 1)
 				->first();
 			if (! empty($test)):
-				$name = $this->tasks->find($stage->task_id)->name;
+				$name = $this->tasks->find($test->task_id)->name;
 				throw WorkflowsException::forSkipRequiredStage($name);
 			endif;
 			
@@ -185,13 +193,26 @@ class Runner extends Controller
 	
 	// validate and run the specified method for a task
 	protected function callTaskMethod($task, $method)
+	{
 		// make sure this task supports the requested method
 		$instance = new $task->class();
 		if (! is_callable([$instance, $method]))
 			throw WorkflowsException::forUnsupportedTaskMethod($task->name, $method);
 		
-		// set the job reference and run the task method
-		$instance->job = $job;
+		// set the references and run the task method
+		$instance->config     = $this->config;
+		$instance->job        = $this->job;
+		$instance->renderer   = Services::renderer();
+		$instance->request    = $this->request;
+		$instance->validation = Services::validation();
 		return $instance->{$method}();
+	}
+	
+	// complete current task and move to the next
+	protected function progress()
+	{
+		$stage = $this->stage->next();
+		$route = "/{$this->config->routeBase}/{$this->task->uid}/{$this->job->id}";
+		return redirect()->to($route);
 	}
 }

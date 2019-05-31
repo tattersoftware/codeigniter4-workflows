@@ -8,4 +8,5 @@ $routes->add($config->routeBase . '/(.+)',  'Tatter\Workflows\Controllers\Runner
 
 // Admin dashboard routes
 $routes->resource('stages', ['controller' =>'Tatter\Workflows\Controllers\Stages']);
+$routes->resource('tasks', ['controller' =>'Tatter\Workflows\Controllers\Tasks']);
 $routes->resource('workflows', ['controller' =>'Tatter\Workflows\Controllers\Workflows']);

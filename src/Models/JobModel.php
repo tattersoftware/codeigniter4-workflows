@@ -59,7 +59,7 @@ class JobModel extends Model
 		$job = $this->find($data['id']);
 		
 		// ignore instances where the stage didn't change
-		if ($job->stage_id == $data['data']['stage_id'])
+		if (! isset($data['data']['stage_id']) || $data['data']['stage_id'] == $job->stage_id)
 			return true;
 		
 		// determine user source from config

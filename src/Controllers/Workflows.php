@@ -25,7 +25,7 @@ class Workflows extends Controller
 		$data['workflows'] = $this->model->orderBy('name')->findAll();
 		$data['stages'] = $this->model->fetchStages($data['workflows']);
 		
-		return view('Tatter\Workflows\Views\index', $data);
+		return view('Tatter\Workflows\Views\workflows\index', $data);
 	}
 	
 	public function show($workflowId)
@@ -39,7 +39,7 @@ class Workflows extends Controller
 			->orderBy('name', 'asc')
 			->findAll();
 
-		return view('Tatter\Workflows\Views\show', $data);
+		return view('Tatter\Workflows\Views\workflows\show', $data);
 	}
 	
 	public function new()
@@ -56,7 +56,7 @@ class Workflows extends Controller
 			$json[$task->id] = $task->toArray();
 		$data['json'] = json_encode($json);
 		
-		return view('Tatter\Workflows\Views\new', $data);		
+		return view('Tatter\Workflows\Views\workflows\new', $data);		
 	}
 	
 	public function create()

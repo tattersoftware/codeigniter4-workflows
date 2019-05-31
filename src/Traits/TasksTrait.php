@@ -1,15 +1,20 @@
 <?php namespace Tatter\Workflows\Traits;
 
+use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\TaskModel;
 
 /*** CLASS ***/
 trait TasksTrait
 {
+	public $config;
 	public $job;
+	public $renderer;
 	
 	public function __construct()
 	{
 		$this->model  = new TaskModel();
+		$this->jobs   = new JobModel();
+		
 		$this->config = class_exists('\Config\Workflows') ?
 			new \Config\Workflows() : new \Tatter\Workflows\Config\Workflows();
 	}

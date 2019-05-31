@@ -35,7 +35,7 @@
 					<a class="nav-link" href="<?= site_url('workflows') ?>">Workflows <?= ($current=='workflows') ? '<span class="sr-only">(current)</span>' : '' ?></a>
 				</li>
 				<li class="nav-item <?= ($current=='workflows') ?: 'active' ?>">
-					<a class="nav-link" href="<?= site_url('tasks') ?>">Tasks <?= ($current=='tasks') ?: '<span class="sr-only">(current)</span>' ?></a>
+					<a class="nav-link" href="<?= site_url('tasks') ?>">Tasks <?= ($current=='tasks') ? '<span class="sr-only">(current)</span>' : '' ?></a>
 				</li>
 			</ul>
 		</div>
