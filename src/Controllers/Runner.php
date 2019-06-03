@@ -89,14 +89,36 @@ class Runner extends Controller
 		
 		// true: task complete, move on
 		elseif ($result === true):
-			return $this->progress();
+			// get the next stage
+			$stage = $this->stages
+				->where('workflow_id', $this->workflow->id)
+				->where('id >', $this->stage->id)
+				->orderBy('id', 'asc')
+				->first();
+
+			// if no more stages then wrap up
+			if (empty($stage)):
+				return $this->complete();
+			endif;
+			
+			// update the job
+			$this->jobs->update($this->job->id, ['stage_id' => $stage->id]);
+			
+			// get the next task and redirect
+			$task = $this->tasks->find($stage->task_id);
+			$route = "/{$this->config->routeBase}/{$task->uid}/{$this->job->id}";
+			return redirect()->to($route);
 			
 		// array: treat as error messages
 		elseif (is_array($result)):
 			throw new \RuntimeException(implode('. ', $result));
-		
+
+		elseif ($result instanceof CodeIgniter\HTTP\RedirectResponse):
+			return $result;
+			
 		// borked
 		else:
+			var_dump($result); die();
 			throw new \RuntimeException('fatal error');
 		endif;
 	}
@@ -208,11 +230,9 @@ class Runner extends Controller
 		return $instance->{$method}();
 	}
 	
-	// complete current task and move to the next
-	protected function progress()
+	// complete the current job
+	protected function complete()
 	{
-		$stage = $this->stage->next();
-		$route = "/{$this->config->routeBase}/{$this->task->uid}/{$this->job->id}";
-		return redirect()->to($route);
+		
 	}
 }

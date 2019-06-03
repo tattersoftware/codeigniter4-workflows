@@ -22,7 +22,7 @@ endif;
 				</div>
 				<div class="form-group">
 					<label for="summary">Summary</label>
-					<input name="summary" type="text" class="form-control" id="icon" aria-describedby="summaryHelp" placeholder="Job summary" value="<?= old('summary', $job->summary) ?>" required>
+					<input name="summary" type="text" class="form-control" id="icon" aria-describedby="summaryHelp" placeholder="Job summary" value="<?= old('summary', $job->summary) ?>">
 					<small id="summaryHelp" class="form-text text-muted">A brief summary of this job.</small>
 				</div>
 			</div>

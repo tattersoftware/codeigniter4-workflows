@@ -54,30 +54,33 @@ class JobModel extends Model
 	{
 		if (! $data['result'])
 			return false;
-		
-		// get the updated job
-		$job = $this->find($data['id']);
-		
-		// ignore instances where the stage didn't change
-		if (! isset($data['data']['stage_id']) || $data['data']['stage_id'] == $job->stage_id)
-			return true;
-		
+
 		// determine user source from config
 		$config = class_exists('\Config\Workflows') ?
 			new \Config\Workflows() : new \Tatter\Workflows\Config\Workflows();
 		$userId = session($config->userSource);
 		
-		// build the row
-		$row = [
-			'job_id'     => $data['id'],
-			'stage_from' => $data['data']['stage_id'],
-			'stage_to'   => $job->stage_id,
-			'created_by' => $userId,
-			'created_at' => date('Y-m-d H:i:s'),
-		];
+		// process each updated entry
+		foreach ($data['id'] as $id):
+			// get the updated job
+			$job = $this->find($id);
+
+			// ignore instances where the stage didn't change
+			if (! isset($data['data']['stage_id']) || $data['data']['stage_id'] == $job->stage_id)
+				continue;
+
+			// build the row
+			$row = [
+				'job_id'     => $job->id,
+				'stage_from' => $data['data']['stage_id'],
+				'stage_to'   => $job->stage_id,
+				'created_by' => $userId,
+				'created_at' => date('Y-m-d H:i:s'),
+			];
 		
-		// add it to the database
-		$db = db_connect();
-		$db->table('joblogs')->insert($row);
+			// add it to the database
+			$db = db_connect();
+			$db->table('joblogs')->insert($row);
+		endforeach;
 	}
 }
