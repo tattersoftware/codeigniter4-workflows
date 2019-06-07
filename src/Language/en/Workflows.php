@@ -12,4 +12,5 @@ return [
 	'newJobSuccess'          => 'New job created successfully.',
 	'routeMissingJobId'      => 'Job ID missing for "{0}" task',
 	'taskMissingMethod'      => 'The "{0}" task does not support the "{1}" method.',
+	'jobAlreadyComplete'     => 'That job is already complete.',
 ];

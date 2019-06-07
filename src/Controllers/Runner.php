@@ -71,8 +71,16 @@ class Runner extends Controller
 		if (empty($params))
 			throw PageNotFoundException::forPageNotFound();
 		
+		// look for a resume request (job ID, nothing else)
+		if (count($params) == 1 && is_numeric($params[0]))
+			return $this->resume($params[0]);
+		
 		// parse route parameters
 		$this->parseRoute($params);
+
+		// intercept completed jobs
+		if (empty($this->stage))
+			return redirect()->to('/');
 		
 		// if the requested task differs from the job's current task then travel the workflow
 		if ($this->task->id != $this->stage->task_id)
@@ -89,6 +97,7 @@ class Runner extends Controller
 		
 		// true: task complete, move on
 		elseif ($result === true):
+		
 			// get the next stage
 			$stage = $this->stages
 				->where('workflow_id', $this->workflow->id)
@@ -111,15 +120,22 @@ class Runner extends Controller
 			
 		// array: treat as error messages
 		elseif (is_array($result)):
-			throw new \RuntimeException(implode('. ', $result));
+			if ($this->config->silent):
+				return view($this->config->views['messages'], ['config' => $this->config, 'errors' => $result]);
+			else:
+				throw new \RuntimeException(implode('. ', $result));
+			endif;
 
 		elseif ($result instanceof CodeIgniter\HTTP\RedirectResponse):
 			return $result;
 			
 		// borked
 		else:
-			var_dump($result); die();
-			throw new \RuntimeException('fatal error');
+			if ($this->config->silent):
+				return view($this->config->views['messages'], ['config' => $this->config, 'error' => 'Unable to determine task return']);
+			else:
+				throw new \RuntimeException('Unable to determine task return');
+			endif;
 		endif;
 	}
 	
@@ -129,8 +145,13 @@ class Runner extends Controller
 		// strip off task & job identifiers
 		$route = array_shift($params);
 		$jobId = array_shift($params);
-		if (empty($jobId))
-			throw WorkflowsException::forMissingJobId($route);
+		if (empty($jobId)):
+			if ($this->config->silent):
+				return view($this->config->views['messages'], ['config' => $this->config, 'error' => lang('Workflows.routeMissingJobId', $route)]);
+			else:
+				throw WorkflowsException::forMissingJobId($route);
+			endif;
+		endif;
 		
 		// lookup the task by its route
 		$this->task = $this->tasks->where('uid', $route)->first();
@@ -139,20 +160,52 @@ class Runner extends Controller
 
 		// load the job and its workflow and stage
 		$this->job = $this->jobs->find($jobId);
-		if (empty($this->job))
-			throw WorkflowsException::forJobNotFound();
+		if (empty($this->job)):
+			if ($this->config->silent):
+				return view($this->config->views['messages'], ['config' => $this->config, 'error' => lang('Workflows.jobNotFound')]);
+			else:
+				throw WorkflowsException::forJobNotFound();
+			endif;
+		endif;			
 
 		$this->workflow = $this->workflows->find($this->job->workflow_id);
-		if (empty($this->workflow))
-			throw WorkflowsException::forWorkflowNotFound();
-
-		$this->stage = $this->stages->find($this->job->stage_id);
-		if (empty($this->stage))
-			throw WorkflowsException::forStageNotFound();
+		if (empty($this->workflow)):
+			if ($this->config->silent):
+				return view($this->config->views['messages'], ['config' => $this->config, 'error' => lang('Workflows.workflowNotFound')]);
+			else:
+				throw WorkflowsException::forWorkflowNotFound();
+			endif;
+		endif;
+		
+		// stage can be empty (e.g. completed job)
+		if ($this->job->stage_id)
+			$this->stage = $this->stages->find($this->job->stage_id);
 	
 		return true;
 	}
+
+	// pick a job back up at its current stage
+	protected function resume($jobId)
+	{
+		// load the job, stage, and task
+		$this->job = $this->jobs->find($jobId);
+		if (empty($this->job)):
+			if ($this->config->silent):
+				return view($this->config->views['messages'], ['config' => $this->config, 'error' => lang('Workflows.jobNotFound')]);
+			else:
+				throw WorkflowsException::forJobNotFound();
+			endif;
+		endif;
+		
+		if (empty($this->job->stage_id))
+			return view($this->config->views['messages'], ['config' => $this->config, 'message' => lang('Workflows.jobAlreadyComplete')]);
+		$this->stage = $this->stages->find($this->job->stage_id);
 	
+		$task = $this->tasks->find($this->stage->task_id);
+		$route = "/{$this->config->routeBase}/{$task->uid}/{$this->job->id}";
+		return redirect()->to($route);
+	}
+					
 	// move a job through the workflow, skipping non-required stages but running their task functions
 	protected function travel()
 	{
@@ -233,6 +286,9 @@ class Runner extends Controller
 	// complete the current job
 	protected function complete()
 	{
+		// update the job
+		$this->jobs->update($this->job->id, ['stage_id' => null]);
 		
+		return redirect()->to('/');
 	}
 }

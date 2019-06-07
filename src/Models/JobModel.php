@@ -22,8 +22,8 @@ class JobModel extends Model
 	protected $validationMessages = [];
 	protected $skipValidation     = false;
 	
-	protected $afterInsert = ['logInsert'];
-	protected $afterUpdate = ['logUpdate'];
+	protected $afterInsert  = ['logInsert'];
+	protected $beforeUpdate = ['logUpdate'];
 	
 	// log successful insertions
 	protected function logInsert(array $data)
@@ -52,8 +52,7 @@ class JobModel extends Model
 	// log updates that result in a stage change
 	protected function logUpdate(array $data)
 	{
-		if (! $data['result'])
-			return false;
+		$db = db_connect();
 
 		// determine user source from config
 		$config = class_exists('\Config\Workflows') ?
@@ -62,11 +61,16 @@ class JobModel extends Model
 		
 		// process each updated entry
 		foreach ($data['id'] as $id):
-			// get the updated job
-			$job = $this->find($id);
 
-			// ignore instances where the stage didn't change
-			if (! isset($data['data']['stage_id']) || $data['data']['stage_id'] == $job->stage_id)
+			// get the job to be updated
+			$job = $this->find($id);
+			if (empty($job))
+				continue;
+
+			// ignore instances where the stage won't change
+			if (! in_array('stage_id', array_keys($data['data'])))
+				continue;
+			if ($data['data']['stage_id'] == $job->stage_id)
 				continue;
 
 			// build the row
@@ -79,8 +83,9 @@ class JobModel extends Model
 			];
 		
 			// add it to the database
-			$db = db_connect();
 			$db->table('joblogs')->insert($row);
 		endforeach;
+		
+		return $data;
 	}
 }

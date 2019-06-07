@@ -1,4 +1,6 @@
-<!doctype html>
+<?php
+$current = $current ?? '';
+?><!doctype html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
@@ -29,12 +31,13 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
+
 		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item <?= ($current=='workflows') ? 'active' : '' ?>">
+				<li class="nav-item <?= ($current == 'workflows') ? 'active' : '' ?>">
 					<a class="nav-link" href="<?= site_url('workflows') ?>">Workflows <?= ($current=='workflows') ? '<span class="sr-only">(current)</span>' : '' ?></a>
 				</li>
-				<li class="nav-item <?= ($current=='workflows') ?: 'active' ?>">
+				<li class="nav-item <?= ($current == 'tasks') ? 'active' : '' ?>">
 					<a class="nav-link" href="<?= site_url('tasks') ?>">Tasks <?= ($current=='tasks') ? '<span class="sr-only">(current)</span>' : '' ?></a>
 				</li>
 			</ul>

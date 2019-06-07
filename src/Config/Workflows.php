@@ -17,5 +17,6 @@ class Workflows extends BaseConfig
 	public $views = [
 		'header'    => 'Tatter\Workflows\Views\templates\header',
 		'footer'    => 'Tatter\Workflows\Views\templates\footer',
+		'messages'  => 'Tatter\Workflows\Views\messages',
 	];
 }
