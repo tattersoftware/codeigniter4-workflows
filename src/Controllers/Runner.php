@@ -76,7 +76,9 @@ class Runner extends Controller
 			return $this->resume($params[0]);
 		
 		// parse route parameters
-		$this->parseRoute($params);
+		$result = $this->parseRoute($params);
+		if (! empty($result))
+			return $result;
 
 		// intercept completed jobs
 		if (empty($this->stage))
@@ -147,7 +149,7 @@ class Runner extends Controller
 		$jobId = array_shift($params);
 		if (empty($jobId)):
 			if ($this->config->silent):
-				return view($this->config->views['messages'], ['config' => $this->config, 'error' => lang('Workflows.routeMissingJobId', $route)]);
+				return view($this->config->views['messages'], ['config' => $this->config, 'error' => lang('Workflows.routeMissingJobId', [$route])]);
 			else:
 				throw WorkflowsException::forMissingJobId($route);
 			endif;
@@ -200,6 +202,8 @@ class Runner extends Controller
 		if (empty($this->job->stage_id))
 			return view($this->config->views['messages'], ['config' => $this->config, 'message' => lang('Workflows.jobAlreadyComplete')]);
 		$this->stage = $this->stages->find($this->job->stage_id);
+		if (empty($this->stage))
+			return view($this->config->views['messages'], ['config' => $this->config, 'error' => lang('Workflows.jobAlreadyComplete')]);
 	
 		$task = $this->tasks->find($this->stage->task_id);
 		$route = "/{$this->config->routeBase}/{$task->uid}/{$this->job->id}";
@@ -288,7 +292,6 @@ class Runner extends Controller
 	{
 		// update the job
 		$this->jobs->update($this->job->id, ['stage_id' => null]);
-		
-		return redirect()->to('/');
+		return view($this->config->views['complete'], ['config' => $this->config, 'job' => $this->job]);
 	}
 }

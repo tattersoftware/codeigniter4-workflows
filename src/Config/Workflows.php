@@ -18,5 +18,6 @@ class Workflows extends BaseConfig
 		'header'    => 'Tatter\Workflows\Views\templates\header',
 		'footer'    => 'Tatter\Workflows\Views\templates\footer',
 		'messages'  => 'Tatter\Workflows\Views\messages',
+		'complete'  => 'Tatter\Workflows\Views\complete',
 	];
 }
