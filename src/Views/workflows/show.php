@@ -7,6 +7,7 @@ if (empty($workflow)):
 endif;
 ?>
 	
+	<a class="btn btn-primary float-right" href="<?= site_url($config->routeBase . '/new/' . $workflow->id) ?>" role="button"><i class="fas fa-rocket"></i> Launch</a>
 	<h2>Workflow</h2>
 
 	<h3 class="mt-3">Details</h3>
@@ -64,12 +65,13 @@ else:
 			</thead>
 			<tbody>
 <?php
-	foreach ($stages as $i=>$stage):
+$i = 1;
+	foreach ($stages as $stage):
 		foreach ($tasks as $task):
 			if ($task->id == $stage->task_id):
 ?>
 				<tr>
-					<td><?= $i+1 ?>.</td>
+					<td><?= $i++ ?>.</td>
 					<td><i class="<?= $task->icon ?>"></i> <?= $task->name ?></td>
 					<td class="small text-muted"><?= $task->summary ?></td>
 					<td>

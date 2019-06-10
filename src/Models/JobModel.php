@@ -47,6 +47,8 @@ class JobModel extends Model
 		// add it to the database
 		$db = db_connect();
 		$db->table('joblogs')->insert($row);
+		
+		return $data;
 	}
 	
 	// log updates that result in a stage change

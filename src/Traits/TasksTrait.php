@@ -42,4 +42,11 @@ trait TasksTrait
 	{
 		return $this->model->where('uid', $this->uid)->delete();
 	}
+	
+	// formulate the current route for this task & job
+	// e.g.: return redirect()->to($this->route());
+	public function route()
+	{
+		return $this->config->routeBase . '/' . $this->uid . '/' . $this->job->id;
+	}
 }
