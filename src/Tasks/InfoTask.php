@@ -23,12 +23,12 @@ class InfoTask implements TaskInterface
 		// prep the view and return it
 		$this->renderer->setVar('config', $this->config);
 		$this->renderer->setVar('job', $this->job);
-		
+
 		return $this->renderer->render('Tatter\Workflows\Views\tasks\info');
 	}
 	
 	// validate and process form submission
-	public function put()
+	public function post()
 	{
 		// validate
 		$rules = [

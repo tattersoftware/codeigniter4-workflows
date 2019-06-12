@@ -32,7 +32,7 @@ endif;
 						<p class="card-text">
 							<input name="summary" type="text" class="form-control" id="icon" placeholder="Workflow summary" value="<?= $workflow->summary ?>" required>
 						</p>
-						<input type="hidden" name="_method" value="PUT" />
+
 						<input class="card-link btn btn-primary" type="submit" value="Submit">
 						<a href="#" class="card-link" onclick="$('#workflow-card .card').toggle(); return false;">Cancel</a>
 					</div>

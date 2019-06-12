@@ -12,6 +12,8 @@ use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\TaskModel;
 use Tatter\Workflows\Models\WorkflowModel;
 
+
+// SHOULD IMPLEMENT websafe ROUTES https://codeigniter4.github.io/CodeIgniter4/incoming/routing.html#resource-routes
 class Runner extends Controller
 {
 	protected $job;
@@ -154,7 +156,7 @@ class Runner extends Controller
 				throw WorkflowsException::forMissingJobId($route);
 			endif;
 		endif;
-		
+
 		// lookup the task by its route
 		$this->task = $this->tasks->where('uid', $route)->first();
 		if (empty($this->task))
@@ -182,8 +184,6 @@ class Runner extends Controller
 		// stage can be empty (e.g. completed job)
 		if ($this->job->stage_id)
 			$this->stage = $this->stages->find($this->job->stage_id);
-	
-		return true;
 	}
 
 	// pick a job back up at its current stage

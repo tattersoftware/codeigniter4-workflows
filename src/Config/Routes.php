@@ -7,6 +7,6 @@ $routes->get($config->routeBase . '/new/(:num)',  'Tatter\Workflows\Controllers\
 $routes->add($config->routeBase . '/(.+)',  'Tatter\Workflows\Controllers\Runner::run/$1');
 
 // Admin dashboard routes
-$routes->resource('stages', ['controller' =>'Tatter\Workflows\Controllers\Stages']);
-$routes->resource('tasks', ['controller' =>'Tatter\Workflows\Controllers\Tasks']);
-$routes->resource('workflows', ['controller' =>'Tatter\Workflows\Controllers\Workflows']);
+$routes->resource('stages', ['websafe' => 1, 'controller' =>'Tatter\Workflows\Controllers\Stages']);
+$routes->resource('tasks', ['websafe' => 1, 'controller' =>'Tatter\Workflows\Controllers\Tasks']);
+$routes->resource('workflows', ['websafe' => 1, 'controller' =>'Tatter\Workflows\Controllers\Workflows']);

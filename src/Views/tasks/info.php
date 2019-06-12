@@ -11,7 +11,6 @@ endif;
 
 	<form name="update-job" action="<?= site_url("{$config->routeBase}/info/{$job->id}") ?>" method="post">
 		<input class="btn btn-primary float-right" type="submit" value="Submit">
-		<input type="hidden" name="_method" value="PUT" />
 		
 		<div class="row mt-4">
 			<div class="col-sm-8">
