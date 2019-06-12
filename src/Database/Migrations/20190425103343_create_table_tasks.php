@@ -15,9 +15,9 @@ class Migration_create_table_tasks extends Migration
 			'icon'           => ['type' => 'varchar', 'constraint' => 31],
 			'summary'        => ['type' => 'varchar', 'constraint' => 255],
 			'description'    => ['type' => 'text'],
-			'deleted'        => ['type' => 'boolean', 'default' => 0],
 			'created_at'     => ['type' => 'datetime', 'null' => true],
 			'updated_at'     => ['type' => 'datetime', 'null' => true],
+			'deleted_at'     => ['type' => 'datetime', 'null' => true],
 		];
 		
 		$this->forge->addField('id');
@@ -26,7 +26,7 @@ class Migration_create_table_tasks extends Migration
 		$this->forge->addKey('name');
 		$this->forge->addKey('uid');
 		$this->forge->addKey(['category', 'name']);
-		$this->forge->addKey(['deleted', 'id']);
+		$this->forge->addKey(['deleted_at', 'id']);
 		$this->forge->addKey('created_at');
 		
 		$this->forge->createTable('tasks');

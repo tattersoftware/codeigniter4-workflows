@@ -11,9 +11,9 @@ class Migration_create_table_jobs extends Migration
 			'summary'        => ['type' => 'varchar', 'constraint' => 255],
 			'workflow_id'    => ['type' => 'int', 'unsigned' => true],
 			'stage_id'       => ['type' => 'int', 'unsigned' => true, 'null' => true],
-			'deleted'        => ['type' => 'boolean', 'default' => 0],
 			'created_at'     => ['type' => 'datetime', 'null' => true],
 			'updated_at'     => ['type' => 'datetime', 'null' => true],
+			'deleted_at'     => ['type' => 'datetime', 'null' => true],
 		];
 		
 		$this->forge->addField('id');
