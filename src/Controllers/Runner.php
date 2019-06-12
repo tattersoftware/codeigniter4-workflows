@@ -146,6 +146,17 @@ class Runner extends Controller
 		endif;
 	}
 	
+	// delete a job
+	public function delete($jobId)
+	{		
+		// grab the job
+		$this->job = $this->jobs->find($jobId);
+		
+		// (soft) delete the job
+		$this->jobs->delete($jobId);
+		return view($this->config->views['deleted'], ['config' => $this->config, 'job' => $this->job]);
+	}
+	
 	// validate and parse values from a route
 	protected function parseRoute($params)
 	{

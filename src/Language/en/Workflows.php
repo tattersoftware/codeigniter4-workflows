@@ -7,6 +7,7 @@ return [
 	'stageNotFound'          => 'Could not find that job task.',
 	'newWorkflowSuccess'     => 'New workflow created successfully.',
 	'updateWorkflowSuccess'  => 'Workflow updated successfully.',
+	'deletedWorkflowSuccess' => 'Workflow deleted successfully.',
 	'workflowNoStages'       => 'Cannot use a workflow with no assigned tasks.',
 	'skipRequiredStage'      => 'Cannot skip the required "{0}" task',
 	'newJobSuccess'          => 'New job created successfully.',

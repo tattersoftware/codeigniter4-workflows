@@ -1,4 +1,4 @@
-<?= view($config->views['header'], ['current' => 'tasks']) ?>
+<?= view($config->views['header'], ['current' => 'jobs']) ?>
 
 <?php
 if (empty($job)):
@@ -7,8 +7,16 @@ if (empty($job)):
 endif;
 ?>
 	<h2>Job info</h2>
-
-
+<?php
+if (! $job->stage->required):
+	if ($next = $job->next()):
+		$route = '/' . $config->routeBase . '/' . $next->uid . '/' . $job->id;
+?>
+		<a class="btn btn-link float-right" href="<?= site_url($route) ?>" role="button"><i class="fas fa-arrow-circle-right"></i> Skip</a>
+<?php
+	endif;
+endif;
+?>
 	<form name="update-job" action="<?= site_url("{$config->routeBase}/info/{$job->id}") ?>" method="post">
 		<input class="btn btn-primary float-right" type="submit" value="Submit">
 		

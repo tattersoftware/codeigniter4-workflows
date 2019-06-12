@@ -6,7 +6,7 @@ if (empty($workflow)):
 	return;
 endif;
 ?>
-	
+
 	<a class="btn btn-primary float-right" href="<?= site_url($config->routeBase . '/new/' . $workflow->id) ?>" role="button"><i class="fas fa-rocket"></i> Launch</a>
 	<h2>Workflow</h2>
 
@@ -17,8 +17,13 @@ endif;
 				<div class="card-body">
 					<h5 class="card-title"><i class="<?= $workflow->icon ?: 'far fa-circle' ?>"></i> <?= $workflow->name ?></h5>
 					<h6 class="card-subtitle mb-2 text-muted"><?= $workflow->category ?: 'No' ?> Category</h6>
+
 					<p class="card-text"><?= $workflow->summary ?></p>
-					<a href="#" class="card-link" onclick="$('#workflow-card .card').toggle(); return false;">Edit</a>
+
+					<a href="#" class="card-link btn btn-primary" onclick="$('#workflow-card .card').toggle(); return false;">Edit</a>
+					<form class="card-link float-right" name="delete-workflow" action="<?= site_url('workflows/' . $workflow->id . '/delete') ?>" method="post">
+						<button class="btn btn-link" tyoe="submit"><i class="fas fa-trash"></i> Delete</button>
+					</form>
 				</div>
 			</div>
 			<div class="card" style="display:none;">

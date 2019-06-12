@@ -106,4 +106,11 @@ class Workflows extends Controller
         		
 		return redirect()->to('/workflows/' . $workflowId)->with('success', lang('Workflows.updateWorkflowSuccess'));
 	}
+	
+	public function delete($workflowId)
+	{		
+		// (soft) delete the workflow
+		$this->model->delete($workflowId);
+		return redirect()->to('/workflows')->with('success', lang('Workflows.deletedWorkflowSuccess'));
+	}
 }
