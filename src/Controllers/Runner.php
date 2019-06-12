@@ -3,6 +3,7 @@
 use CodeIgniter\Controller;
 use CodeIgniter\Config\Services;
 use CodeIgniter\Exceptions\PageNotFoundException;
+use CodeIgniter\HTTP\RedirectResponse;
 
 use Tatter\Workflows\Entities\Task;
 use Tatter\Workflows\Exceptions\WorkflowsException;
@@ -22,16 +23,16 @@ class Runner extends Controller
 	protected $workflow;	
 	
 	public function __construct()
-	{
-		// preload the models
-		$this->jobs       = new JobModel();
-		$this->stages     = new StageModel();
-		$this->tasks      = new TaskModel();
-		$this->workflows  = new WorkflowModel();
-		
+	{		
 		// preload the config class
 		$this->config = class_exists('\Config\Workflows') ?
 			new \Config\Workflows() : new \Tatter\Workflows\Config\Workflows();
+			
+		// preload the models
+		$this->jobs       = new $this->config->jobModel();
+		$this->stages     = new StageModel();
+		$this->tasks      = new TaskModel();
+		$this->workflows  = new WorkflowModel();
 	}
 	
 	// start a new job in the given workflow
@@ -130,15 +131,17 @@ class Runner extends Controller
 				throw new \RuntimeException(implode('. ', $result));
 			endif;
 
-		elseif ($result instanceof CodeIgniter\HTTP\RedirectResponse):
+		elseif ($result instanceof RedirectResponse):
 			return $result;
 			
 		// borked
 		else:
+		var_dump($result);
+		echo get_class($result);
 			if ($this->config->silent):
-				return view($this->config->views['messages'], ['config' => $this->config, 'error' => 'Unable to determine task return']);
+				return view($this->config->views['messages'], ['config' => $this->config, 'error' => lang('Workflows.invalidTaskReturn')]);
 			else:
-				throw new \RuntimeException('Unable to determine task return');
+				throw new \RuntimeException(lang('Workflows.invalidTaskReturn'));
 			endif;
 		endif;
 	}

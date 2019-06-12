@@ -11,12 +11,12 @@ trait TasksTrait
 	public $renderer;
 	
 	public function __construct()
-	{
-		$this->model  = new TaskModel();
-		$this->jobs   = new JobModel();
-		
+	{		
 		$this->config = class_exists('\Config\Workflows') ?
 			new \Config\Workflows() : new \Tatter\Workflows\Config\Workflows();
+			
+		$this->model  = new TaskModel();
+		$this->jobs   = new $this->config->jobModel();
 	}
 	
 	// magic wrapper for getting values from the definition
@@ -47,6 +47,6 @@ trait TasksTrait
 	// e.g.: return redirect()->to($this->route());
 	public function route()
 	{
-		return $this->config->routeBase . '/' . $this->uid . '/' . $this->job->id;
+		return '/' . $this->config->routeBase . '/' . $this->uid . '/' . $this->job->id;
 	}
 }

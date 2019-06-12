@@ -13,6 +13,9 @@ class Workflows extends BaseConfig
 	// the session variable to check for a logged-in user ID
 	public $userSource = 'workflowsUserId';
 	
+	// the model to use for jobs
+	public $jobModel = 'Tatter\Workflows\Models\JobModel';
+	
 	// views to display for each function
 	public $views = [
 		'header'    => 'Tatter\Workflows\Views\templates\header',
