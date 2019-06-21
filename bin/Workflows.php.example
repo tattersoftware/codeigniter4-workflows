@@ -2,7 +2,7 @@
 
 use CodeIgniter\Config\BaseConfig;
 
-class Workflows extends BaseConfig
+class Workflows extends \Tatter\Workflows\Config\Workflows
 {
 	// whether to continue instead of throwing exceptions
 	public $silent = true;
