@@ -29,9 +29,12 @@ class WorkflowModel extends Model
 	public function fetchStages($workflows)
 	{
 		$stages = new StageModel();
-		$workflowIds = array_column($workflows, 'id');
-		
 		$result = [];
+
+		$workflowIds = array_column($workflows, 'id');
+		if (empty($workflowIds))
+			return $result;
+
 		foreach ($stages->whereIn('workflow_id', $workflowIds)->orderBy('id', 'asc')->findAll() as $stage):
 			if (! isset($result[$stage->workflow_id]))
 				$result[$stage->workflow_id] = [];
