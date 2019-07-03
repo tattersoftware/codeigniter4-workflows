@@ -49,7 +49,7 @@ in the comments. If no config file is found in app/Config the library will use i
 ## Usage
 
 The CLI command `spark tasks:register` will search all namespaces for valid task files
-(i.e. in the Tasks subfolder and namespace, implementing Tatter\Workflows\Interfaces\TaskInterface)
+(i.e. in the Tasks subfolder and namespace, implementing **Tatter\Workflows\Interfaces\TaskInterface**)
 and register them. You may write your own tasks or import them from existing packages.
 Once tasks are registered you can create workflows from a series of those tasks by visiting
 the `/workflows` route.

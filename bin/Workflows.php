@@ -1,6 +1,14 @@
 <?php namespace Tatter\Workflows\Config;
 
-use CodeIgniter\Config\BaseConfig;
+/***
+*
+* This file contains example values to alter default library behavior.
+* Recommended usage:
+*	1. Copy the file to app/Config/Workflows.php
+*	2. Change any values
+*	3. Remove any lines to fallback to defaults
+*
+***/
 
 class Workflows extends \Tatter\Workflows\Config\Workflows
 {
@@ -11,7 +19,7 @@ class Workflows extends \Tatter\Workflows\Config\Workflows
 	public $routeBase = 'jobs';
 	
 	// the session variable to check for a logged-in user ID
-	public $userSource = 'workflowsUserId';
+	public $userSource = 'logged_in';
 	
 	// the model to use for jobs
 	public $jobModel = 'Tatter\Workflows\Models\JobModel';

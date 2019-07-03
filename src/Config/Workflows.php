@@ -11,7 +11,7 @@ class Workflows extends BaseConfig
 	public $routeBase = 'jobs';
 	
 	// the session variable to check for a logged-in user ID
-	public $userSource = 'workflowsUserId';
+	public $userSource = 'logged_in';
 	
 	// the model to use for jobs
 	public $jobModel = 'Tatter\Workflows\Models\JobModel';
