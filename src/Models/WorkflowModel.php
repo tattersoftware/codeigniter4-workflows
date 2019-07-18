@@ -6,6 +6,8 @@ use Tatter\Workflows\Models\StageModel;
 
 class WorkflowModel extends Model
 {
+	use \Tatter\Audits\Traits\AuditsTrait;
+	
 	protected $table      = 'workflows';
 	protected $primaryKey = 'id';
 
@@ -24,6 +26,11 @@ class WorkflowModel extends Model
 	];
 	protected $validationMessages = [];
 	protected $skipValidation     = false;
+	
+	/*** Tatter\Audits ***/
+	protected $afterInsert = ['auditInsert'];
+	protected $afterUpdate = ['auditUpdate'];
+	protected $afterDelete = ['auditDelete'];
 	
 	// batch load stages for a group of workflows
 	public function fetchStages($workflows)

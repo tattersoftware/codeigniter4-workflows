@@ -4,6 +4,8 @@ use CodeIgniter\Model;
 
 class StageModel extends Model
 {
+	use \Tatter\Audits\Traits\AuditsTrait;
+	
 	protected $table      = 'stages';
 	protected $primaryKey = 'id';
 
@@ -19,4 +21,9 @@ class StageModel extends Model
 	protected $validationRules    = [];
 	protected $validationMessages = [];
 	protected $skipValidation     = false;
+	
+	/*** Tatter\Audits ***/
+	protected $afterInsert = ['auditInsert'];
+	protected $afterUpdate = ['auditUpdate'];
+	protected $afterDelete = ['auditDelete'];
 }
