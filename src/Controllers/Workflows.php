@@ -14,9 +14,7 @@ class Workflows extends Controller
 		$this->model  = new WorkflowModel();
 		$this->stages = new StageModel();
 		$this->tasks  = new TaskModel();
-		
-		$this->config = class_exists('\Config\Workflows') ?
-			new \Config\Workflows() : new \Tatter\Workflows\Config\Workflows();
+		$this->config = config('Workflows');
 	}
 	
 	public function index()

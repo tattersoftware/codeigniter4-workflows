@@ -25,8 +25,7 @@ class Runner extends Controller
 	public function __construct()
 	{		
 		// preload the config class
-		$this->config = class_exists('\Config\Workflows') ?
-			new \Config\Workflows() : new \Tatter\Workflows\Config\Workflows();
+		$this->config = config('Workflows');
 			
 		// preload the models
 		$this->jobs       = new $this->config->jobModel();

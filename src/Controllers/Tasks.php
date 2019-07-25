@@ -12,9 +12,7 @@ class Tasks extends Controller
 	public function __construct()
 	{
 		$this->model  = new TaskModel();
-		
-		$this->config = class_exists('\Config\Workflows') ?
-			new \Config\Workflows() : new \Tatter\Workflows\Config\Workflows();
+		$this->config = config('Workflows');
 	}
 	
 	public function index()

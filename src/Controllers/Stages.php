@@ -11,9 +11,7 @@ class Stages extends Controller
 	{
 		$this->model  = new StageModel();
 		$this->tasks  = new TaskModel();
-		
-		$this->config = class_exists('\Config\Workflows') ?
-			new \Config\Workflows() : new \Tatter\Workflows\Config\Workflows();
+		$this->config = config('Workflows');
 	}
 	
 	public function update($stageId)

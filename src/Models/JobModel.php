@@ -32,8 +32,7 @@ class JobModel extends Model
 			return false;
 		
 		// determine user source from config
-		$config = class_exists('\Config\Workflows') ?
-			new \Config\Workflows() : new \Tatter\Workflows\Config\Workflows();
+		$this->config = config('Workflows');
 		$userId = session($config->userSource);
 		
 		// build the row
@@ -57,8 +56,7 @@ class JobModel extends Model
 		$db = db_connect();
 
 		// determine user source from config
-		$config = class_exists('\Config\Workflows') ?
-			new \Config\Workflows() : new \Tatter\Workflows\Config\Workflows();
+		$this->config = config('Workflows');
 		$userId = session($config->userSource);
 		
 		// process each updated entry
