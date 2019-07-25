@@ -1,4 +1,4 @@
-<?php namespace Tatter\Workflows\Config;
+<?php namespace Config;
 
 /***
 *
