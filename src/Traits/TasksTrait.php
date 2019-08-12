@@ -12,9 +12,7 @@ trait TasksTrait
 	
 	public function __construct()
 	{		
-		$this->config = class_exists('\Config\Workflows') ?
-			new \Config\Workflows() : new \Tatter\Workflows\Config\Workflows();
-			
+		$this->config = config('Workflows');			
 		$this->model  = new TaskModel();
 		$this->jobs   = new $this->config->jobModel();
 	}
