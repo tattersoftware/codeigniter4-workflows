@@ -10,8 +10,8 @@ Job task control through dynamic workflows, for CodeIgniter 4
 
 ## Features
 
-Workflows functions as a super-controller for CodeIgniter 4, allowing developers to write
-their own tasks as REST-ish modules and then string them together for job flow controls.
+**Workflows** functions as a super-controller for CodeIgniter 4, allowing developers to
+write their own tasks as classes and then string them together for job flow controls.
 
 ## Installation
 
@@ -26,20 +26,6 @@ Once the files are downloaded and included in the autoload, run any library migr
 to ensure the database is setup correctly:
 * `> php spark migrate -all`
 
-**Pro Tip:** You can add the spark command to your composer.json to ensure your database is
-always current with the latest release:
-```
-{
-	...
-    "scripts": {
-        "post-update-cmd": [
-            "@composer dump-autoload",
-            "php spark migrate -all"
-        ]
-    },
-	...
-```
-
 ## Configuration (optional)
 
 The library's default behavior can be altered by extending its config file. Copy
@@ -49,12 +35,15 @@ in the comments. If no config file is found in app/Config the library will use i
 ## Usage
 
 The CLI command `spark tasks:register` will search all namespaces for valid task files
-(i.e. in the Tasks subfolder and namespace, implementing **Tatter\Workflows\Interfaces\TaskInterface**)
-and register them. You may write your own tasks or import them from existing packages.
-Once tasks are registered you can create workflows from a series of those tasks by visiting
-the `/workflows` route.
+and register them. Task files are identified by:
+* Located in the Tasks subfolder within the root of a namespace
+* Implementing **Tatter\Workflows\Interfaces\TaskInterface**
+
+You may write your own tasks or import them from existing packages. Once tasks are
+registered you can create workflows from a series of those tasks by visiting the
+`/workflows` route.
 
 ## Job control
 
 **Runner.php** is the central controller that handles job flow. By default this intercepts
-routes that match `/jobs/`, but this can be changed with the config file.
+routes that match `/jobs/`, but this can be changed in the config file.
