@@ -1,4 +1,5 @@
-<?= view($config->views['header']) ?>
+<?= $this->extend($layout) ?>
+<?= $this->section('main') ?>
 
 	<h2>Job removed</h2>
 
@@ -8,4 +9,4 @@
 	
 	<p><?= anchor('', 'Home') ?></p>
 
-<?= view($config->views['footer']) ?>
+<?= $this->endSection() ?>

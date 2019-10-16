@@ -1,4 +1,5 @@
-<?= view($config->views['header'], ['current' => 'workflows']) ?>
+<?= $this->extend($layout, ['menu' => 'workflows']) ?>
+<?= $this->section('main') ?>
 
 <?php
 if (empty($workflow)):
@@ -160,4 +161,4 @@ endif;
 	}
 </script>
 
-<?= view($config->views['footer']) ?>
+<?= $this->endSection() ?>

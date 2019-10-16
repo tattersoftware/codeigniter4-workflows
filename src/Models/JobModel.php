@@ -33,7 +33,7 @@ class JobModel extends Model
 		
 		// determine user source from config
 		$this->config = config('Workflows');
-		$userId = session($config->userSource);
+		$userId = session($this->config->userSource);
 		
 		// build the row
 		$row = [
@@ -57,7 +57,7 @@ class JobModel extends Model
 
 		// determine user source from config
 		$this->config = config('Workflows');
-		$userId = session($config->userSource);
+		$userId = session($this->config->userSource);
 		
 		// process each updated entry
 		foreach ($data['id'] as $id):

@@ -125,7 +125,7 @@ class Runner extends Controller
 		// array: treat as error messages
 		elseif (is_array($result)):
 			if ($this->config->silent):
-				return view($this->config->views['messages'], ['config' => $this->config, 'errors' => $result]);
+				return view($this->config->views['messages'], ['layout' => $this->config->layout, 'errors' => $result]);
 			else:
 				throw new \RuntimeException(implode('. ', $result));
 			endif;
@@ -138,7 +138,7 @@ class Runner extends Controller
 		var_dump($result);
 		echo get_class($result);
 			if ($this->config->silent):
-				return view($this->config->views['messages'], ['config' => $this->config, 'error' => lang('Workflows.invalidTaskReturn')]);
+				return view($this->config->views['messages'], ['layout' => $this->config->layout, 'error' => lang('Workflows.invalidTaskReturn')]);
 			else:
 				throw new \RuntimeException(lang('Workflows.invalidTaskReturn'));
 			endif;
@@ -153,7 +153,7 @@ class Runner extends Controller
 		
 		// (soft) delete the job
 		$this->jobs->delete($jobId);
-		return view($this->config->views['deleted'], ['config' => $this->config, 'job' => $this->job]);
+		return view($this->config->views['deleted'], ['layout' => $this->config->layout, 'job' => $this->job]);
 	}
 	
 	// validate and parse values from a route
@@ -164,7 +164,7 @@ class Runner extends Controller
 		$jobId = array_shift($params);
 		if (empty($jobId)):
 			if ($this->config->silent):
-				return view($this->config->views['messages'], ['config' => $this->config, 'error' => lang('Workflows.routeMissingJobId', [$route])]);
+				return view($this->config->views['messages'], ['layout' => $this->config->layout, 'error' => lang('Workflows.routeMissingJobId', [$route])]);
 			else:
 				throw WorkflowsException::forMissingJobId($route);
 			endif;
@@ -179,7 +179,7 @@ class Runner extends Controller
 		$this->job = $this->jobs->find($jobId);
 		if (empty($this->job)):
 			if ($this->config->silent):
-				return view($this->config->views['messages'], ['config' => $this->config, 'error' => lang('Workflows.jobNotFound')]);
+				return view($this->config->views['messages'], ['layout' => $this->config->layout, 'error' => lang('Workflows.jobNotFound')]);
 			else:
 				throw WorkflowsException::forJobNotFound();
 			endif;
@@ -188,7 +188,7 @@ class Runner extends Controller
 		$this->workflow = $this->workflows->find($this->job->workflow_id);
 		if (empty($this->workflow)):
 			if ($this->config->silent):
-				return view($this->config->views['messages'], ['config' => $this->config, 'error' => lang('Workflows.workflowNotFound')]);
+				return view($this->config->views['messages'], ['layout' => $this->config->layout, 'error' => lang('Workflows.workflowNotFound')]);
 			else:
 				throw WorkflowsException::forWorkflowNotFound();
 			endif;
@@ -206,17 +206,17 @@ class Runner extends Controller
 		$this->job = $this->jobs->find($jobId);
 		if (empty($this->job)):
 			if ($this->config->silent):
-				return view($this->config->views['messages'], ['config' => $this->config, 'error' => lang('Workflows.jobNotFound')]);
+				return view($this->config->views['messages'], ['layout' => $this->config->layout, 'error' => lang('Workflows.jobNotFound')]);
 			else:
 				throw WorkflowsException::forJobNotFound();
 			endif;
 		endif;
 		
 		if (empty($this->job->stage_id))
-			return view($this->config->views['messages'], ['config' => $this->config, 'message' => lang('Workflows.jobAlreadyComplete')]);
+			return view($this->config->views['messages'], ['layout' => $this->config->layout, 'message' => lang('Workflows.jobAlreadyComplete')]);
 		$this->stage = $this->stages->find($this->job->stage_id);
 		if (empty($this->stage))
-			return view($this->config->views['messages'], ['config' => $this->config, 'error' => lang('Workflows.jobAlreadyComplete')]);
+			return view($this->config->views['messages'], ['layout' => $this->config->layout, 'error' => lang('Workflows.jobAlreadyComplete')]);
 	
 		$task = $this->tasks->find($this->stage->task_id);
 		$route = "/{$this->config->routeBase}/{$task->uid}/{$this->job->id}";
@@ -305,6 +305,6 @@ class Runner extends Controller
 	{
 		// update the job
 		$this->jobs->update($this->job->id, ['stage_id' => null]);
-		return view($this->config->views['complete'], ['config' => $this->config, 'job' => $this->job]);
+		return view($this->config->views['complete'], ['layout' => $this->config->layout, 'job' => $this->job]);
 	}
 }

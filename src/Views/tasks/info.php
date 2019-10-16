@@ -1,4 +1,5 @@
-<?= view($config->views['header'], ['current' => 'jobs']) ?>
+<?= $this->extend($layout, ['menu' => 'jobs']) ?>
+<?= $this->section('main') ?>
 
 <?php
 if (empty($job)):
@@ -40,4 +41,4 @@ endif;
 	var baseUrl = '<?= base_url() ?>';
 </script>
 
-<?= view($config->views['footer']) ?>
+<?= $this->endSection() ?>

@@ -19,7 +19,10 @@ class Stages extends Controller
 		$row = $this->request->getPost();
 		$result = $this->model->update($stageId, $row);
 		if (! $result)
+		{
 			echo 'Error: unable to update';
+		}
+		
 		return $result;
 	}
 }

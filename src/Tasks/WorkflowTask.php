@@ -29,8 +29,7 @@ class WorkflowTask implements TaskInterface
 	{
 		$this->model  = new WorkflowModel();
 		$this->tasks  = new TaskModel();
-		$this->config = class_exists('\Config\Workflows') ?
-			new \Config\Workflows() : new \Tatter\Workflows\Config\Workflows();
+		$this->config = config('Workflows');
 
 		// get the library instance
 		//$this->lib = Services::workflows();

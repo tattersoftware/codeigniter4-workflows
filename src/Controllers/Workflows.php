@@ -19,20 +19,21 @@ class Workflows extends Controller
 	
 	public function index()
 	{
-		$data['config'] = $this->config;
+		$data['layout']    = $this->config->layout;
 		$data['workflows'] = $this->model->orderBy('name')->findAll();
-		$data['stages'] = $this->model->fetchStages($data['workflows']);
+		$data['stages']    = $this->model->fetchStages($data['workflows']);
 		
 		return view('Tatter\Workflows\Views\workflows\index', $data);
 	}
 	
 	public function show($workflowId)
 	{
-		$data['config'] = $this->config;
-		$data['workflow'] = $this->model->find($workflowId);
+		$data['config']    = $this->config;
+		$data['layout']    = $this->config->layout;
+		$data['workflow']  = $this->model->find($workflowId);
 		$data['workflows'] = $this->model->orderBy('name', 'asc')->findAll();
-		$data['stages'] = $data['workflow']->stages;
-		$data['tasks'] = $this->tasks
+		$data['stages']    = $data['workflow']->stages;
+		$data['tasks']     = $this->tasks
 			->orderBy('category', 'asc')
 			->orderBy('name', 'asc')
 			->findAll();
@@ -42,8 +43,8 @@ class Workflows extends Controller
 	
 	public function new()
 	{
-		$data['config'] = $this->config;
-		$data['tasks'] = $this->tasks
+		$data['layout'] = $this->config->layout;
+		$data['tasks']  = $this->tasks
 			->orderBy('category', 'asc')
 			->orderBy('name', 'asc')
 			->findAll();
@@ -51,7 +52,10 @@ class Workflows extends Controller
 		// prepare task data for json_encode
 		$json = [ ];
 		foreach ($data['tasks'] as $task)
+		{
 			$json[$task->id] = $task->toArray();
+		}
+		
 		$data['json'] = json_encode($json);
 		
 		return view('Tatter\Workflows\Views\workflows\new', $data);		
@@ -66,23 +70,29 @@ class Workflows extends Controller
 			'tasks'    => 'required',
 		];
 		if (! $this->validate($rules))
+		{
 			return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+		}
 		
-		// try to create the workflow
+		// Try to create the workflow
 		$workflow = $this->request->getPost();
 		if (! $this->model->save($workflow))
+		{
             return redirect()->back()->withInput()->with('errors', $this->model->errors());
+        }
         
-        // create task-to-workflow stages
+        // Create task-to-workflow stages
 		$workflowId = $this->model->getInsertID();
 		$tasks = explode(',', $this->request->getPost('tasks'));
-		foreach ($tasks as $taskId):
+		
+		foreach ($tasks as $taskId)
+		{
 			$stage = [
 				'workflow_id' => $workflowId,
 				'task_id'     => $taskId,
 			];
 			$this->stages->save($stage);
-		endforeach;
+		}
 		
 		return redirect()->to('/workflows/' . $workflowId)->with('success', lang('Workflows.newWorkflowSuccess'));
 	}
@@ -95,20 +105,25 @@ class Workflows extends Controller
 			'summary'  => 'required|max_length[255]',
 		];
 		if (! $this->validate($rules))
+		{
 			return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+		}
 		
 		// try to update the workflow
 		$workflow = $this->request->getPost();
 		if (! $this->model->update($workflowId, $workflow))
+		{
             return redirect()->back()->withInput()->with('errors', $this->model->errors());
+        }
         		
 		return redirect()->to('/workflows/' . $workflowId)->with('success', lang('Workflows.updateWorkflowSuccess'));
 	}
 	
 	public function delete($workflowId)
 	{		
-		// (soft) delete the workflow
+		// (Soft) delete the workflow
 		$this->model->delete($workflowId);
+
 		return redirect()->to('/workflows')->with('success', lang('Workflows.deletedWorkflowSuccess'));
 	}
 }

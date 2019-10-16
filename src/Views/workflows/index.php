@@ -1,4 +1,5 @@
-<?= view($config->views['header'], ['current' => 'workflows']) ?>
+<?= $this->extend($layout, ['menu' => 'workflows']) ?>
+<?= $this->section('main') ?>
 
 	<a class="btn btn-primary float-right" href="<?= site_url('workflows/new') ?>" role="button"><i class="fas fa-plus-circle"></i> New workflow</a>
 	<h2>Workflows</h2>
@@ -42,4 +43,4 @@ else:
 endif;
 ?>
 
-<?= view($config->views['footer']) ?>
+<?= $this->endSection() ?>

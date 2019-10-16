@@ -1,4 +1,5 @@
-<?= view($config->views['header']) ?>
+<?= $this->extend($layout) ?>
+<?= $this->section('main') ?>
 
 	<h2>Information</h2>
 
@@ -34,4 +35,6 @@ if (! empty($errors)):
 endif;
 ?>
 
-<?= view($config->views['footer']) ?>
+	<p><?= anchor('', 'Back to home') ?></p>
+
+<?= $this->endSection() ?>

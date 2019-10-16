@@ -1,4 +1,5 @@
-<?= view($config->views['header'], ['current' => 'workflows']) ?>
+<?= $this->extend($layout, ['menu' => 'workflows']) ?>
+<?= $this->section('main') ?>
 
 <style>
 .remove-icon {
@@ -125,4 +126,4 @@ var tasks = <?= $json ?>;
 
 </script>
 
-<?= view($config->views['footer']) ?>
+<?= $this->endSection() ?>

@@ -1,11 +1,12 @@
-<?= view($config->views['header'], ['current' => 'tasks']) ?>
+<?= $this->extend($layout, ['menu' => 'tasks']) ?>
+<?= $this->section('main') ?>
 
 	<h2>Tasks</h2>
 
 <?php
 if (empty($tasks)):
 ?>
-	<p>There are no tasks registered! Try running `php spark tasks:register`.</p>
+	<p>There are no tasks registered! Try running <code>php spark tasks:register</code> from the command line.</p>
 <?php
 else:
 ?>
@@ -41,4 +42,4 @@ else:
 endif;
 ?>
 
-<?= view($config->views['footer']) ?>
+<?= $this->endSection() ?>

@@ -20,6 +20,7 @@
 	],
 	"require": {
 		"php" : "^7.0",
+		"tatter/alerts": "^2.0",
 		"tatter/audits": "^1.0"
 	},
 	"require-dev": {
