@@ -1,4 +1,13 @@
 <?= $this->extend($layout, ['menu' => 'jobs']) ?>
+<?= $this->section('headerAssets') ?>
+
+<script>
+	var baseUrl = '<?= base_url() ?>';
+</script>
+
+<?= $this->endSection() ?>
+
+
 <?= $this->section('main') ?>
 
 <?php if (empty($job)): ?>
@@ -36,9 +45,5 @@ endif;
 			</div>
 		</div>
 	</div>
-
-<script>
-	var baseUrl = '<?= base_url() ?>';
-</script>
 
 <?= $this->endSection() ?>

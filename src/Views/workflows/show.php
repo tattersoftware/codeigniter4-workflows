@@ -128,6 +128,10 @@ endif;
 ?>
 	</div>
 
+<?= $this->endSection() ?>
+
+<?= $this->section('footerAssets') ?>
+
 <script>
 	var baseUrl = '<?= base_url() ?>';
 	

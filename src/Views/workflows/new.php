@@ -95,6 +95,10 @@ endforeach;
 		</form>
 	</div>
 
+<?= $this->endSection() ?>
+
+<?= $this->section('footerAssets') ?>
+
 <script>
 var sortable;
 $(document).ready(function() {
