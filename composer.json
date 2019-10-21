@@ -18,10 +18,21 @@
 			"role": "Developer"
 		}
 	],
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://asset-packagist.org"
+		}
+	],
 	"require": {
-		"php" : "^7.0",
+		"php" : "^7.2",
 		"tatter/alerts": "^2.0",
-		"tatter/audits": "^1.0"
+		"tatter/assets": "^2.0",
+		"tatter/audits": "^1.0",
+		"npm-asset/sortablejs": "^1.10",
+		"components/jquery": "^3.3",
+		"fortawesome/font-awesome": "^5.8",
+		"twbs/bootstrap": "^4.3"
 	},
 	"require-dev": {
 		"codeigniter4/framework": "dev-master"
@@ -33,8 +44,7 @@
 	},
 	"scripts": {
 		"post-update-cmd": [
-			"composer dump-autoload",
-			"php spark migrate:latest -n all"
+			"composer dump-autoload"
 		]
 	}
 }
