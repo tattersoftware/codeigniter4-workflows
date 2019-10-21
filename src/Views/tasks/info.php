@@ -1,12 +1,12 @@
 <?= $this->extend($layout, ['menu' => 'jobs']) ?>
 <?= $this->section('main') ?>
 
-<?php
-if (empty($job)):
-	echo '<p>Unable to locate that job!</p>';
-	return;
-endif;
-?>
+<?php if (empty($job)): ?>
+
+<p>Unable to locate that job!</p>
+
+<?php return $this->endSection(); endif; ?>
+
 	<h2>Job info</h2>
 <?php
 if (! $job->stage->required):

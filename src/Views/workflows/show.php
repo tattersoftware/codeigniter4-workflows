@@ -1,12 +1,11 @@
 <?= $this->extend($layout, ['menu' => 'workflows']) ?>
 <?= $this->section('main') ?>
 
-<?php
-if (empty($workflow)):
-	echo '<p>Unable to locate that workflow!</p>';
-	return;
-endif;
-?>
+<?php if (empty($workflow)): ?>
+
+<p>Unable to locate that workflow!</p>
+
+<?php return $this->endSection(); endif; ?>
 
 	<a class="btn btn-primary float-right" href="<?= site_url($config->routeBase . '/new/' . $workflow->id) ?>" role="button"><i class="fas fa-rocket"></i> Launch</a>
 	<h2>Workflow</h2>

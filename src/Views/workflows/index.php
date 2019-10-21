@@ -4,13 +4,12 @@
 	<a class="btn btn-primary float-right" href="<?= site_url('workflows/new') ?>" role="button"><i class="fas fa-plus-circle"></i> New workflow</a>
 	<h2>Workflows</h2>
 
-<?php
-if (empty($workflows)):
-?>
+<?php if (empty($workflows)): ?>
+
 	<p>There are no workflows defined. Try adding one!</p>
-<?php
-else:
-?>
+
+<?php return $this->endSection(); endif; ?>
+
 	<table class="table">
 		<thead>
 			<tr>
@@ -23,9 +22,9 @@ else:
 			</tr>
 		</thead>
 		<tbody>
-<?php
-	foreach ($workflows as $workflow):
-?>
+
+<?php foreach ($workflows as $workflow): ?>
+
 		<tr>
 			<th scope="row"><?= $workflow->id ?></th>
 			<td><?= anchor('workflows/' . $workflow->id, $workflow->name) ?></td>
@@ -34,13 +33,10 @@ else:
 			<td><?= $workflow->summary ?></td>
 			<td><?= isset($stages[$workflow->id]) ? count($stages[$workflow->id]) : 0 ?></td>
 		</tr>
-<?php
-	endforeach;
-?>
+
+<?php endforeach; ?>
+
 		</tbody>
 	</table>
-<?php
-endif;
-?>
 
 <?= $this->endSection() ?>

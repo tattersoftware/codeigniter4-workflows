@@ -14,14 +14,11 @@
 
 	<h2>New Workflow</h2>
 
-<?php
-if (empty($tasks)):
-?>
+<?php if (empty($tasks)): ?>
+
 	<p>There are no tasks defined. Please add some tasks before defining a workflow.</p>
-<?php
-	return;
-endif;
-?>
+
+<?php return $this->endSection(); endif; ?>
 
 	<form name="create-workflow" action="<?= site_url('workflows') ?>" method="post" onsubmit="this.tasks.value = sortable.toArray();">
 		<input class="btn btn-primary float-right" type="submit" value="Submit">
