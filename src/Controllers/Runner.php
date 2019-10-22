@@ -51,7 +51,7 @@ class Runner extends Controller
 		
 		// come up with an initial name
 		helper('text');
-		$name = random_string('alnum', 4);
+		$name = 'My New Job';
 		
 		// create the job
 		$row = [
