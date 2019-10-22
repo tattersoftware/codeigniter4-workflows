@@ -19,7 +19,7 @@ class Workflows extends Controller
 	
 	public function index()
 	{
-		$data['layout']    = $this->config->layout;
+		$data['layout']    = $this->config->layouts['public'];
 		$data['workflows'] = $this->model->orderBy('name')->findAll();
 		$data['stages']    = $this->model->fetchStages($data['workflows']);
 		
@@ -29,7 +29,7 @@ class Workflows extends Controller
 	public function show($workflowId)
 	{
 		$data['config']    = $this->config;
-		$data['layout']    = $this->config->layout;
+		$data['layout']    = $this->config->layouts['public'];
 		$data['workflow']  = $this->model->find($workflowId);
 		$data['workflows'] = $this->model->orderBy('name', 'asc')->findAll();
 		$data['stages']    = $data['workflow']->stages;
@@ -43,7 +43,7 @@ class Workflows extends Controller
 	
 	public function new()
 	{
-		$data['layout'] = $this->config->layout;
+		$data['layout'] = $this->config->layouts['public'];
 		$data['tasks']  = $this->tasks
 			->orderBy('category', 'asc')
 			->orderBy('name', 'asc')

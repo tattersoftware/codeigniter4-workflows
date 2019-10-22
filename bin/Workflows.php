@@ -24,8 +24,11 @@ class Workflows extends \Tatter\Workflows\Config\Workflows
 	// The model to use for jobs
 	public $jobModel = 'Tatter\Workflows\Models\JobModel';
 	
-	// Layout to use for views
-	public $layout = 'layouts/public';
+	// Layouts to use for jobs and administration
+	public $layouts = [
+		'public' => 'layouts/public',
+		'manage' => 'layouts/manage',
+	];
 	
 	// Views to display for each function
 	public $views = [

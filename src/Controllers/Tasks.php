@@ -17,7 +17,7 @@ class Tasks extends Controller
 	
 	public function index()
 	{
-		$data['layout'] = $this->config->layout;
+		$data['layout'] = $this->config->layouts['public'];
 		$data['tasks']  = $this->model->orderBy('name')->findAll();
 		
 		return view('Tatter\Workflows\Views\tasks\index', $data);
