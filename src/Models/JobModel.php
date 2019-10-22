@@ -38,7 +38,7 @@ class JobModel extends Model
 		// build the row
 		$row = [
 			'job_id'     => $data['result']->connID->insert_id,
-			'stage_to'   => $data['stage_id'],
+			'stage_to'   => $data['data']['stage_id'],
 			'created_by' => $userId,
 			'created_at' => date('Y-m-d H:i:s'),
 		];
