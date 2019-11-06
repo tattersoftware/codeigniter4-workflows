@@ -17,7 +17,7 @@ class JobModel extends Model
 	protected $useTimestamps = true;
 
 	protected $validationRules    = [
-		'name'     => 'required|max_length[255]',
+		'name' => 'required|max_length[255]',
 	];
 	protected $validationMessages = [];
 	protected $skipValidation     = false;
@@ -32,8 +32,7 @@ class JobModel extends Model
 			return false;
 		
 		// determine user source from config
-		$this->config = config('Workflows');
-		$userId = session($this->config->userSource);
+		$userId = session(config('Workflows')->userSource);
 		
 		// build the row
 		$row = [
@@ -56,8 +55,7 @@ class JobModel extends Model
 		$db = db_connect();
 
 		// determine user source from config
-		$this->config = config('Workflows');
-		$userId = session($this->config->userSource);
+		$userId = session(config('Workflows')->userSource);
 		
 		// process each updated entry
 		foreach ($data['id'] as $id):

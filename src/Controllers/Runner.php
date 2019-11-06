@@ -8,7 +8,6 @@ use CodeIgniter\HTTP\RedirectResponse;
 use Tatter\Workflows\Entities\Task;
 use Tatter\Workflows\Exceptions\WorkflowsException;
 
-use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\TaskModel;
 use Tatter\Workflows\Models\WorkflowModel;
@@ -135,8 +134,6 @@ class Runner extends Controller
 			
 		// borked
 		else:
-		var_dump($result);
-		echo get_class($result);
 			if ($this->config->silent):
 				return view($this->config->views['messages'], ['layout' => $this->config->layouts['public'], 'error' => lang('Workflows.invalidTaskReturn')]);
 			else:
@@ -292,11 +289,13 @@ class Runner extends Controller
 			throw WorkflowsException::forUnsupportedTaskMethod($task->name, $method);
 		
 		// set the references and run the task method
-		$instance->config     = $this->config;
 		$instance->job        = $this->job;
+		$instance->jobs       = $this->jobs;
+		$instance->config     = $this->config;
 		$instance->renderer   = Services::renderer();
 		$instance->request    = $this->request;
 		$instance->validation = Services::validation();
+
 		return $instance->{$method}();
 	}
 	
