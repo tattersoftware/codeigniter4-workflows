@@ -1,9 +1,6 @@
 <?php namespace Tatter\Workflows\Tasks;
 
-use Tatter\Workflows\Entities\Task;
 use Tatter\Workflows\Interfaces\TaskInterface;
-use Tatter\Workflows\Models\TaskModel;
-use Tatter\Workflows\Models\WorkflowModel;
 
 class WorkflowTask implements TaskInterface
 {
@@ -21,18 +18,6 @@ class WorkflowTask implements TaskInterface
 	public function get()
 	{
 	
-	}
-		
-	// handle anything that needs to happen before this task can run
-	// NOTE: called during job progression *and* regression
-	public function init()
-	{
-		$this->model  = new WorkflowModel();
-		$this->tasks  = new TaskModel();
-		$this->config = config('Workflows');
-
-		// get the library instance
-		//$this->lib = Services::workflows();
 	}
 	
 	// run when a job progresses forward through the workflow
