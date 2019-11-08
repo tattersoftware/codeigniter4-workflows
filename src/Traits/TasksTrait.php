@@ -10,13 +10,6 @@ trait TasksTrait
 	public $job;
 	public $renderer;
 	
-	public function __construct()
-	{		
-		$this->config = config('Workflows');			
-		$this->model  = new TaskModel();
-		$this->jobs   = new $this->config->jobModel();
-	}
-	
 	// magic wrapper for getting values from the definition
     public function __get(string $name)
     {
