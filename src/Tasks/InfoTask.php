@@ -21,7 +21,7 @@ class InfoTask implements TaskInterface
 	public function get()
 	{
 		// prep the view and return it
-		$this->renderer->setVar('layout', $this->config->layout);
+		$this->renderer->setVar('layout', $this->config->layouts['public']);
 		$this->renderer->setVar('config', $this->config);
 		$this->renderer->setVar('job', $this->job);
 

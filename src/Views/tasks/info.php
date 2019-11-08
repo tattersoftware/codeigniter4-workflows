@@ -10,9 +10,10 @@
 
 <?= $this->section('main') ?>
 
+<div class="container">
 <?php if (empty($job)): ?>
 
-<p>Unable to locate that job!</p>
+	<p>Unable to locate that job!</p>
 
 <?php return $this->endSection(); endif; ?>
 
@@ -45,5 +46,6 @@ endif;
 			</div>
 		</div>
 	</div>
+</div>
 
 <?= $this->endSection() ?>

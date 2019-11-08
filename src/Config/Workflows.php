@@ -18,8 +18,8 @@ class Workflows extends BaseConfig
 	
 	// Layouts to use for jobs and administration
 	public $layouts = [
-		'public' => 'layouts/public',
-		'manage' => 'layouts/manage',
+		'public' => 'Tatter\Workflows\Views\layout',
+		'manage' => 'Tatter\Workflows\Views\layout',
 	];
 	
 	// Views to display for each function
