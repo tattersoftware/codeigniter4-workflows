@@ -1,14 +1,14 @@
 <?php namespace Tatter\Workflows\Controllers;
 
 use CodeIgniter\Controller;
-use CodeIgniter\Config\Services;
-use Tatter\Workflows\Entities\Task;
+use CodeIgniter\HTTP\RedirectResponse;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\TaskModel;
 use Tatter\Workflows\Models\WorkflowModel;
 
 class Workflows extends Controller
 {
+	// Load the common dependencies
 	public function __construct()
 	{
 		$this->model  = new WorkflowModel();
@@ -16,41 +16,48 @@ class Workflows extends Controller
 		$this->tasks  = new TaskModel();
 		$this->config = config('Workflows');
 	}
-	
-	public function index()
+
+	// Displays a list of available workflows.
+	public function index(): string
 	{
-		$data['layout']    = $this->config->layouts['manage'];
-		$data['workflows'] = $this->model->orderBy('name')->findAll();
-		$data['stages']    = $this->model->fetchStages($data['workflows']);
+		$data = [
+			'layout'    => $this->config->layouts['manage'],
+			'workflows' => $this->model->orderBy('name')->findAll(),
+		];
+		
+		// Prefetch the stages
+		$data['stages'] = $this->model->fetchStages($data['workflows']);
 		
 		return view('Tatter\Workflows\Views\workflows\index', $data);
 	}
-	
-	public function show($workflowId)
+
+	// Shows details for one workflow
+	public function show(string $workflowId): string
 	{
-		$data['config']    = $this->config;
-		$data['layout']    = $this->config->layouts['manage'];
-		$data['workflow']  = $this->model->find($workflowId);
-		$data['workflows'] = $this->model->orderBy('name', 'asc')->findAll();
-		$data['stages']    = $data['workflow']->stages;
-		$data['tasks']     = $this->tasks
-			->orderBy('category', 'asc')
-			->orderBy('name', 'asc')
-			->findAll();
+		$data = [
+			'config'    => $this->config,
+			'layout'    => $this->config->layouts['manage'],
+			'workflow'  => $this->model->find($workflowId),
+			'workflows' => $this->model->orderBy('name', 'asc')->findAll(),
+			'tasks'     => $this->tasks->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
+		];
+
+		// Add the stages
+		$data['stages'] = $data['workflow']->stages;
 
 		return view('Tatter\Workflows\Views\workflows\show', $data);
 	}
-	
-	public function new()
+
+	// Display the form for a new workflow
+	public function new(): string
 	{
-		$data['layout'] = $this->config->layouts['manage'];
-		$data['tasks']  = $this->tasks
-			->orderBy('category', 'asc')
-			->orderBy('name', 'asc')
-			->findAll();
+		$data = [
+			'layout' => $this->config->layouts['manage'],
+			'tasks'  => $this->tasks->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
+		];
 		
-		// prepare task data for json_encode
-		$json = [ ];
+		// Prepare task data to be JSON encoded for JSSortable
+		$json = [];
 		foreach ($data['tasks'] as $task)
 		{
 			$json[$task->id] = $task->toArray();
@@ -60,44 +67,45 @@ class Workflows extends Controller
 		
 		return view('Tatter\Workflows\Views\workflows\new', $data);		
 	}
-	
-	public function create()
+
+	// Create a workflow from the new form data
+	public function create(): RedirectResponse
 	{		
-		// validate
+		// Validate
 		$rules = [
-			'name'     => 'required|max_length[255]',
-			'summary'  => 'required|max_length[255]',
-			'tasks'    => 'required',
+			'name'    => 'required|max_length[255]',
+			'summary' => 'required|max_length[255]',
+			'tasks'   => 'required',
 		];
+
 		if (! $this->validate($rules))
 		{
 			return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
 		}
-		
+
 		// Try to create the workflow
 		$workflow = $this->request->getPost();
-		if (! $this->model->save($workflow))
+		if (! $workflowId = $this->model->insert($workflow, true))
 		{
             return redirect()->back()->withInput()->with('errors', $this->model->errors());
         }
-        
+
         // Create task-to-workflow stages
-		$workflowId = $this->model->getInsertID();
-		$tasks = explode(',', $this->request->getPost('tasks'));
-		
-		foreach ($tasks as $taskId)
+		foreach (explode(',', $this->request->getPost('tasks')) as $taskId)
 		{
 			$stage = [
 				'workflow_id' => $workflowId,
 				'task_id'     => $taskId,
 			];
-			$this->stages->save($stage);
+
+			$this->stages->insert($stage);
 		}
-		
+
 		return redirect()->to('/workflows/' . $workflowId)->with('success', lang('Workflows.newWorkflowSuccess'));
 	}
-	
-	public function update($workflowId)
+
+	// Update workflow details
+	public function update(string $workflowId): RedirectResponse
 	{		
 		// validate
 		$rules = [
@@ -118,8 +126,9 @@ class Workflows extends Controller
         		
 		return redirect()->to('/workflows/' . $workflowId)->with('success', lang('Workflows.updateWorkflowSuccess'));
 	}
-	
-	public function delete($workflowId)
+
+	// Delete the workflow (soft)
+	public function delete($workflowId): RedirectResponse
 	{		
 		// (Soft) delete the workflow
 		$this->model->delete($workflowId);

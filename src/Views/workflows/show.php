@@ -1,11 +1,11 @@
 <?= $this->extend($layout, ['menu' => 'workflows']) ?>
 <?= $this->section('main') ?>
 
-<?php if (empty($workflow)): ?>
+	<?php if (empty($workflow)): ?>
 
 <p>Unable to locate that workflow!</p>
 
-<?php return $this->endSection(); endif; ?>
+	<?php return $this->endSection(); endif; ?>
 
 	<a class="btn btn-primary float-right" href="<?= site_url($config->routeBase . '/new/' . $workflow->id) ?>" role="button"><i class="fas fa-rocket"></i> Launch</a>
 	<h2>Workflow</h2>
@@ -52,11 +52,13 @@
 	
 	<h3 class="mt-3">Tasks</h3>
 	<div class="row">
-<?php
-if (empty($stages)):
-	echo '<p>This workflow has no associated tasks!</p>';
-else:
-?>
+
+		<?php if (empty($stages)): ?>
+		
+		<p>This workflow has no associated tasks!</p>
+		
+		<?php else: ?>
+
 		<table class="table">
 			<thead>
 				<th scope="col"></th>
@@ -69,44 +71,38 @@ else:
 				</th>
 			</thead>
 			<tbody>
-<?php
-$i = 1;
-	foreach ($stages as $stage):
-		foreach ($tasks as $task):
-			if ($task->id == $stage->task_id):
-?>
+
+				<?php $i = 1; ?>
+				<?php foreach ($stages as $stage): ?>
+				<?php foreach ($tasks as $task): ?>
+				<?php if ($task->id == $stage->task_id): ?>
+						
 				<tr>
 					<td><?= $i++ ?>.</td>
 					<td><i class="<?= $task->icon ?>"></i> <?= $task->name ?></td>
 					<td class="small text-muted"><?= $task->summary ?></td>
 					<td>
-<?php
-				switch ($task->input):
-					case 'workflow':
-?>
+
+					<?php switch ($task->input): case 'workflow': ?>
+							
 						<select class="custom-select small" onchange="return setStageInput(<?= $stage->id ?>, this.value);" required>
 							<option></option>
-<?php
-						foreach ($workflows as $workflowOpt):
-							if ($workflowOpt->id == $workflow->id):
-								continue;
-							endif;
-?>
+
+							<?php foreach ($workflows as $workflowOpt): ?>
+								<?php if ($workflowOpt->id == $workflow->id): continue; endif; ?>
+
 							<option value="<?= $workflowOpt->id ?>" <?= ($workflowOpt->id == $stage->input) ? 'selected' : '' ?>><?= $workflowOpt->name ?></option>
-<?php
-						endforeach;
-?>
+
+							<?php endforeach; ?>
+
 						</select>
-<?php
-					break;
-					
-					case '':
-					break;
-					
-					default:
-						echo "<input name='input' type='{$task->input}' class='form-control' value='<?= $stage->input ?>' onchange='return setStageInput(<?= $stage->id ?>, this.value);' required>";
-				endswitch;
-?>
+
+						<?php break; case '': break; default: ?>
+
+						<input name="input" type="<?= $task->input ?>" class="form-control" value="<?= $stage->input ?>" onchange="return setStageInput(<?= $stage->id ?>, this.value);" required>
+
+					<?php endswitch; ?>
+
 					</td>
 					<td>
 						<div class="custom-control custom-switch">
@@ -115,21 +111,19 @@ $i = 1;
 						</div>
 					</td>
 				</tr>
-<?php
-				break;
-			endif;
-		endforeach;
-	endforeach;
-?>
+
+				<?php break; endif; ?>
+				<?php endforeach; ?>
+				<?php endforeach; ?>
+
 			</tbody>
 		</table>
-<?php
-endif;
-?>
+
+		<?php endif; ?>
+
 	</div>
 
 <?= $this->endSection() ?>
-
 <?= $this->section('footerAssets') ?>
 
 <script>

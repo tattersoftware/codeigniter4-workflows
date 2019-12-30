@@ -8,19 +8,20 @@ class Workflow extends Entity
 {
 	protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
-	// magic getter for this workflow's stages
-	// returns ordered stage objects with their IDs as keys
+	// Get this workflow's stages
+	// Returns ordered stage objects with their IDs as keys
 	public function getStages()
 	{
-		$stages = new StageModel();
-		$result = [];
-		foreach ($stages
+		$stages = [];
+
+		foreach ((new StageModel())
 			->where('workflow_id', $this->id)
 			->orderBy('id', 'asc')
-			->findAll()
-		as $stage)
-			$result[$stage->id] = $stage;
-		
-		return $result;
+			->findAll() as $stage)
+		{
+			$stages[$stage->id] = $stage;
+		}
+
+		return $stages;
 	}
 }

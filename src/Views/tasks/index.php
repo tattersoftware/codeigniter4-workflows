@@ -3,11 +3,11 @@
 
 	<h2>Tasks</h2>
 
-<?php if (empty($tasks)): ?>
+	<?php if (empty($tasks)): ?>
 
 	<p>There are no tasks registered! Try running <code>php spark tasks:register</code> from the command line.</p>
 
-<?php return $this->endSection(); endif; ?>
+	<?php return $this->endSection(); endif; ?>
 
 	<table class="table">
 		<thead>
@@ -22,17 +22,18 @@
 		</thead>
 		<tbody>
 
-<?php foreach ($tasks as $task): ?>
-		<tr>
-			<th scope="row"><?= $task->id ?></th>
-			<td><i class="<?= $task->icon ?>"></i> <?= $task->name ?></td>
-			<td><?= $task->category ?></td>
-			<td><?= $task->class ?></td>
-			<td><?= $task->uid ?></td>
-			<td><?= $task->summary ?></td>
-		</tr>
+			<?php foreach ($tasks as $task): ?>
 
-<?php endforeach; ?>
+			<tr>
+				<th scope="row"><?= $task->id ?></th>
+				<td><i class="<?= $task->icon ?>"></i> <?= $task->name ?></td>
+				<td><?= $task->category ?></td>
+				<td><?= $task->class ?></td>
+				<td><?= $task->uid ?></td>
+				<td><?= $task->summary ?></td>
+			</tr>
+
+			<?php endforeach; ?>
 
 		</tbody>
 	</table>

@@ -1,9 +1,6 @@
 <?php namespace Tatter\Workflows\Tasks;
 
-use Tatter\Workflows\Entities\Task;
 use Tatter\Workflows\Interfaces\TaskInterface;
-use Tatter\Workflows\Models\TaskModel;
-use Tatter\Workflows\Models\WorkflowModel;
 
 class InfoTask implements TaskInterface
 {
@@ -17,10 +14,10 @@ class InfoTask implements TaskInterface
 		'summary'  => 'Set basic details of a job',
 	];
 	
-	// display the edit form
-	public function get()
+	// Display the edit form
+	public function get(): string
 	{
-		// prep the view and return it
+		// Prep the view and return it
 		$this->renderer->setVar('layout', $this->config->layouts['public']);
 		$this->renderer->setVar('config', $this->config);
 		$this->renderer->setVar('job', $this->job);
@@ -28,38 +25,38 @@ class InfoTask implements TaskInterface
 		return $this->renderer->render('Tatter\Workflows\Views\tasks\info');
 	}
 	
-	// validate and process form submission
+	// Validate and process form submission
 	public function post()
 	{
-		// validate
+		// Validate
 		$rules = [
 			'name'     => 'required|max_length[255]',
 			'summary'  => 'max_length[255]',
 		];
-		$valid = $this->validation
-			->setRules($rules)
-			->withRequest($this->request)
-			->run();
-		if (! $valid)
+
+		if (! $this->validation->setRules($rules)->withRequest($this->request)->run())
+		{
 			return redirect()->back()->withInput()->with('errors', $this->validation->getErrors());
-		
-		// try to update the job
-		$row = $this->request->getPost();
-		if (! $this->jobs->update($this->job->id, $row))
+		}
+
+		// Try to update the job
+		if (! $this->jobs->update($this->job->id, $this->request->getPost()))
+		{
             return redirect()->back()->withInput()->with('errors', $this->model->errors());
-        		
+        }
+
 		return true;
 	}
 	
-	// run when a job progresses forward through the workflow
+	// Run when a job progresses forward through the workflow
 	public function up()
 	{
-	
+
 	}
 	
 	// run when job regresses back through the workflow
 	public function down()
 	{
-	
+
 	}
 }

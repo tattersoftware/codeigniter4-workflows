@@ -6,21 +6,12 @@ class StageModel extends Model
 {
 	use \Tatter\Audits\Traits\AuditsTrait;
 	
-	protected $table      = 'stages';
-	protected $primaryKey = 'id';
-
-	protected $returnType = 'Tatter\Workflows\Entities\Stage';
-	protected $useSoftDeletes = false;
-
+	protected $table          = 'stages';
+	protected $returnType     = 'Tatter\Workflows\Entities\Stage';
+	protected $useTimestamps = true;
 	protected $allowedFields = [
 		'task_id', 'workflow_id', 'input', 'required',
 	];
-
-	protected $useTimestamps = true;
-
-	protected $validationRules    = [];
-	protected $validationMessages = [];
-	protected $skipValidation     = false;
 	
 	/*** Tatter\Audits ***/
 	protected $afterInsert = ['auditInsert'];

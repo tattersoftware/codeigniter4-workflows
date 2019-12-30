@@ -14,11 +14,11 @@
 
 	<h2>New Workflow</h2>
 
-<?php if (empty($tasks)): ?>
+	<?php if (empty($tasks)): ?>
 
 	<p>There are no tasks defined. Please add some tasks before defining a workflow.</p>
 
-<?php return $this->endSection(); endif; ?>
+	<?php return $this->endSection(); endif; ?>
 
 	<form name="create-workflow" action="<?= site_url('workflows') ?>" method="post" onsubmit="this.tasks.value = sortable.toArray();">
 		<input class="btn btn-primary float-right" type="submit" value="Submit">
@@ -57,26 +57,25 @@
 			<div class="col-sm-8">
 				<h3>Tasks</h3>
 				<div id="tasksSelect" class="mb-4">
-<?php
-foreach ($tasks as $task):
-?>
+
+					<?php foreach ($tasks as $task): ?>
+
 					<button type="button" class="btn btn-outline-primary" onclick="addTask(<?= $task->id ?>);">
 						<i class="fas fa-plus-circle"></i>
 						<?= $task->name ?>
 						<small class="text-muted">(<?= $task->uid ?>)</small>
 					</button>
-<?php
-endforeach;
-?>			
+
+					<?php endforeach; ?>
+
 				</div>
 			
 				<div id="tasksList" class="list-group">
 				
-<?php
-foreach (explode(',', old('tasks')) as $taskId):
-	foreach ($tasks as $task):
-		if ($task->id == $taskId):
-?>
+				<?php foreach (explode(',', old('tasks')) as $taskId): ?>
+				<?php foreach ($tasks as $task): ?>
+				<?php if ($task->id == $taskId): ?>
+
 					<div class="list-group-item" data-id="<?= $task->id ?>">
 						<span class="remove-icon float-right" onclick="this.parentNode.remove();"><i class="fas fa-minus-circle"></i></span>
 						<span class="sort-handle" aria-hidden="true"><i class="fas fa-arrows-alt-v"></i></span>
@@ -84,19 +83,17 @@ foreach (explode(',', old('tasks')) as $taskId):
 						<span class="font-weight-bold mr-3"><?= $task->name ?></span>
 						<small class="text-muted"><?= $task->summary ?></small>
 					</div>
-<?php
-			break;
-		endif;
-	endforeach;
-endforeach;
-?>
+
+				<?php break; endif; ?>
+				<?php endforeach; ?>
+				<?php endforeach; ?>
+
 				</div>
 			</div>
 		</form>
 	</div>
 
 <?= $this->endSection() ?>
-
 <?= $this->section('footerAssets') ?>
 
 <script>

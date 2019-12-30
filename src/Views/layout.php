@@ -20,6 +20,7 @@ $menu = $menu ?? '';
 	<?= service('assets')->tag('vendor/font-awesome/css/all.min.css') ?>
 
 	<?= $this->renderSection('headerAssets') ?>
+
 </head>
 <body>
 
@@ -50,6 +51,7 @@ $menu = $menu ?? '';
 </main><!-- /.container -->
 
 <!-- Assets from Manifests -->
+
 <?= service('assets')->tag('vendor/bootstrap/bootstrap.bundle.min.js') ?>
 
 <?= service('assets')->tag('vendor/sortablejs/Sortable.min.js') ?>

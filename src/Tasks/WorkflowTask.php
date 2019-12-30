@@ -5,7 +5,7 @@ use Tatter\Workflows\Interfaces\TaskInterface;
 class WorkflowTask implements TaskInterface
 {
 	use \Tatter\Workflows\Traits\TasksTrait;
-	
+
 	public $definition = [
 		'category' => 'Core',
 		'name'     => 'Workflow',
@@ -14,21 +14,21 @@ class WorkflowTask implements TaskInterface
 		'icon'     => 'fas fa-project-diagram',
 		'summary'  => 'Run another workflow as a subordinate task',
 	];
-	
+
 	public function get()
 	{
-	
+
 	}
-	
-	// run when a job progresses forward through the workflow
+
+	// Run when a job progresses forward through the workflow
 	public function up()
 	{
-	
+
 	}
-	
-	// run when job regresses back through the workflow
+
+	// Run when job regresses back through the workflow
 	public function down()
 	{
-	
+
 	}
 }

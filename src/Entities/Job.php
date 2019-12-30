@@ -2,6 +2,7 @@
 
 use CodeIgniter\Entity;
 
+use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\TaskModel;
 use Tatter\Workflows\Models\WorkflowModel;
@@ -9,8 +10,15 @@ use Tatter\Workflows\Models\WorkflowModel;
 class Job extends Entity
 {
 	protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+
+    /**
+     * Cached entity for this job's stage.
+     *
+     * @var Stage
+     */
+    protected $stage;
 	
-	// returns the next task for this job
+	// Returns the next task for this job
 	public function next()
 	{
 		// look through all this job's stages
@@ -18,7 +26,7 @@ class Job extends Entity
 		return $this->nextHelper($stages);
 	}
 	
-	// returns the previous task for this job
+	// Returns the previous task for this job
 	public function previous()
 	{
 		// look through all this job's stages
@@ -28,12 +36,13 @@ class Job extends Entity
 		return $this->nextHelper($stages);
 	}
 	
-	// returns the next task from an array of stages
+	// Returns the next task from an array of stages
 	protected function nextHelper($stages)
 	{
 		// look through the stages
 		$stage = current($stages);
-		do {
+		do
+		{
 			// check if this is the current stage
 			if ($stage->id == $this->attributes['stage_id']):
 				// matched! look for the next stage
@@ -53,18 +62,23 @@ class Job extends Entity
 				$task->job = $this;
 				return $task;
 			endif;
-		} while($stage = next($stages));
-		
+		} while ($stage = next($stages));
+
 		return false;
 	}
 	
-	// magic getter for the current stage
-	public function getStage()
+	// Gets the current stage
+	public function getStage(): Stage
 	{
-		return (new StageModel())->find($this->attributes['stage_id']);
+		if ($this->stage === null)
+		{
+			$this->stage = (new StageModel())->find($this->attributes['stage_id']);
+		}
+		
+		return $this->stage;
 	}
 	
-	// magic getter for this the stages this job will go through
+	// Gets all stages this job will go through
 	public function getStages()
 	{
 		$workflow = (new WorkflowModel())->find($this->attributes['workflow_id']);

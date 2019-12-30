@@ -12,7 +12,7 @@ class TasksList extends BaseCommand
     protected $description = 'List all registered tasks';
     
 	protected $usage     = 'tasks:list';
-	protected $arguments = [ ];
+	protected $arguments = [];
 
 	public function run(array $params = [])
     {
@@ -26,7 +26,7 @@ class TasksList extends BaseCommand
 
 		if (empty($rows))
 		{
-			CLI::write( CLI::color('There are no registered tasks.', 'yellow') );
+			CLI::write('There are no registered tasks.', 'yellow');
 		}
 		else
 		{
