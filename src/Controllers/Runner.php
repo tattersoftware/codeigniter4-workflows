@@ -119,6 +119,12 @@ class Runner extends Controller
 			$this->travel();
 		}
 		
+		// Check the task's role against a potential current user
+		if (! $this->checkRole())
+		{
+			
+		}
+		
 		// Determine the request method & run the corresponding method on the task
 		$result = $this->callTaskMethod($this->task, $this->request->getMethod());
 		
@@ -389,6 +395,29 @@ class Runner extends Controller
 		$this->jobs->update($this->job->id, ['stage_id' => $target->id]);
 		
 		return $results;
+	}
+
+    /**
+     * Checks if role filter is enabled and if the current user may run this task.
+     *
+     * @return bool  True if the task may continue
+     */
+	protected function checkRole(): bool
+	{
+		// If role filtering isn't set up then allow through
+		if (! function_exists('has_permission'))
+		{
+			return true;
+		}
+
+		// Anyone can run user tasks
+		if ($this->task->role == 'user')
+		{
+			return true;
+		}
+
+		// Otherwise check for task role permission
+		return has_permission($this->role);
 	}
 
     /**

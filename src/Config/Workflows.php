@@ -27,5 +27,6 @@ class Workflows extends BaseConfig
 		'messages'  => 'Tatter\Workflows\Views\messages',
 		'complete'  => 'Tatter\Workflows\Views\complete',
 		'deleted'   => 'Tatter\Workflows\Views\deleted',
+		'filter'    => 'Tatter\Workflows\Views\filter',
 	];
 }
