@@ -35,6 +35,7 @@ class CreateWorkflowsTables extends Migration
 			'uid'            => ['type' => 'varchar', 'constraint' => 31],
 			'class'          => ['type' => 'varchar', 'constraint' => 63],
 			'input'          => ['type' => 'varchar', 'constraint' => 31],
+			'role'           => ['type' => 'varchar', 'constraint' => 63],
 			'icon'           => ['type' => 'varchar', 'constraint' => 31],
 			'summary'        => ['type' => 'varchar', 'constraint' => 255],
 			'description'    => ['type' => 'text'],

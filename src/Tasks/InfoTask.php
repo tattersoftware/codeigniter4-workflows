@@ -10,6 +10,7 @@ class InfoTask implements TaskInterface
 		'category' => 'Core',
 		'name'     => 'Info',
 		'uid'      => 'info',
+		'role'     => 'user',
 		'icon'     => 'fas fa-info-circle',
 		'summary'  => 'Set basic details of a job',
 	];
