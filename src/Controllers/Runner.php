@@ -417,7 +417,7 @@ class Runner extends Controller
 		}
 
 		// Otherwise check for task role permission
-		return has_permission($this->role);
+		return has_permission($this->task->role);
 	}
 
     /**
