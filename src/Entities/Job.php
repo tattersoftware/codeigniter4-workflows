@@ -35,7 +35,7 @@ class Job extends Entity
 		$stage = current($stages);
 		do {
 			// check if this is the current stage
-			if ($stage->id == $this->stage_id):
+			if ($stage->id == $this->attributes['stage_id']):
 				// matched! look for the next stage
 				$stage = next($stages);
 				if (empty($stage)):
@@ -61,15 +61,13 @@ class Job extends Entity
 	// magic getter for the current stage
 	public function getStage()
 	{
-		$stages = new StageModel();
-		return $stages->find($this->stage_id);
+		return (new StageModel())->find($this->attributes['stage_id']);
 	}
 	
 	// magic getter for this the stages this job will go through
 	public function getStages()
 	{
-		$workflows = new WorkflowModel();
-		$workflow = $workflows->find($this->workflow_id);
+		$workflow = (new WorkflowModel())->find($this->attributes['workflow_id']);
 		return $workflow->stages;
 	}
 }

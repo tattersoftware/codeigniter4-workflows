@@ -9,7 +9,7 @@ class StageModel extends Model
 	protected $table      = 'stages';
 	protected $primaryKey = 'id';
 
-	protected $returnType = 'object';
+	protected $returnType = 'Tatter\Workflows\Entities\Stage';
 	protected $useSoftDeletes = false;
 
 	protected $allowedFields = [
