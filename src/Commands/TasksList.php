@@ -20,7 +20,7 @@ class TasksList extends BaseCommand
 		
 		// get all tasks
 		$rows = $tasks
-			->select('id, name, category, uid, class, summary')
+			->select('id, name, category, uid, role, class, summary')
 			->orderBy('name', 'asc')
 			->get()->getResultArray();
 
@@ -30,7 +30,7 @@ class TasksList extends BaseCommand
 		}
 		else
 		{
-			$thead = ['Task ID', 'Name', 'Category', 'UID', 'Class', 'Summary'];
+			$thead = ['Task ID', 'Name', 'Category', 'UID', 'Role', 'Class', 'Summary'];
 			CLI::table($rows, $thead);
 		}
 	}

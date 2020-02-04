@@ -40,6 +40,31 @@ class Runner extends Controller
 	}
 	
     /**
+     * Display a job.
+     *
+     * @param string $jobId  ID of the job (int)
+     *
+     * @return string
+     */
+	public function show(string $jobId = null)
+	{
+		// Load the job
+		if (! $job = $this->jobs->find($jobId))
+		{
+			if ($this->config->silent)
+			{
+				return view($this->config->views['messages'], ['layout' => $this->config->layouts['public'], 'error' => lang('Workflows.jobNotFound')]);
+			}
+			else
+			{
+				throw WorkflowsException::forJobNotFound();
+			}
+		}
+
+		return view($this->config->views['job'], ['layout' => $this->config->layouts['public'], 'job' => $job]);
+	}
+
+    /**
      * Start a new job in the given workflow.
      *
      * @param string $workflowId  ID of the workflow to use for the new job (int)
@@ -110,7 +135,7 @@ class Runner extends Controller
 		// Intercept jobs that are already completed
 		if (empty($this->stage))
 		{
-			return redirect()->to('/');
+			return redirect()->to(site_url($this->config->routeBase . '/show/' . $this->job->id));
 		}
 		
 		// If the requested task differs from the job's current task then travel the workflow
@@ -122,7 +147,7 @@ class Runner extends Controller
 		// Check the task's role against a potential current user
 		if (! $this->checkRole())
 		{
-			
+			return view($this->config->views['filter'], ['layout' => $this->config->layouts['public'], 'job' => $this->job]);
 		}
 		
 		// Determine the request method & run the corresponding method on the task
@@ -411,7 +436,7 @@ class Runner extends Controller
 		}
 
 		// Anyone can run user tasks
-		if ($this->task->role == 'user')
+		if (empty($this->task->role) || $this->task->role == 'user')
 		{
 			return true;
 		}

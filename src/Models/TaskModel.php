@@ -10,6 +10,6 @@ class TaskModel extends Model
 	protected $useTimestamps  = true;
 	protected $allowedFields  = [
 		'category', 'name', 'uid', 'class', 'input',
-		'icon', 'summary', 'description',
+		'role', 'icon', 'summary', 'description',
 	];
 }
