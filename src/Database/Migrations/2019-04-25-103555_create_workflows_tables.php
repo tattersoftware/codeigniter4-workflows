@@ -97,7 +97,7 @@ class CreateWorkflowsTables extends Migration
 			'job_id'         => ['type' => 'int', 'unsigned' => true],
 			'stage_from'     => ['type' => 'int', 'unsigned' => true, 'null' => true],
 			'stage_to'       => ['type' => 'int', 'unsigned' => true, 'null' => true],
-			'created_by'     => ['type' => 'int', 'unsigned' => true, 'null' => true],
+			'user_id'        => ['type' => 'int', 'unsigned' => true, 'null' => true],
 			'created_at'     => ['type' => 'datetime', 'null' => true],
 		];
 		
