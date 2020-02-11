@@ -61,8 +61,8 @@ trait JobsTrait
 			// Build the row
 			$row = [
 				'job_id'     => $job->id,
-				'stage_from' => $data['data']['stage_id'],
-				'stage_to'   => $job->stage_id,
+				'stage_from' => $job->stage_id,
+				'stage_to'   => $data['data']['stage_id'],
 				'created_by' => $userId,
 				'created_at' => date('Y-m-d H:i:s'),
 			];
