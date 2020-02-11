@@ -17,7 +17,7 @@ trait JobsTrait
 		$row = [
 			'job_id'     => $data['id'],
 			'stage_to'   => $data['data']['stage_id'],
-			'created_by' => $userId,
+			'user_id'    => $userId,
 			'created_at' => date('Y-m-d H:i:s'),
 		];
 
@@ -63,7 +63,7 @@ trait JobsTrait
 				'job_id'     => $job->id,
 				'stage_from' => $job->stage_id,
 				'stage_to'   => $data['data']['stage_id'],
-				'created_by' => $userId,
+				'user_id'    => $userId,
 				'created_at' => date('Y-m-d H:i:s'),
 			];
 		
