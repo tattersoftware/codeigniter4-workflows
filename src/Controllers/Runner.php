@@ -8,6 +8,7 @@ use CodeIgniter\HTTP\RedirectResponse;
 use Tatter\Workflows\Entities\Task;
 use Tatter\Workflows\Exceptions\WorkflowsException;
 
+use Tatter\Workflows\Models\JoblogModel;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\TaskModel;
 use Tatter\Workflows\Models\WorkflowModel;
@@ -61,7 +62,13 @@ class Runner extends Controller
 			}
 		}
 
-		return view($this->config->views['job'], ['layout' => $this->config->layouts['public'], 'job' => $job]);
+		$data = [
+			'job'    => $job,
+			'logs'   => (new JoblogModel)->findWithStages($job->id),
+			'layout' => $this->config->layouts['public'],
+		];
+
+		return view($this->config->views['job'], $data);
 	}
 
     /**
