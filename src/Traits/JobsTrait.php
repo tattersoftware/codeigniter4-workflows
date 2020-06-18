@@ -11,7 +11,7 @@ trait JobsTrait
 		}
 
 		// Determine user source from config
-		$userId = session(config('Workflows')->userSource);
+		$userId = session(config('Workflows')->userSource) ?: 0;
 
 		// Build the row
 		$row = [
