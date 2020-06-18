@@ -8,9 +8,9 @@ class CreateWorkflowsTables extends Migration
 	{
 		/* Workflows */
 		$fields = [
-			'name'           => ['type' => 'varchar', 'constraint' => 31],
-			'category'       => ['type' => 'varchar', 'constraint' => 31],
-			'icon'           => ['type' => 'varchar', 'constraint' => 31],
+			'name'           => ['type' => 'varchar', 'constraint' => 63],
+			'category'       => ['type' => 'varchar', 'constraint' => 63],
+			'icon'           => ['type' => 'varchar', 'constraint' => 63],
 			'summary'        => ['type' => 'varchar', 'constraint' => 255],
 			'description'    => ['type' => 'text'],
 			'created_at'     => ['type' => 'datetime', 'null' => true],
@@ -30,13 +30,13 @@ class CreateWorkflowsTables extends Migration
 
 		/* Tasks */
 		$fields = [
-			'category'       => ['type' => 'varchar', 'constraint' => 31],
-			'name'           => ['type' => 'varchar', 'constraint' => 31],
-			'uid'            => ['type' => 'varchar', 'constraint' => 31],
+			'category'       => ['type' => 'varchar', 'constraint' => 63],
+			'name'           => ['type' => 'varchar', 'constraint' => 63],
+			'uid'            => ['type' => 'varchar', 'constraint' => 63],
 			'class'          => ['type' => 'varchar', 'constraint' => 63],
-			'input'          => ['type' => 'varchar', 'constraint' => 31],
+			'input'          => ['type' => 'varchar', 'constraint' => 63],
 			'role'           => ['type' => 'varchar', 'constraint' => 63],
-			'icon'           => ['type' => 'varchar', 'constraint' => 31],
+			'icon'           => ['type' => 'varchar', 'constraint' => 63],
 			'summary'        => ['type' => 'varchar', 'constraint' => 255],
 			'description'    => ['type' => 'text'],
 			'created_at'     => ['type' => 'datetime', 'null' => true],
@@ -59,7 +59,7 @@ class CreateWorkflowsTables extends Migration
 		$fields = [
 			'task_id'        => ['type' => 'int', 'unsigned' => true],
 			'workflow_id'    => ['type' => 'int', 'unsigned' => true],
-			'input'          => ['type' => 'varchar', 'constraint' => 31],
+			'input'          => ['type' => 'varchar', 'constraint' => 63],
 			'required'       => ['type' => 'boolean', 'default' => 1],
 			'created_at'     => ['type' => 'datetime', 'null' => true],
 			'updated_at'     => ['type' => 'datetime', 'null' => true],
@@ -75,7 +75,7 @@ class CreateWorkflowsTables extends Migration
 
 		/* Jobs */
 		$fields = [
-			'name'           => ['type' => 'varchar', 'constraint' => 31],
+			'name'           => ['type' => 'varchar', 'constraint' => 255],
 			'summary'        => ['type' => 'varchar', 'constraint' => 255],
 			'workflow_id'    => ['type' => 'int', 'unsigned' => true],
 			'stage_id'       => ['type' => 'int', 'unsigned' => true, 'null' => true],
