@@ -20,12 +20,16 @@
 	],
 	"repositories": [
 		{
+			"type": "vcs",
+			"url": "https://github.com/codeigniter4/CodeIgniter4"
+		},
+		{
 			"type": "composer",
 			"url": "https://asset-packagist.org"
 		}
 	],
 	"require": {
-		"php" : "^7.2",
+		"php" : ">=7.2",
 		"tatter/alerts": "^2.0",
 		"tatter/assets": "^2.0",
 		"tatter/audits": "^1.0",
@@ -35,14 +39,22 @@
 		"twbs/bootstrap": "^4.3"
 	},
 	"require-dev": {
-		"codeigniter4/framework": "dev-master"
+		"phpunit/phpunit": "8.5.*",
+		"fzaninotto/faker": "^1.9@dev",
+		"codeigniter4/codeigniter4": "dev-develop"
 	},
 	"autoload": {
 		"psr-4": {
 			"Tatter\\Workflows\\": "src"
 		}
 	},
+	"autoload-dev": {
+		"psr-4": {
+			"Tests\\Support\\": "tests/_support"
+		}
+	},
 	"scripts": {
+		"test": "phpunit",
 		"post-update-cmd": [
 			"composer dump-autoload"
 		]
