@@ -24,6 +24,6 @@ class StageFaker extends StageModel
 			'task_id'     => rand(1, Simulator::$counts['tasks']     ?: 12),
 			'workflow_id' => rand(1, Simulator::$counts['workflows'] ?: 4),
 			'required'    => (bool) rand(0, 5),
-		];
+		]);
 	}
 }

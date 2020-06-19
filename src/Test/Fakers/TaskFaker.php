@@ -29,6 +29,6 @@ class TaskFaker extends TaskModel
 			'icon'        => $faker->safeColorName,
 			'summary'     => $faker->sentence,
 			'description' => $faker->paragraph,
-		];
+		]);
 	}
 }
