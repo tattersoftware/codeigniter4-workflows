@@ -1,7 +1,7 @@
 <?php namespace Tatter\Workflows\Test\Fakers;
 
-use App\Entities\Stage;
 use Faker\Generator;
+use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Test\Simulator;
 

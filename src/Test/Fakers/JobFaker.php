@@ -1,7 +1,7 @@
 <?php namespace Tatter\Workflows\Test\Fakers;
 
-use App\Entities\Job;
 use Faker\Generator;
+use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Test\Simulator;
 
