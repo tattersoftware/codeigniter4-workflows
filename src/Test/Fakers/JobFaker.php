@@ -19,8 +19,8 @@ class JobFaker extends JobModel
 		Simulator::$counts['jobs']++;
 
 		return new Job([
-			'name'        => self::$faker->catchPhrase,
-			'summary'     => self::$faker->sentence,
+			'name'        => $faker->catchPhrase,
+			'summary'     => $faker->sentence,
 			'workflow_id' => rand(1, Simulator::$counts['workflows'] ?: 4),
 			'stage_id'    => rand(1, Simulator::$counts['stages']    ?: 99),
 		]);

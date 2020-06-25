@@ -24,7 +24,7 @@ class TaskFaker extends TaskModel
 			'category'    => $faker->streetSuffix,
 			'name'        => ucfirst($name),
 			'uid'         => strtolower($name),
-			'class'       => implode('\\', array_map('ucfirst', self::$faker->words)),
+			'class'       => implode('\\', array_map('ucfirst', $faker->words)),
 			'role'        => rand(0, 2) ? 'user' : 'admin',
 			'icon'        => $faker->safeColorName,
 			'summary'     => $faker->sentence,
