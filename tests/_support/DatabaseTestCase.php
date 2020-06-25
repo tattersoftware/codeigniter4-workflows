@@ -1,7 +1,9 @@
 <?php namespace Tests\Support;
 
-use CodeIgniter\Config\Services;
+use Config\Services;
+use CodeIgniter\Session\Handlers\ArrayHandler;
 use CodeIgniter\Test\CIDatabaseTestCase;
+use CodeIgniter\Test\Mock\MockSession;
 use Tatter\Workflows\Test\Simulator;
 
 class DatabaseTestCase extends CIDatabaseTestCase
@@ -34,6 +36,11 @@ class DatabaseTestCase extends CIDatabaseTestCase
     public static function setUpBeforeClass(): void
     {
     	helper('test');
+
+		// Inject the mock session driver into Services
+        $config  = config('App');
+        $session = new MockSession(new ArrayHandler($config, '0.0.0.0'), $config);
+        Services::injectMock('session', $session);
     }
 
 	public function setUp(): void
@@ -49,5 +56,6 @@ class DatabaseTestCase extends CIDatabaseTestCase
 		parent::tearDown();
 
 		Simulator::reset();
+    	$_SESSION = [];
 	}
 }
