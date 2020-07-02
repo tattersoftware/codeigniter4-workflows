@@ -7,6 +7,11 @@ use Tatter\Workflows\Models\ActionModel;
 class Stage extends Entity
 {
 	protected $dates = ['created_at', 'updated_at'];
+	protected $casts = [
+		'action_id'   => 'int',
+		'workflow_id' => 'int',
+		'required'    => 'bool',
+	];
 
     /**
      * Cached entity for this stage's representative action.
