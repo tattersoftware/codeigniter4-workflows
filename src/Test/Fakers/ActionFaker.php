@@ -1,26 +1,26 @@
 <?php namespace Tatter\Workflows\Test\Fakers;
 
 use Faker\Generator;
-use Tatter\Workflows\Entities\Task;
-use Tatter\Workflows\Models\TaskModel;
+use Tatter\Workflows\Entities\Action;
+use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Test\Simulator;
 
-class TaskFaker extends TaskModel
+class ActionFaker extends ActionModel
 {
 	/**
 	 * Faked data for Fabricator.
 	 *
 	 * @param Generator $faker
 	 *
-	 * @return Task
+	 * @return Action
 	 */
 	public function fake(Generator &$faker)
 	{
-		Simulator::$counts['tasks']++;
+		Simulator::$counts['actions']++;
 
 		$name = $faker->word;
 
-		return new Task([
+		return new Action([
 			'category'    => $faker->streetSuffix,
 			'name'        => ucfirst($name),
 			'uid'         => strtolower($name),

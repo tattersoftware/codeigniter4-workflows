@@ -1,9 +1,9 @@
 <?php
 
 use Tatter\Workflows\Entities\Workflow;
+use Tatter\Workflows\Test\Fakers\ActionFaker;
 use Tatter\Workflows\Test\Fakers\JobFaker;
 use Tatter\Workflows\Test\Fakers\StageFaker;
-use Tatter\Workflows\Test\Fakers\TaskFaker;
 use Tatter\Workflows\Test\Fakers\WorkflowFaker;
 use Tatter\Workflows\Test\Simulator;
 use Tests\Support\DatabaseTestCase;
@@ -39,17 +39,17 @@ class SimulatorTest extends DatabaseTestCase
 	{
 		Simulator::initialize();
 		
-		$this->assertGreaterThanOrEqual(10, model(TaskFaker::class)->countAllResults());
+		$this->assertGreaterThanOrEqual(10, model(ActionFaker::class)->countAllResults());
 		$this->assertGreaterThanOrEqual(2, model(WorkflowFaker::class)->countAllResults());
 		$this->assertGreaterThanOrEqual(8, model(StageFaker::class)->countAllResults());
 		$this->assertGreaterThanOrEqual(40, model(JobFaker::class)->countAllResults());
 	}
 
-	public function testInitializeRegistersTasks()
+	public function testInitializeRegistersActions()
 	{
 		Simulator::initialize();
 
-		$result = model(TaskFaker::class)->first();
+		$result = model(ActionFaker::class)->first();
 
 		$this->assertEquals('info', $result->uid);
 	}

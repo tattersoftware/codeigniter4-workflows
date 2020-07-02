@@ -14,15 +14,15 @@
 
 	<h2>New Workflow</h2>
 
-	<?php if (empty($tasks)): ?>
+	<?php if (empty($actions)): ?>
 
-	<p>There are no tasks defined. Please add some tasks before defining a workflow.</p>
+	<p>There are no actions defined. Please add some actions before defining a workflow.</p>
 
 	<?php return $this->endSection(); endif; ?>
 
-	<form name="create-workflow" action="<?= site_url('workflows') ?>" method="post" onsubmit="this.tasks.value = sortable.toArray();">
+	<form name="create-workflow" action="<?= site_url('workflows') ?>" method="post" onsubmit="this.actions.value = sortable.toArray();">
 		<input class="btn btn-primary float-right" type="submit" value="Submit">
-		<input name="tasks" type="hidden" value="" />
+		<input name="actions" type="hidden" value="" />
 		
 		<div class="row mt-4">
 			<div class="col-sm-4">
@@ -55,33 +55,33 @@
 			</div>
 		
 			<div class="col-sm-8">
-				<h3>Tasks</h3>
-				<div id="tasksSelect" class="mb-4">
+				<h3>Actions</h3>
+				<div id="actionsSelect" class="mb-4">
 
-					<?php foreach ($tasks as $task): ?>
+					<?php foreach ($actions as $action): ?>
 
-					<button type="button" class="btn btn-outline-primary" onclick="addTask(<?= $task->id ?>);">
+					<button type="button" class="btn btn-outline-primary" onclick="addAction(<?= $action->id ?>);">
 						<i class="fas fa-plus-circle"></i>
-						<?= $task->name ?>
-						<small class="text-muted">(<?= $task->uid ?>)</small>
+						<?= $action->name ?>
+						<small class="text-muted">(<?= $action->uid ?>)</small>
 					</button>
 
 					<?php endforeach; ?>
 
 				</div>
 			
-				<div id="tasksList" class="list-group">
+				<div id="actionsList" class="list-group">
 				
-				<?php foreach (explode(',', old('tasks')) as $taskId): ?>
-				<?php foreach ($tasks as $task): ?>
-				<?php if ($task->id == $taskId): ?>
+				<?php foreach (explode(',', old('actions')) as $actionId): ?>
+				<?php foreach ($actions as $action): ?>
+				<?php if ($action->id == $actionId): ?>
 
-					<div class="list-group-item" data-id="<?= $task->id ?>">
+					<div class="list-group-item" data-id="<?= $action->id ?>">
 						<span class="remove-icon float-right" onclick="this.parentNode.remove();"><i class="fas fa-minus-circle"></i></span>
 						<span class="sort-handle" aria-hidden="true"><i class="fas fa-arrows-alt-v"></i></span>
-						<i class="fas <?= $task->icon ?>"></i>
-						<span class="font-weight-bold mr-3"><?= $task->name ?></span>
-						<small class="text-muted"><?= $task->summary ?></small>
+						<i class="fas <?= $action->icon ?>"></i>
+						<span class="font-weight-bold mr-3"><?= $action->name ?></span>
+						<small class="text-muted"><?= $action->summary ?></small>
 					</div>
 
 				<?php break; endif; ?>
@@ -99,28 +99,28 @@
 <script>
 var sortable;
 $(document).ready(function() {
-	var sortList = document.getElementById('tasksList');
+	var sortList = document.getElementById('actionsList');
 	sortable = new Sortable.create(sortList, {
 	  handle: '.sort-handle',
 	  animation: 150
 	});
 });
 
-function addTask(taskId) {
-	task = tasks[taskId];
+function addAction(actionId) {
+	action = actions[actionId];
 	
-	html  = '<div class="list-group-item" data-id="' + task['id'] + '" onclick="this.remove();"> ';
+	html  = '<div class="list-group-item" data-id="' + action['id'] + '" onclick="this.remove();"> ';
 	html += '<span class="remove-icon float-right" onclick="this.parentNode.remove();"><i class="fas fa-minus-circle"></i></span>';
 	html += '<span class="sort-handle" aria-hidden="true"><i class="fas fa-arrows-alt-v"></i></span> '
-	html += '<i class="fas ' + task['icon'] + '"></i> ';
-	html += '<span class="font-weight-bold mr-3">' + task['name'] +'</span> ';
-	html += '<small class="text-muted">' + task['summary'] + '</small> ';
+	html += '<i class="fas ' + action['icon'] + '"></i> ';
+	html += '<span class="font-weight-bold mr-3">' + action['name'] +'</span> ';
+	html += '<small class="text-muted">' + action['summary'] + '</small> ';
 	html += '</div>';
 	
-	$('#tasksList').append(html);
+	$('#actionsList').append(html);
 }
 
-var tasks = <?= $json ?>;
+var actions = <?= $json ?>;
 
 </script>
 

@@ -3,7 +3,7 @@
 use Tatter\Workflows\Registrar;
 use Tatter\Workflows\Test\Fakers\JobFaker;
 use Tatter\Workflows\Test\Fakers\StageFaker;
-use Tatter\Workflows\Test\Fakers\TaskFaker;
+use Tatter\Workflows\Test\Fakers\ActionFaker;
 use Tatter\Workflows\Test\Fakers\WorkflowFaker;
 
 /**
@@ -26,7 +26,7 @@ class Simulator
 	static public $counts = [
 		'jobs'      => 0,
 		'stages'    => 0,
-		'tasks'     => 0,
+		'actions'     => 0,
 		'workflows' => 0,
 	];
 
@@ -37,14 +37,14 @@ class Simulator
 	{
 		self::reset();
 
-		// Register any Tasks and update the count
-		self::$counts['tasks'] = Registrar::tasks();
+		// Register any Actions and update the count
+		self::$counts['actions'] = Registrar::actions();
 
-		// Create tasks up to N
+		// Create actions up to N
 		$count = rand(10, 20);
-		while (self::$counts['tasks'] < $count)
+		while (self::$counts['actions'] < $count)
 		{
-			fake(TaskFaker::class);
+			fake(ActionFaker::class);
 		}
 
 		// Create workflows up to N

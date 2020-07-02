@@ -5,7 +5,7 @@
 		"codeigniter",
 		"codeigniter4",
 		"workflows",
-		"tasks",
+		"actions",
 		"jobs"
 	],
 	"homepage": "https://github.com/tattersoftware/codeigniter4-workflows",

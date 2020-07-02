@@ -21,7 +21,7 @@ class StageFaker extends StageModel
 		$name = $faker->word;
 
 		return new Stage([
-			'task_id'     => rand(1, Simulator::$counts['tasks']     ?: 12),
+			'action_id'     => rand(1, Simulator::$counts['actions']     ?: 12),
 			'workflow_id' => rand(1, Simulator::$counts['workflows'] ?: 4),
 			'required'    => (bool) rand(0, 5),
 		]);

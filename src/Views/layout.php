@@ -5,7 +5,7 @@ $menu = $menu ?? '';
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="description" content="Job task control through dynamic workflows, for CodeIgniter 4">
+	<meta name="description" content="Job action control through dynamic workflows, for CodeIgniter 4">
 	<meta name="author" content="Tatter Software">
 
 	<title>Workflows</title>
@@ -35,8 +35,8 @@ $menu = $menu ?? '';
 			<li class="nav-item <?= $menu == 'workflows' ? 'active' : '' ?>">
 				<a class="nav-link" href="<?= site_url('workflows') ?>">Workflows <?= $menu == 'workflows' ? '<span class="sr-only">(current)</span>' : '' ?></a>
 			</li>
-			<li class="nav-item <?= $menu == 'tasks' ? 'active' : '' ?>">
-				<a class="nav-link" href="<?= site_url('tasks') ?>">Tasks <?= $menu == 'tasks' ? '<span class="sr-only">(current)</span>' : '' ?></a>
+			<li class="nav-item <?= $menu == 'actions' ? 'active' : '' ?>">
+				<a class="nav-link" href="<?= site_url('actions') ?>">Actions <?= $menu == 'actions' ? '<span class="sr-only">(current)</span>' : '' ?></a>
 			</li>
 		</ul>
 	</div>

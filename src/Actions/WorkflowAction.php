@@ -1,10 +1,10 @@
-<?php namespace Tatter\Workflows\Tasks;
+<?php namespace Tatter\Workflows\Actions;
 
-use Tatter\Workflows\Interfaces\TaskInterface;
+use Tatter\Workflows\Interfaces\ActionInterface;
 
-class WorkflowTask implements TaskInterface
+class WorkflowAction implements ActionInterface
 {
-	use \Tatter\Workflows\Traits\TasksTrait;
+	use \Tatter\Workflows\Traits\ActionsTrait;
 
 	public $definition = [
 		'category' => 'Core',
@@ -13,7 +13,7 @@ class WorkflowTask implements TaskInterface
 		'input'    => 'workflow',
 		'role'     => 'user',
 		'icon'     => 'fas fa-project-diagram',
-		'summary'  => 'Run another workflow as a subordinate task',
+		'summary'  => 'Run another workflow as a subordinate action',
 	];
 
 	public function get()

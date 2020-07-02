@@ -1,8 +1,8 @@
 <?php namespace Tatter\Workflows\Traits;
 
-use Tatter\Workflows\Models\TaskModel;
+use Tatter\Workflows\Models\ActionModel;
 
-trait TasksTrait
+trait ActionsTrait
 {
 	public $config;
 	public $job;
@@ -14,27 +14,27 @@ trait TasksTrait
 		return $this->definition[$name];
     }
 
-	// Create the database record of this task based on its definition
+	// Create the database record of this action based on its definition
 	public function register()
 	{
-		$tasks = new TaskModel();
+		$actions = new ActionModel();
 
 		// Check for an existing entry
-		if ($task = $tasks->where('uid', $this->uid)->first())
+		if ($action = $actions->where('uid', $this->uid)->first())
 		{
 			return true;
 		}
 
-		return $tasks->insert($this->definition, true);
+		return $actions->insert($this->definition, true);
 	}
 
-	// Soft delete this task from the database
+	// Soft delete this action from the database
 	public function remove()
 	{
-		return (new TaskModel())->where('uid', $this->uid)->delete();
+		return (new ActionModel())->where('uid', $this->uid)->delete();
 	}
 
-	// Formulate the current route for this task & job
+	// Formulate the current route for this action & job
 	// e.g.: return redirect()->to($this->route());
 	public function route()
 	{

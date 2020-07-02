@@ -10,9 +10,9 @@ class WorkflowsException extends \RuntimeException implements ExceptionInterface
 		return new static(lang('Workflows.workflowNotFound'), 404);
 	}
 	
-	public static function forTaskNotFound()
+	public static function forActionNotFound()
 	{
-		return new static(lang('Workflows.taskNotFound'), 404);
+		return new static(lang('Workflows.actionNotFound'), 404);
 	}
 	
 	public static function forJobNotFound()
@@ -40,8 +40,8 @@ class WorkflowsException extends \RuntimeException implements ExceptionInterface
 		return new static(lang('Workflows.routeMissingJobId', [$route]));
 	}
 	
-	public static function forUnsupportedTaskMethod($task, $method)
+	public static function forUnsupportedActionMethod($action, $method)
 	{
-		return new static(lang('Workflows.taskMissingMethod', [$task, $method]));
+		return new static(lang('Workflows.actionMissingMethod', [$action, $method]));
 	}
 }

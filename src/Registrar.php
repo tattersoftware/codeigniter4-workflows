@@ -2,32 +2,32 @@
 
 use CodeIgniter\CLI\CLI;
 use Config\Services;
-use Tatter\Workflows\Models\TaskModel;
+use Tatter\Workflows\Models\ActionModel;
 
 /**
- * Class to handle task registration.
+ * Class to handle action registration.
  */
 class Registrar
 {
 	/**
-	 * Scan all namespaces for new tasks to laod into the database
+	 * Scan all namespaces for new actions to laod into the database
 	 *
-	 * @return int  Number of new tasks registered
+	 * @return int  Number of new actions registered
 	 */
-	static public function tasks(): int
+	static public function actions(): int
     {
-		$tasks   = model(TaskModel::class);
+		$actions   = model(ActionModel::class);
 		$locator = Services::locator(true);
 
 		// Get all namespaces from the autoloader
 		$namespaces = Services::autoloader()->getNamespace();
 		
-		// Scan each namespace for tasks
+		// Scan each namespace for actions
 		$count = 0;
 		foreach ($namespaces as $namespace => $paths)
 		{
-			// Get any files in Tasks/ for this namespace
-			$files = $locator->listNamespaceFiles($namespace, '/Tasks/');
+			// Get any files in Actions/ for this namespace
+			$files = $locator->listNamespaceFiles($namespace, '/Actions/');
 			
 			foreach ($files as $file)
 			{
@@ -39,7 +39,7 @@ class Registrar
 				
 				// Get namespaced class name
 				$name  = basename($file, '.php');
-				$class = $namespace . '\Tasks\\' . $name;
+				$class = $namespace . '\Actions\\' . $name;
 				
 				include_once $file;
 
@@ -64,13 +64,13 @@ class Registrar
 				{
 					$count++;
 					
-					$task = $tasks->find($result);
-					$task->class = $class;
-					$tasks->save($task);
+					$action = $actions->find($result);
+					$action->class = $class;
+					$actions->save($action);
 				
 					if (ENVIRONMENT !== 'testing' && is_cli())
 					{
-						CLI::write("Registered {$task->name} from {$class}", 'green');
+						CLI::write("Registered {$action->name} from {$class}", 'green');
 					}
 				}
 			}

@@ -1,10 +1,10 @@
-<?php namespace Tatter\Workflows\Tasks;
+<?php namespace Tatter\Workflows\Actions;
 
-use Tatter\Workflows\Interfaces\TaskInterface;
+use Tatter\Workflows\Interfaces\ActionInterface;
 
-class InfoTask implements TaskInterface
+class InfoAction implements ActionInterface
 {
-	use \Tatter\Workflows\Traits\TasksTrait;
+	use \Tatter\Workflows\Traits\ActionsTrait;
 	
 	public $definition = [
 		'category' => 'Core',
@@ -23,7 +23,7 @@ class InfoTask implements TaskInterface
 		$this->renderer->setVar('config', $this->config);
 		$this->renderer->setVar('job', $this->job);
 
-		return $this->renderer->render('Tatter\Workflows\Views\tasks\info');
+		return $this->renderer->render('Tatter\Workflows\Views\actions\info');
 	}
 	
 	// Validate and process form submission

@@ -18,7 +18,7 @@
 				<th scope="col">Category</th>
 				<th scope="col">Icon</th>
 				<th scope="col">Summary</th>
-				<th scope="col">Tasks</th>
+				<th scope="col">Actions</th>
 			</tr>
 		</thead>
 		<tbody>

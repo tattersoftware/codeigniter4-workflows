@@ -43,7 +43,7 @@ class DatabaseTestCase extends CIDatabaseTestCase
         Services::injectMock('session', $session);
     }
 
-	public function setUp(): void
+	protected function setUp(): void
 	{
 		parent::setUp();
 		
@@ -51,7 +51,7 @@ class DatabaseTestCase extends CIDatabaseTestCase
 		$this->config->silent = false;
 	}
 	
-	public function tearDown(): void
+	protected function tearDown(): void
 	{
 		parent::tearDown();
 

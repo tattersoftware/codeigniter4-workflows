@@ -50,12 +50,12 @@
 		</div>
 	</div>
 	
-	<h3 class="mt-3">Tasks</h3>
+	<h3 class="mt-3">Actions</h3>
 	<div class="row">
 
 		<?php if (empty($stages)): ?>
 		
-		<p>This workflow has no associated tasks!</p>
+		<p>This workflow has no associated actions!</p>
 		
 		<?php else: ?>
 
@@ -67,23 +67,23 @@
 				<th scope="col">Input</th>
 				<th scope="col">
 					Required
-					<i class="far fa-question-circle" data-toggle="tooltip" title="Controls whether a particular task may be skipped."></i>
+					<i class="far fa-question-circle" data-toggle="tooltip" title="Controls whether a particular action may be skipped."></i>
 				</th>
 			</thead>
 			<tbody>
 
 				<?php $i = 1; ?>
 				<?php foreach ($stages as $stage): ?>
-				<?php foreach ($tasks as $task): ?>
-				<?php if ($task->id == $stage->task_id): ?>
+				<?php foreach ($actions as $action): ?>
+				<?php if ($action->id == $stage->action_id): ?>
 						
 				<tr>
 					<td><?= $i++ ?>.</td>
-					<td><i class="<?= $task->icon ?>"></i> <?= $task->name ?></td>
-					<td class="small text-muted"><?= $task->summary ?></td>
+					<td><i class="<?= $action->icon ?>"></i> <?= $action->name ?></td>
+					<td class="small text-muted"><?= $action->summary ?></td>
 					<td>
 
-					<?php switch ($task->input): case 'workflow': ?>
+					<?php switch ($action->input): case 'workflow': ?>
 							
 						<select class="custom-select small" onchange="return setStageInput(<?= $stage->id ?>, this.value);" required>
 							<option></option>
@@ -99,7 +99,7 @@
 
 						<?php break; case '': break; default: ?>
 
-						<input name="input" type="<?= $task->input ?>" class="form-control" value="<?= $stage->input ?>" onchange="return setStageInput(<?= $stage->id ?>, this.value);" required>
+						<input name="input" type="<?= $action->input ?>" class="form-control" value="<?= $stage->input ?>" onchange="return setStageInput(<?= $stage->id ?>, this.value);" required>
 
 					<?php endswitch; ?>
 

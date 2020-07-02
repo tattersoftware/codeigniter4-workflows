@@ -28,7 +28,7 @@ class CreateWorkflowsTables extends Migration
 		
 		$this->forge->createTable('workflows');
 
-		/* Tasks */
+		/* Actions */
 		$fields = [
 			'category'       => ['type' => 'varchar', 'constraint' => 63],
 			'name'           => ['type' => 'varchar', 'constraint' => 63],
@@ -53,11 +53,11 @@ class CreateWorkflowsTables extends Migration
 		$this->forge->addKey(['deleted_at', 'id']);
 		$this->forge->addKey('created_at');
 		
-		$this->forge->createTable('tasks');
+		$this->forge->createTable('actions');
 
 		/* Stages */
 		$fields = [
-			'task_id'        => ['type' => 'int', 'unsigned' => true],
+			'action_id'        => ['type' => 'int', 'unsigned' => true],
 			'workflow_id'    => ['type' => 'int', 'unsigned' => true],
 			'input'          => ['type' => 'varchar', 'constraint' => 63],
 			'required'       => ['type' => 'boolean', 'default' => 1],
@@ -68,8 +68,8 @@ class CreateWorkflowsTables extends Migration
 		$this->forge->addField('id');
 		$this->forge->addField($fields);
 
-		$this->forge->addKey(['task_id', 'workflow_id']);
-		$this->forge->addKey(['workflow_id', 'task_id']);
+		$this->forge->addKey(['action_id', 'workflow_id']);
+		$this->forge->addKey(['workflow_id', 'action_id']);
 		
 		$this->forge->createTable('stages');
 
@@ -113,7 +113,7 @@ class CreateWorkflowsTables extends Migration
 	public function down()
 	{
 		$this->forge->dropTable('workflows');
-		$this->forge->dropTable('tasks');
+		$this->forge->dropTable('actions');
 		$this->forge->dropTable('stages');
 		$this->forge->dropTable('jobs');
 		$this->forge->dropTable('joblogs');

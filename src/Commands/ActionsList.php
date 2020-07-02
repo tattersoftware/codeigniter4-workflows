@@ -3,34 +3,34 @@
 use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
 use Config\Services;
-use Tatter\Workflows\Models\TaskModel;
+use Tatter\Workflows\Models\ActionModel;
 
-class TasksList extends BaseCommand
+class ActionsList extends BaseCommand
 {
     protected $group       = 'Workflows';
-    protected $name        = 'tasks:list';
-    protected $description = 'List all registered tasks';
+    protected $name        = 'actions:list';
+    protected $description = 'List all registered actions';
     
-	protected $usage     = 'tasks:list';
+	protected $usage     = 'actions:list';
 	protected $arguments = [];
 
 	public function run(array $params = [])
     {
-		$tasks = new TaskModel();
+		$actions = new ActionModel();
 		
-		// get all tasks
-		$rows = $tasks
+		// get all actions
+		$rows = $actions
 			->select('id, name, category, uid, role, class, summary')
 			->orderBy('name', 'asc')
 			->get()->getResultArray();
 
 		if (empty($rows))
 		{
-			CLI::write('There are no registered tasks.', 'yellow');
+			CLI::write('There are no registered actions.', 'yellow');
 		}
 		else
 		{
-			$thead = ['Task ID', 'Name', 'Category', 'UID', 'Role', 'Class', 'Summary'];
+			$thead = ['Action ID', 'Name', 'Category', 'UID', 'Role', 'Class', 'Summary'];
 			CLI::table($rows, $thead);
 		}
 	}

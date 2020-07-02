@@ -5,27 +5,27 @@ use CodeIgniter\Config\Services;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\RedirectResponse;
 
-use Tatter\Workflows\Entities\Task;
+use Tatter\Workflows\Entities\Action;
 use Tatter\Workflows\Exceptions\WorkflowsException;
 
 use Tatter\Workflows\Models\JoblogModel;
 use Tatter\Workflows\Models\StageModel;
-use Tatter\Workflows\Models\TaskModel;
+use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\WorkflowModel;
 
 
 /**
  * Class Runner
  *
- * Functions as a super-controller, routing jobs to their specific tasks
- * and task functions with included metadata.
+ * Functions as a super-controller, routing jobs to their specific actions
+ * and action functions with included metadata.
  *
  */
 class Runner extends Controller
 {
 	protected $job;
 	protected $stage;
-	protected $task;
+	protected $action;
 	protected $workflow;	
 	
 	public function __construct()
@@ -36,7 +36,7 @@ class Runner extends Controller
 		// Preload the models
 		$this->jobs      = new $this->config->jobModel();
 		$this->stages    = new StageModel();
-		$this->tasks     = new TaskModel();
+		$this->actions     = new ActionModel();
 		$this->workflows = new WorkflowModel();
 	}
 	
@@ -103,15 +103,15 @@ class Runner extends Controller
 		];
 		$jobId = $this->jobs->insert($row, true);
 		
-		// Send to the first task
-		$task  = $stage->task;
-		$route = "/{$this->config->routeBase}/{$task->uid}/{$jobId}";
+		// Send to the first action
+		$action  = $stage->action;
+		$route = "/{$this->config->routeBase}/{$action->uid}/{$jobId}";
 
 		return redirect()->to($route)->with('success', lang('Workflows.newJobSuccess'));
 	}
 	
     /**
-     * Receives route input and handles task coordination.
+     * Receives route input and handles action coordination.
      *
      * @param mixed $params  Parameters coming from the router (so all strings)
      *
@@ -145,20 +145,20 @@ class Runner extends Controller
 			return redirect()->to(site_url($this->config->routeBase . '/show/' . $this->job->id));
 		}
 		
-		// If the requested task differs from the job's current task then travel the workflow
-		if ($this->task->id != $this->stage->task_id)
+		// If the requested action differs from the job's current action then travel the workflow
+		if ($this->action->id != $this->stage->action_id)
 		{
 			$this->travel();
 		}
 		
-		// Check the task's role against a potential current user
+		// Check the action's role against a potential current user
 		if (! $this->checkRole())
 		{
 			return view($this->config->views['filter'], ['layout' => $this->config->layouts['public'], 'job' => $this->job]);
 		}
 		
-		// Determine the request method & run the corresponding method on the task
-		$result = $this->callTaskMethod($this->task, $this->request->getMethod());
+		// Determine the request method & run the corresponding method on the action
+		$result = $this->callActionMethod($this->action, $this->request->getMethod());
 		
 		// Handle return values by their type:
 		// string: display
@@ -167,7 +167,7 @@ class Runner extends Controller
 			return $result;
 		}
 
-		// true: task complete, move on
+		// true: action complete, move on
 		elseif ($result === true)
 		{		
 			// Get the next stage
@@ -186,9 +186,9 @@ class Runner extends Controller
 			// Update the job
 			$this->jobs->update($this->job->id, ['stage_id' => $stage->id]);
 			
-			// Get the next task and redirect
-			$task  = $stage->task;
-			$route = "/{$this->config->routeBase}/{$task->uid}/{$this->job->id}";
+			// Get the next action and redirect
+			$action  = $stage->action;
+			$route = "/{$this->config->routeBase}/{$action->uid}/{$this->job->id}";
 			return redirect()->to($route);
 		}
 
@@ -214,11 +214,11 @@ class Runner extends Controller
 		// borked
 		if ($this->config->silent)
 		{
-			return view($this->config->views['messages'], ['layout' => $this->config->layouts['public'], 'error' => lang('Workflows.invalidTaskReturn')]);
+			return view($this->config->views['messages'], ['layout' => $this->config->layouts['public'], 'error' => lang('Workflows.invalidActionReturn')]);
 		}
 		else
 		{
-			throw new \RuntimeException(lang('Workflows.invalidTaskReturn'));
+			throw new \RuntimeException(lang('Workflows.invalidActionReturn'));
 		}
 	}
 	
@@ -249,7 +249,7 @@ class Runner extends Controller
      */
 	protected function parseRoute($params): ?string
 	{
-		// Strip off the task & job identifiers
+		// Strip off the action & job identifiers
 		$route = array_shift($params);
 		$jobId = array_shift($params);
 		
@@ -265,12 +265,12 @@ class Runner extends Controller
 			}
 		}
 
-		// Look up the task by its route
-		$this->task = $this->tasks->where('uid', $route)->first();
+		// Look up the action by its route
+		$this->action = $this->actions->where('uid', $route)->first();
 		
-		if (empty($this->task))
+		if (empty($this->action))
 		{
-			throw WorkflowsException::forTaskNotFound();
+			throw WorkflowsException::forActionNotFound();
 		}
 
 		// Load the job
@@ -321,7 +321,7 @@ class Runner extends Controller
      */
 	protected function resume($jobId)
 	{
-		// Load the job, stage, and task
+		// Load the job, stage, and action
 		$this->job = $this->jobs->find($jobId);
 
 		if (empty($this->job))
@@ -348,16 +348,16 @@ class Runner extends Controller
 			return view($this->config->views['messages'], ['layout' => $this->config->layouts['public'], 'error' => lang('Workflows.jobAlreadyComplete')]);
 		}
 
-		$task = $this->tasks->find($this->stage->task_id);
-		$route = "/{$this->config->routeBase}/{$task->uid}/{$this->job->id}";
+		$action = $this->actions->find($this->stage->action_id);
+		$route = "/{$this->config->routeBase}/{$action->uid}/{$this->job->id}";
 
 		return redirect()->to($route);
 	}
 
     /**
-     * Move the current job through the workflow, skipping non-required stages but running their task functions.
+     * Move the current job through the workflow, skipping non-required stages but running their action functions.
      *
-     * @return array  Array of boolean results from each task's up/down method
+     * @return array  Array of boolean results from each action's up/down method
      */
 	protected function travel()
 	{
@@ -365,7 +365,7 @@ class Runner extends Controller
 		
 		// Get the desired stage from the workflow
 		$target = $this->stages
-			->where('task_id', $this->task->id)
+			->where('action_id', $this->action->id)
 			->where('workflow_id', $this->workflow->id)
 			->first();
 
@@ -390,7 +390,7 @@ class Runner extends Controller
 
 			if (! empty($test))
 			{
-				$name = $this->tasks->find($test->task_id)->name;
+				$name = $this->actions->find($test->action_id)->name;
 				throw WorkflowsException::forSkipRequiredStage($name);
 			}
 			
@@ -406,14 +406,14 @@ class Runner extends Controller
 		$results = [];
 		foreach ($stages as $stage)
 		{
-			// Check if we need to run this task
+			// Check if we need to run this action
 			if (
 				($method == 'up'   && $stage->id >= $current->id) ||
 				($method == 'down' && $stage->id <= $current->id)
 			)
 			{
-				$task = $this->tasks->find($stage->task_id);
-				$results[$stage->id] = $this->callTaskMethod($task, $method);
+				$action = $this->actions->find($stage->action_id);
+				$results[$stage->id] = $this->callActionMethod($action, $method);
 			}
 			
 			// If the target was reached then we're done
@@ -430,9 +430,9 @@ class Runner extends Controller
 	}
 
     /**
-     * Checks if role filter is enabled and if the current user may run this task.
+     * Checks if role filter is enabled and if the current user may run this action.
      *
-     * @return bool  True if the task may continue
+     * @return bool  True if the action may continue
      */
 	protected function checkRole(): bool
 	{
@@ -442,34 +442,34 @@ class Runner extends Controller
 			return true;
 		}
 
-		// Anyone can run user tasks
-		if (empty($this->task->role) || $this->task->role == 'user')
+		// Anyone can run user actions
+		if (empty($this->action->role) || $this->action->role == 'user')
 		{
 			return true;
 		}
 
-		// Otherwise check for task role permission
-		return has_permission($this->task->role);
+		// Otherwise check for action role permission
+		return has_permission($this->action->role);
 	}
 
     /**
-     * Validate and run the specified method for a task.
+     * Validate and run the specified method for a action.
      *
-     * @param Task   $task    Entity for the task to run
+     * @param Action   $action    Entity for the action to run
      * @param string $method  Name of the method to call
      *
-     * @return mixed  Result of the task method
+     * @return mixed  Result of the action method
      */
-	protected function callTaskMethod(Task $task, string $method)
+	protected function callActionMethod(Action $action, string $method)
 	{
-		// make sure this task supports the requested method
-		$instance = new $task->class();
+		// make sure this action supports the requested method
+		$instance = new $action->class();
 		if (! is_callable([$instance, $method]))
 		{
-			throw WorkflowsException::forUnsupportedTaskMethod($task->name, $method);
+			throw WorkflowsException::forUnsupportedActionMethod($action->name, $method);
 		}
 
-		// Set the references and run the task method
+		// Set the references and run the action method
 		$instance->job        = $this->job;
 		$instance->jobs       = $this->jobs;
 		$instance->config     = $this->config;

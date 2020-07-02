@@ -3,7 +3,7 @@
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\RedirectResponse;
 use Tatter\Workflows\Models\StageModel;
-use Tatter\Workflows\Models\TaskModel;
+use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\WorkflowModel;
 
 class Workflows extends Controller
@@ -13,7 +13,7 @@ class Workflows extends Controller
 	{
 		$this->model  = new WorkflowModel();
 		$this->stages = new StageModel();
-		$this->tasks  = new TaskModel();
+		$this->actions  = new ActionModel();
 		$this->config = config('Workflows');
 	}
 
@@ -39,7 +39,7 @@ class Workflows extends Controller
 			'layout'    => $this->config->layouts['manage'],
 			'workflow'  => $this->model->find($workflowId),
 			'workflows' => $this->model->orderBy('name', 'asc')->findAll(),
-			'tasks'     => $this->tasks->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
+			'actions'     => $this->actions->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
 		];
 
 		// Add the stages
@@ -53,14 +53,14 @@ class Workflows extends Controller
 	{
 		$data = [
 			'layout' => $this->config->layouts['manage'],
-			'tasks'  => $this->tasks->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
+			'actions'  => $this->actions->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
 		];
 		
-		// Prepare task data to be JSON encoded for JSSortable
+		// Prepare action data to be JSON encoded for JSSortable
 		$json = [];
-		foreach ($data['tasks'] as $task)
+		foreach ($data['actions'] as $action)
 		{
-			$json[$task->id] = $task->toArray();
+			$json[$action->id] = $action->toArray();
 		}
 		
 		$data['json'] = json_encode($json);
@@ -75,7 +75,7 @@ class Workflows extends Controller
 		$rules = [
 			'name'    => 'required|max_length[255]',
 			'summary' => 'required|max_length[255]',
-			'tasks'   => 'required',
+			'actions'   => 'required',
 		];
 
 		if (! $this->validate($rules))
@@ -90,12 +90,12 @@ class Workflows extends Controller
             return redirect()->back()->withInput()->with('errors', $this->model->errors());
         }
 
-        // Create task-to-workflow stages
-		foreach (explode(',', $this->request->getPost('tasks')) as $taskId)
+        // Create action-to-workflow stages
+		foreach (explode(',', $this->request->getPost('actions')) as $actionId)
 		{
 			$stage = [
 				'workflow_id' => $workflowId,
-				'task_id'     => $taskId,
+				'action_id'     => $actionId,
 			];
 
 			$this->stages->insert($stage);

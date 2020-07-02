@@ -1,34 +1,34 @@
 <?php namespace Tatter\Workflows\Entities;
 
 use CodeIgniter\Entity;
-use Tatter\Workflows\Entities\Task;
-use Tatter\Workflows\Models\TaskModel;
+use Tatter\Workflows\Entities\Action;
+use Tatter\Workflows\Models\ActionModel;
 
 class Stage extends Entity
 {
 	protected $dates = ['created_at', 'updated_at'];
 
     /**
-     * Cached entity for this stage's representative task.
+     * Cached entity for this stage's representative action.
      *
-     * @var Task
+     * @var Action
      */
-    protected $task;
+    protected $action;
 	
-	// Passes through name requests to the parent task
+	// Passes through name requests to the parent action
 	public function getName(): string
 	{
-		return $this->getTask()->name ?? '';
+		return $this->getAction()->name ?? '';
 	}
 	
-	// Gets this stage's parent task
-	public function getTask(): Task
+	// Gets this stage's parent action
+	public function getAction(): Action
 	{
-		if ($this->task === null)
+		if ($this->action === null)
 		{
-			$this->task = (new TaskModel())->find($this->attributes['task_id']);
+			$this->action = (new ActionModel())->find($this->attributes['action_id']);
 		}
 		
-		return $this->task;
+		return $this->action;
 	}
 }

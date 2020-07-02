@@ -10,7 +10,7 @@ class StageModel extends Model
 	protected $returnType     = 'Tatter\Workflows\Entities\Stage';
 	protected $useTimestamps = true;
 	protected $allowedFields = [
-		'task_id', 'workflow_id', 'input', 'required',
+		'action_id', 'workflow_id', 'input', 'required',
 	];
 	
 	/*** Tatter\Audits ***/

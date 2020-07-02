@@ -4,7 +4,7 @@ use CodeIgniter\Entity;
 
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Models\StageModel;
-use Tatter\Workflows\Models\TaskModel;
+use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\WorkflowModel;
 
 class Job extends Entity
@@ -18,7 +18,7 @@ class Job extends Entity
      */
     protected $stage;
 	
-	// Returns the next task for this job
+	// Returns the next action for this job
 	public function next()
 	{
 		// look through all this job's stages
@@ -26,7 +26,7 @@ class Job extends Entity
 		return $this->nextHelper($stages);
 	}
 	
-	// Returns the previous task for this job
+	// Returns the previous action for this job
 	public function previous()
 	{
 		// look through all this job's stages
@@ -36,7 +36,7 @@ class Job extends Entity
 		return $this->nextHelper($stages);
 	}
 	
-	// Returns the next task from an array of stages
+	// Returns the next action from an array of stages
 	protected function nextHelper($stages)
 	{
 		// look through the stages
@@ -51,16 +51,16 @@ class Job extends Entity
 					return false;
 				endif;
 				
-				// get the task from this stage
-				$tasks = new TaskModel();
-				$task = $tasks->find($stage->task_id);
-				if (empty($task)):
+				// get the action from this stage
+				$actions = new ActionModel();
+				$action = $actions->find($stage->action_id);
+				if (empty($action)):
 					return false;
 				endif;
 				
 				// set this as the current job and return
-				$task->job = $this;
-				return $task;
+				$action->job = $this;
+				return $action;
 			endif;
 		} while ($stage = next($stages));
 

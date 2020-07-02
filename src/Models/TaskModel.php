@@ -2,10 +2,10 @@
 
 use CodeIgniter\Model;
 
-class TaskModel extends Model
+class ActionModel extends Model
 {
-	protected $table          = 'tasks';
-	protected $returnType     = 'Tatter\Workflows\Entities\Task';
+	protected $table          = 'actions';
+	protected $returnType     = 'Tatter\Workflows\Entities\Action';
 	protected $useSoftDeletes = true;
 	protected $useTimestamps  = true;
 	protected $allowedFields  = [

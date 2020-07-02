@@ -10,5 +10,5 @@ $routes->add( $config->routeBase . '/(.+)',          '\Tatter\Workflows\Controll
 
 // Admin dashboard routes
 $routes->resource('stages',    ['websafe' => 1, 'controller'=>'\Tatter\Workflows\Controllers\Stages']);
-$routes->resource('tasks',     ['websafe' => 1, 'controller'=>'\Tatter\Workflows\Controllers\Tasks']);
+$routes->resource('actions',     ['websafe' => 1, 'controller'=>'\Tatter\Workflows\Controllers\Actions']);
 $routes->resource('workflows', ['websafe' => 1, 'controller'=>'\Tatter\Workflows\Controllers\Workflows']);
