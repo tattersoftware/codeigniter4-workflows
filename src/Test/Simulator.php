@@ -12,6 +12,13 @@ use Tatter\Workflows\Test\Fakers\WorkflowFaker;
 class Simulator
 {
 	/**
+	 * Whether initialize() has been run
+	 *
+	 * @var array
+	 */
+	static public $initialized = false;
+
+	/**
 	 * Number of each object type created since last reset.
 	 *
 	 * @var array
@@ -60,6 +67,8 @@ class Simulator
 		{
 			fake(JobFaker::class);
 		}
+
+		self::$initialized = true;
 	}
 
 	/**
@@ -71,5 +80,7 @@ class Simulator
 		{
 			self::$counts[$key] = 0;
 		}
+
+		self::$initialized = false;
 	}
 }
