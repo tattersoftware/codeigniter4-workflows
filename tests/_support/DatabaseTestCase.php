@@ -30,19 +30,6 @@ class DatabaseTestCase extends CIDatabaseTestCase
 	 */
 	protected $config;
 
-    /**
-     * Initializes the one-time components.
-     */
-    public static function setUpBeforeClass(): void
-    {
-    	helper('test');
-
-		// Inject the mock session driver into Services
-        $config  = config('App');
-        $session = new MockSession(new ArrayHandler($config, '0.0.0.0'), $config);
-        Services::injectMock('session', $session);
-    }
-
 	protected function setUp(): void
 	{
 		parent::setUp();
@@ -56,6 +43,5 @@ class DatabaseTestCase extends CIDatabaseTestCase
 		parent::tearDown();
 
 		Simulator::reset();
-    	$_SESSION = [];
 	}
 }

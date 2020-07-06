@@ -92,6 +92,9 @@ class Simulator
 	 */
 	static public function reset()
 	{
+		// Reset counts on faked items
+		Fabricator::resetCounts();
+
 		self::$initialized = false;
 	}
 }
