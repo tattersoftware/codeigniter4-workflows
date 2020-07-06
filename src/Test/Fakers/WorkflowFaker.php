@@ -3,7 +3,6 @@
 use Faker\Generator;
 use Tatter\Workflows\Entities\Workflow;
 use Tatter\Workflows\Models\WorkflowModel;
-use Tatter\Workflows\Test\Simulator;
 
 class WorkflowFaker extends WorkflowModel
 {
@@ -14,10 +13,8 @@ class WorkflowFaker extends WorkflowModel
 	 *
 	 * @return Workflow
 	 */
-	public function fake(Generator &$faker)
+	public function fake(Generator &$faker): Workflow
 	{
-		Simulator::$counts['workflows']++;
-
 		return new Workflow([
 			'name'        => $faker->word,
 			'category'    => $faker->streetSuffix,

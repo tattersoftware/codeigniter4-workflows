@@ -1,9 +1,9 @@
 <?php namespace Tatter\Workflows\Test\Fakers;
 
+use CodeIgniter\Test\Fabricator;
 use Faker\Generator;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Models\StageModel;
-use Tatter\Workflows\Test\Simulator;
 
 class StageFaker extends StageModel
 {
@@ -14,15 +14,11 @@ class StageFaker extends StageModel
 	 *
 	 * @return Stage
 	 */
-	public function fake(Generator &$faker)
+	public function fake(Generator &$faker): Stage
 	{
-		Simulator::$counts['stages']++;
-
-		$name = $faker->word;
-
 		return new Stage([
-			'action_id'     => rand(1, Simulator::$counts['actions']     ?: 12),
-			'workflow_id' => rand(1, Simulator::$counts['workflows'] ?: 4),
+			'action_id'   => rand(1, Fabricator::getCount('actions')     ?: 12),
+			'workflow_id' => rand(1, Fabricator::getCount('workflows') ?: 4),
 			'required'    => (bool) rand(0, 5),
 		]);
 	}

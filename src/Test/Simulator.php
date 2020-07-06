@@ -1,5 +1,6 @@
 <?php namespace Tatter\Workflows\Test;
 
+use CodeIgniter\Test\Fabricator;
 use Tatter\Workflows\Registrar;
 use Tatter\Workflows\Test\Fakers\JobFaker;
 use Tatter\Workflows\Test\Fakers\StageFaker;
@@ -19,53 +20,68 @@ class Simulator
 	static public $initialized = false;
 
 	/**
-	 * Number of each object type created since last reset.
+	 * LEGACY - Replaced by Fabricator::counts
 	 *
 	 * @var array
+	 * @deprecated 2.0.2
 	 */
 	static public $counts = [
 		'jobs'      => 0,
 		'stages'    => 0,
-		'actions'     => 0,
+		'actions'   => 0,
 		'workflows' => 0,
 	];
 
 	/**
 	 * Initialize the simulation.
+	 *
+	 * @param array  Array of target items to create
 	 */
-	static public function initialize()
+	static public function initialize($targets = ['actions', 'jobs', 'stages', 'workflows'])
 	{
 		self::reset();
 
 		// Register any Actions and update the count
-		self::$counts['actions'] = Registrar::actions();
-
-		// Create actions up to N
-		$count = rand(10, 20);
-		while (self::$counts['actions'] < $count)
+		if (in_array('actions', $targets))
 		{
-			fake(ActionFaker::class);
+			Fabricator::setCount('actions', Registrar::actions());
+
+			// Create actions up to N
+			$count = rand(10, 20);
+			while (Fabricator::getCount('actions') < $count)
+			{
+				fake(ActionFaker::class);
+			}
 		}
 
 		// Create workflows up to N
-		$count = rand(2, 7);
-		while (self::$counts['workflows'] < $count)
+		if (in_array('workflows', $targets))
 		{
-			fake(WorkflowFaker::class);
+			$count = rand(2, 7);
+			while (Fabricator::getCount('workflows') < $count)
+			{
+				fake(WorkflowFaker::class);
+			}
 		}
-
+		
 		// Create stages up to N
-		$count = self::$counts['workflows'] * rand(4, 8);
-		while (self::$counts['stages'] < $count)
+		if (in_array('stages', $targets))
 		{
-			fake(StageFaker::class);
+			$count = Fabricator::getCount('workflows') * rand(4, 8);
+			while (Fabricator::getCount('stages') < $count)
+			{
+				fake(StageFaker::class);
+			}
 		}
 
 		// Create jobs up to N
-		$count = rand(40, 200);
-		while (self::$counts['jobs'] < $count)
+		if (in_array('jobs', $targets))
 		{
-			fake(JobFaker::class);
+			$count = rand(40, 200);
+			while (Fabricator::getCount('jobs') < $count)
+			{
+				fake(JobFaker::class);
+			}
 		}
 
 		self::$initialized = true;
@@ -76,11 +92,6 @@ class Simulator
 	 */
 	static public function reset()
 	{
-		foreach (self::$counts as $key => $val)
-		{
-			self::$counts[$key] = 0;
-		}
-
 		self::$initialized = false;
 	}
 }

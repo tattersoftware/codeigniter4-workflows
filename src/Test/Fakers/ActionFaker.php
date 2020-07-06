@@ -3,7 +3,6 @@
 use Faker\Generator;
 use Tatter\Workflows\Entities\Action;
 use Tatter\Workflows\Models\ActionModel;
-use Tatter\Workflows\Test\Simulator;
 
 class ActionFaker extends ActionModel
 {
@@ -14,10 +13,8 @@ class ActionFaker extends ActionModel
 	 *
 	 * @return Action
 	 */
-	public function fake(Generator &$faker)
+	public function fake(Generator &$faker): Action
 	{
-		Simulator::$counts['actions']++;
-
 		$name = $faker->word;
 
 		return new Action([

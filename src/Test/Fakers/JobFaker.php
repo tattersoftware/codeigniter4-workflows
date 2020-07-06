@@ -1,9 +1,9 @@
 <?php namespace Tatter\Workflows\Test\Fakers;
 
+use CodeIgniter\Test\Fabricator;
 use Faker\Generator;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Models\JobModel;
-use Tatter\Workflows\Test\Simulator;
 
 class JobFaker extends JobModel
 {
@@ -14,15 +14,13 @@ class JobFaker extends JobModel
 	 *
 	 * @return Job
 	 */
-	public function fake(Generator &$faker)
+	public function fake(Generator &$faker): Job
 	{
-		Simulator::$counts['jobs']++;
-
 		return new Job([
 			'name'        => $faker->catchPhrase,
 			'summary'     => $faker->sentence,
-			'workflow_id' => rand(1, Simulator::$counts['workflows'] ?: 4),
-			'stage_id'    => rand(1, Simulator::$counts['stages']    ?: 99),
+			'workflow_id' => rand(1, Fabricator::getCount('workflows') ?: 4),
+			'stage_id'    => rand(1, Fabricator::getCount('stages')    ?: 99),
 		]);
 	}
 }
