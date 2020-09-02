@@ -24,6 +24,10 @@
 			"url": "https://github.com/codeigniter4/CodeIgniter4"
 		},
 		{
+			"type": "vcs",
+			"url": "https://github.com/lonnieezell/myth-auth"
+		},
+		{
 			"type": "composer",
 			"url": "https://asset-packagist.org"
 		}
@@ -39,9 +43,11 @@
 		"twbs/bootstrap": "^4.3"
 	},
 	"require-dev": {
+		"codeigniter4/codeigniter4": "dev-develop",
 		"phpunit/phpunit": "8.5.*",
 		"fzaninotto/faker": "^1.9@dev",
-		"codeigniter4/codeigniter4": "dev-develop"
+		"myth/auth": "dev-develop",
+		"phpstan/phpstan": "^0.12"
 	},
 	"autoload": {
 		"psr-4": {
