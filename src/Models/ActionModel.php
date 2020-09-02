@@ -17,6 +17,5 @@ class ActionModel extends Model
 		'category' => 'required|max_length[255]',
 		'name'     => 'required|max_length[255]',
 		'uid'      => 'required|max_length[255]',
-		'class'    => 'required|max_length[255]',
 	];
 }

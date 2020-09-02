@@ -10,7 +10,7 @@ use Tatter\Workflows\Models\ActionModel;
 class Registrar
 {
 	/**
-	 * Scan all namespaces for new actions to laod into the database
+	 * Scans all namespaces for new Actions to load into the database
 	 *
 	 * @return int  Number of new actions registered
 	 */
@@ -22,14 +22,12 @@ class Registrar
 		// Get all namespaces from the autoloader
 		$namespaces = Services::autoloader()->getNamespace();
 		
-		// Scan each namespace for actions
+		// Scan each namespace for Actions
 		$count = 0;
 		foreach ($namespaces as $namespace => $paths)
 		{
-			// Get any files in Actions/ for this namespace
-			$files = $locator->listNamespaceFiles($namespace, '/Actions/');
-			
-			foreach ($files as $file)
+			// Get any files in the Actions sub-directory for this namespace
+			foreach ($locator->listNamespaceFiles($namespace, '/Actions/') as $file)
 			{
 				// Skip non-PHP files
 				if (substr($file, -4) !== '.php')
@@ -55,7 +53,7 @@ class Registrar
 				{
 					throw new \RuntimeException("Missing 'register' method for {$class} in {$file}");
 				}
-				
+
 				// Register it
 				$result = $instance->register();
 				
