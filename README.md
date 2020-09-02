@@ -47,3 +47,10 @@ registered you can create workflows from a series of those actions by visiting t
 
 **Runner.php** is the central controller that handles job flow. By default this intercepts
 routes that match `/jobs/`, but this can be changed in the config file.
+
+## Action permissions
+
+You may limit access to individual Actions using the `role` attribute of its definition.
+By default the "user" `role` is accessible by anyone. To restrict access, define a
+`has_permission()` function which takes a single `string` parameter with the name of the role
+(hint: or use **Myth:Auth**'s existing version).
