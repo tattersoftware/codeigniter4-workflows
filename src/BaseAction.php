@@ -1,9 +1,17 @@
-<?php namespace Tatter\Workflows\Traits;
+<?php namespace Tatter\Workflows;
 
 use Tatter\Workflows\Models\ActionModel;
 
-trait ActionsTrait
+/**
+ * Class reference and common functions for all Actions.
+ */
+abstract class BaseAction
 {
+	/**
+	 * @var array<string> Implemented by child class
+	 */
+	public $definition;
+
 	/**
 	 * @var \Tatter\Workflows\Config\Workflows
 	 */
@@ -25,11 +33,11 @@ trait ActionsTrait
 	public $request;
 
     /**
-     * Sets common resources for Actions (frees up __construct for individual classes).
+     * Sets up common resources for Actions.
      *
      * @return $this
      */
-	public function initialize(): self
+	public function __construct()
 	{
 		$this->request = service('request');
 		$this->config  = config('Workflows');
@@ -50,10 +58,12 @@ trait ActionsTrait
 		return $this->definition[$name];
     }
 
+	//--------------------------------------------------------------------
+
     /**
 	 * Creates the database record for this class based on its definition
 	 *
-	 * @return int|bool  true for existing entry, false for failure, int for inserted ID
+	 * @return int|bool  int for inserted ID, true for existing entry, false for failure
 	 */
 	public function register()
 	{
@@ -76,5 +86,27 @@ trait ActionsTrait
 	public function remove(): bool
 	{
 		return model(ActionModel::class)->where('uid', $this->uid)->delete();
+	}
+
+	//--------------------------------------------------------------------
+
+    /**
+	 * Runs when a job progresses forward through the workflow
+	 *
+	 * @return mixed
+	 */
+	public function up()
+	{
+		/* Optionally implemented by child class */
+	}
+	
+    /**
+	 * Runs when job regresses back through the workflow
+	 *
+	 * @return mixed
+	 */
+	public function down()
+	{
+		/* Optionally implemented by child class */
 	}
 }

@@ -5,7 +5,7 @@ use Config\Services;
 use Tatter\Workflows\Models\ActionModel;
 
 /**
- * Class to handle action registration.
+ * Class to handle Action registration.
  */
 class Registrar
 {
@@ -16,7 +16,7 @@ class Registrar
 	 */
 	static public function actions(): int
     {
-		$actions   = model(ActionModel::class);
+		$actions = model(ActionModel::class);
 		$locator = Services::locator(true);
 
 		// Get all namespaces from the autoloader

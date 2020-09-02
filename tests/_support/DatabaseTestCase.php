@@ -1,9 +1,6 @@
 <?php namespace Tests\Support;
 
-use Config\Services;
-use CodeIgniter\Session\Handlers\ArrayHandler;
 use CodeIgniter\Test\CIDatabaseTestCase;
-use CodeIgniter\Test\Mock\MockSession;
 use Tatter\Workflows\Test\Simulator;
 
 class DatabaseTestCase extends CIDatabaseTestCase
