@@ -1,6 +1,9 @@
 # Tatter\Workflows
 Job action control through dynamic workflows, for CodeIgniter 4
 
+[![](https://github.com/tattersoftware/workflows/workflows/PHPUnit/badge.svg)](https://github.com/tattersoftware/workflows/actions?query=workflow%3A%22PHPUnit%22)
+[![](https://github.com/tattersoftware/workflows/workflows/PHPStan/badge.svg)](https://github.com/tattersoftware/workflows/actions?query=workflow%3A%PHPStan%22)
+
 ## Quick Start
 
 1. Install with Composer: `> composer require tatter/workflows`

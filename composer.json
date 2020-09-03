@@ -44,7 +44,7 @@
 	},
 	"require-dev": {
 		"codeigniter4/codeigniter4": "dev-develop",
-		"phpunit/phpunit": "8.5.*",
+		"phpunit/phpunit": "^8.5",
 		"fzaninotto/faker": "^1.9@dev",
 		"myth/auth": "dev-develop",
 		"phpstan/phpstan": "^0.12"
@@ -60,6 +60,7 @@
 		}
 	},
 	"scripts": {
+		"analyze": "phpstan analyze",
 		"test": "phpunit",
 		"post-update-cmd": [
 			"composer dump-autoload"
