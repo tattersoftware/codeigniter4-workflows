@@ -15,7 +15,7 @@ class Workflow extends Entity
 		$stages = [];
 
 		foreach (model(StageModel::class)
-			->where('workflow_id', $this->id)
+			->where('workflow_id', $this->attributes['id'])
 			->orderBy('id', 'asc')
 			->findAll() as $stage)
 		{

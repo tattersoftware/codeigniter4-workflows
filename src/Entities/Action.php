@@ -41,7 +41,7 @@ class Action extends Entity
      */
 	public function getRoute($jobId = null): string
 	{
-		$route = '/' . config('Workflows')->routeBase . '/' . $this->uid;
+		$route = '/' . config('Workflows')->routeBase . '/' . $this->attributes['uid'];
 
 		if ($jobId)
 		{

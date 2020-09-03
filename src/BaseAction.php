@@ -70,7 +70,7 @@ abstract class BaseAction
 		$actions = model(ActionModel::class);
 
 		// Check for an existing entry
-		if ($action = $actions->where('uid', $this->uid)->first())
+		if ($action = $actions->where('uid', $this->definition['uid'])->first())
 		{
 			return true;
 		}
@@ -85,7 +85,7 @@ abstract class BaseAction
 	 */
 	public function remove(): bool
 	{
-		return model(ActionModel::class)->where('uid', $this->uid)->delete();
+		return model(ActionModel::class)->where('uid', $this->definition['uid'])->delete();
 	}
 
 	//--------------------------------------------------------------------

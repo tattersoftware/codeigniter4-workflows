@@ -1,4 +1,5 @@
 <?php
+$routes = $routes ?? service('routes');
 $config = config('Workflows');
 
 // Runner routes

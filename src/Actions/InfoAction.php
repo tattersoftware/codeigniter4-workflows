@@ -16,12 +16,11 @@ class InfoAction extends BaseAction
 	// Display the edit form
 	public function get(): string
 	{
-		// Prep the view and return it
-		$this->renderer->setVar('layout', $this->config->layouts['public']);
-		$this->renderer->setVar('config', $this->config);
-		$this->renderer->setVar('job', $this->job);
-
-		return $this->renderer->render('Tatter\Workflows\Views\actions\info');
+		return view('Tatter\Workflows\Views\actions\info', [
+			'layout' => $this->config->layouts['public'],
+			'config' => $this->config,
+			'job'    => $this->job,
+		]);
 	}
 	
 	/**
@@ -45,7 +44,7 @@ class InfoAction extends BaseAction
 		// Try to update the job
 		if (! $this->jobs->update($this->job->id, $this->request->getPost()))
 		{
-            return redirect()->back()->withInput()->with('errors', $this->model->errors());
+            return redirect()->back()->withInput()->with('errors', $this->jobs->errors());
         }
 
 		return true;

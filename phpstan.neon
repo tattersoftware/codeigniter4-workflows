@@ -1,12 +1,13 @@
 parameters:
     bootstrapFiles:
         - qa-bootstrap.php
-#    excludes_analyse:
+    excludes_analyse:
+        - src/Views/*
     ignoreErrors:
-    - '#Unsafe usage of new static\(\)*#'
+        - '#Unsafe usage of new static\(\)*#'
     scanDirectories:
-      - vendor/codeigniter4/codeigniter4/system/Helpers
-      - vendor/myth/auth/src/Helpers
+        - vendor/codeigniter4/codeigniter4/system/Helpers
+        - vendor/myth/auth/src/Helpers
     dynamicConstantNames:
         - ENVIRONMENT
         - CI_DEBUG
