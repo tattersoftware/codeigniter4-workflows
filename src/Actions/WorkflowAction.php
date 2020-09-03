@@ -1,11 +1,9 @@
 <?php namespace Tatter\Workflows\Actions;
 
-use Tatter\Workflows\Interfaces\ActionInterface;
+use Tatter\Workflows\BaseAction;
 
-class WorkflowAction implements ActionInterface
+class WorkflowAction extends BaseAction
 {
-	use \Tatter\Workflows\Traits\ActionsTrait;
-
 	public $definition = [
 		'category' => 'Core',
 		'name'     => 'Workflow',
@@ -18,18 +16,6 @@ class WorkflowAction implements ActionInterface
 
 	public function get()
 	{
-
-	}
-
-	// Run when a job progresses forward through the workflow
-	public function up()
-	{
-
-	}
-
-	// Run when job regresses back through the workflow
-	public function down()
-	{
-
+		throw new \RuntimeException('Not yet implemented');
 	}
 }

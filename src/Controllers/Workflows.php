@@ -8,30 +8,62 @@ use Tatter\Workflows\Models\WorkflowModel;
 
 class Workflows extends Controller
 {
-	// Load the common dependencies
+	/**
+	 * @var WorkflowModel
+	 */
+	protected $model;
+
+	/**
+	 * @var ActionModel
+	 */
+	protected $actions;
+
+	/**
+	 * @var StageModel
+	 */
+	protected $stages;
+
+	/**
+	 * @var \Tatter\Workflows\Config\Workflows
+	 */
+	protected $config;
+
+    /**
+     * Loads the common dependencies
+     */	
 	public function __construct()
 	{
-		$this->model  = new WorkflowModel();
-		$this->stages = new StageModel();
-		$this->actions  = new ActionModel();
-		$this->config = config('Workflows');
+		$this->model   = new WorkflowModel();
+		$this->stages  = new StageModel();
+		$this->actions = new ActionModel();
+		$this->config  = config('Workflows');
 	}
 
-	// Displays a list of available workflows.
+    /**
+     * Displays a list of available Workflows.
+     *
+     * @return string
+     */	
 	public function index(): string
 	{
 		$data = [
 			'layout'    => $this->config->layouts['manage'],
 			'workflows' => $this->model->orderBy('name')->findAll(),
 		];
-		
+
 		// Prefetch the stages
 		$data['stages'] = $this->model->fetchStages($data['workflows']);
-		
+
 		return view('Tatter\Workflows\Views\workflows\index', $data);
 	}
 
-	// Shows details for one workflow
+    /**
+     * Shows details for one Workflow.
+     *
+     * @param string $workflowId
+     *
+     * @return string
+     */	
 	public function show(string $workflowId): string
 	{
 		$data = [
@@ -39,7 +71,7 @@ class Workflows extends Controller
 			'layout'    => $this->config->layouts['manage'],
 			'workflow'  => $this->model->find($workflowId),
 			'workflows' => $this->model->orderBy('name', 'asc')->findAll(),
-			'actions'     => $this->actions->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
+			'actions'   => $this->actions->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
 		];
 
 		// Add the stages
@@ -48,27 +80,35 @@ class Workflows extends Controller
 		return view('Tatter\Workflows\Views\workflows\show', $data);
 	}
 
-	// Display the form for a new workflow
+    /**
+     * Displays the form for a new Workflow.
+     *
+     * @return string
+     */	
 	public function new(): string
 	{
 		$data = [
-			'layout' => $this->config->layouts['manage'],
-			'actions'  => $this->actions->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
+			'layout'  => $this->config->layouts['manage'],
+			'actions' => $this->actions->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
 		];
-		
+
 		// Prepare action data to be JSON encoded for JSSortable
 		$json = [];
 		foreach ($data['actions'] as $action)
 		{
 			$json[$action->id] = $action->toArray();
 		}
-		
+
 		$data['json'] = json_encode($json);
-		
+
 		return view('Tatter\Workflows\Views\workflows\new', $data);		
 	}
 
-	// Create a workflow from the new form data
+    /**
+     * Creates a Workflow from the new form data.
+     *
+     * @return RedirectResponse
+     */
 	public function create(): RedirectResponse
 	{		
 		// Validate
@@ -104,13 +144,19 @@ class Workflows extends Controller
 		return redirect()->to('/workflows/' . $workflowId)->with('success', lang('Workflows.newWorkflowSuccess'));
 	}
 
-	// Update workflow details
+    /**
+     * Update workflow details.
+     *
+     * @param string $workflowId
+     *
+     * @return RedirectResponse
+     */
 	public function update(string $workflowId): RedirectResponse
 	{		
-		// validate
+		// Validate
 		$rules = [
-			'name'     => 'required|max_length[255]',
-			'summary'  => 'required|max_length[255]',
+			'name'    => 'required|max_length[255]',
+			'summary' => 'required|max_length[255]',
 		];
 		if (! $this->validate($rules))
 		{
@@ -127,10 +173,15 @@ class Workflows extends Controller
 		return redirect()->to('/workflows/' . $workflowId)->with('success', lang('Workflows.updateWorkflowSuccess'));
 	}
 
-	// Delete the workflow (soft)
-	public function delete($workflowId): RedirectResponse
+    /**
+     * Delete the workflow (soft).
+     *
+     * @param string $workflowId
+     *
+     * @return RedirectResponse
+     */
+	public function delete(string $workflowId): RedirectResponse
 	{		
-		// (Soft) delete the workflow
 		$this->model->delete($workflowId);
 
 		return redirect()->to('/workflows')->with('success', lang('Workflows.deletedWorkflowSuccess'));

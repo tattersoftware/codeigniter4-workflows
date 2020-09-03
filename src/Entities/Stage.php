@@ -14,26 +14,34 @@ class Stage extends Entity
 	];
 
     /**
-     * Cached entity for this stage's representative action.
+     * Cached entity for the associated Action.
      *
      * @var Action
      */
     protected $action;
-	
-	// Passes through name requests to the parent action
+
+    /**
+     * Passes through name requests to the Action
+     *
+     * @return string
+     */
 	public function getName(): string
 	{
 		return $this->getAction()->name ?? '';
 	}
-	
-	// Gets this stage's parent action
+
+    /**
+     * Gets the associated Action
+     *
+     * @return Action
+     */
 	public function getAction(): Action
 	{
 		if ($this->action === null)
 		{
-			$this->action = (new ActionModel())->find($this->attributes['action_id']);
+			$this->action = model(ActionModel::class)->find($this->attributes['action_id']);
 		}
-		
+
 		return $this->action;
 	}
 }

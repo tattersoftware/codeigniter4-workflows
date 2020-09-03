@@ -9,7 +9,7 @@ class JoblogModel extends Model
 	protected $returnType = 'Tatter\Workflows\Entities\Joblog';
 
 	protected $useTimestamps  = true;
-	protected $updatedField   = false;
+	protected $updatedField   = '';
 	protected $useSoftDeletes = false;
 	protected $skipValidation = true;
 
@@ -18,7 +18,7 @@ class JoblogModel extends Model
     /**
      * Returns all logs for a job seeded with their "from" and "to" stages
      *
-     * @param int  Job ID
+     * @param int $jobId  Job ID
      *
      * @return array|null
      */

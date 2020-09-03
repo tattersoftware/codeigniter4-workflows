@@ -14,17 +14,14 @@
 
 	<p>Unable to locate that job!</p>
 
-	<?php return $this->endSection(); endif; ?>
+	<?php else: ?>
 
 	<h2>Job info</h2>
 
-	<?php if (! $job->stage->required): ?>
-	<?php if ($next = $job->next()): ?>
-	<?php $route = '/' . $config->routeBase . '/' . $next->uid . '/' . $job->id; ?>
+	<?php if (! $job->stage->required && $stage = $job->next()): ?>
 
-		<a class="btn btn-link float-right" href="<?= site_url($route) ?>" role="button"><i class="fas fa-arrow-circle-right"></i> Skip</a>
+		<a class="btn btn-link float-right" href="<?= site_url($stage->action->getRoute($job->id)) ?>" role="button"><i class="fas fa-arrow-circle-right"></i> Skip</a>
 
-	<?php endif; ?>
 	<?php endif; ?>
 
 	<form name="update-job" action="<?= site_url("{$config->routeBase}/info/{$job->id}") ?>" method="post">
@@ -45,6 +42,8 @@
 			</div>
 		</div>
 	</div>
+
+	<?php endif; ?>
 </div>
 
 <?= $this->endSection() ?>
