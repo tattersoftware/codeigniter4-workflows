@@ -8,14 +8,14 @@ class CreateWorkflowsTables extends Migration
 	{
 		/* Workflows */
 		$fields = [
-			'name'           => ['type' => 'varchar', 'constraint' => 63],
-			'category'       => ['type' => 'varchar', 'constraint' => 63],
-			'icon'           => ['type' => 'varchar', 'constraint' => 63],
-			'summary'        => ['type' => 'varchar', 'constraint' => 255],
-			'description'    => ['type' => 'text'],
-			'created_at'     => ['type' => 'datetime', 'null' => true],
-			'updated_at'     => ['type' => 'datetime', 'null' => true],
-			'deleted_at'     => ['type' => 'datetime', 'null' => true],
+			'name'        => ['type' => 'varchar', 'constraint' => 63],
+			'category'    => ['type' => 'varchar', 'constraint' => 63],
+			'icon'        => ['type' => 'varchar', 'constraint' => 63],
+			'summary'     => ['type' => 'varchar', 'constraint' => 255],
+			'description' => ['type' => 'text'],
+			'created_at'  => ['type' => 'datetime', 'null' => true],
+			'updated_at'  => ['type' => 'datetime', 'null' => true],
+			'deleted_at'  => ['type' => 'datetime', 'null' => true],
 		];
 		
 		$this->forge->addField('id');
@@ -30,18 +30,18 @@ class CreateWorkflowsTables extends Migration
 
 		/* Actions */
 		$fields = [
-			'category'       => ['type' => 'varchar', 'constraint' => 63],
-			'name'           => ['type' => 'varchar', 'constraint' => 63],
-			'uid'            => ['type' => 'varchar', 'constraint' => 63],
-			'class'          => ['type' => 'varchar', 'constraint' => 63],
-			'input'          => ['type' => 'varchar', 'constraint' => 63],
-			'role'           => ['type' => 'varchar', 'constraint' => 63],
-			'icon'           => ['type' => 'varchar', 'constraint' => 63],
-			'summary'        => ['type' => 'varchar', 'constraint' => 255],
-			'description'    => ['type' => 'text'],
-			'created_at'     => ['type' => 'datetime', 'null' => true],
-			'updated_at'     => ['type' => 'datetime', 'null' => true],
-			'deleted_at'     => ['type' => 'datetime', 'null' => true],
+			'category'    => ['type' => 'varchar', 'constraint' => 63],
+			'name'        => ['type' => 'varchar', 'constraint' => 63],
+			'uid'         => ['type' => 'varchar', 'constraint' => 63],
+			'class'       => ['type' => 'varchar', 'constraint' => 63, 'null' => true],
+			'input'       => ['type' => 'varchar', 'constraint' => 63, 'null' => true],
+			'role'        => ['type' => 'varchar', 'constraint' => 63],
+			'icon'        => ['type' => 'varchar', 'constraint' => 63],
+			'summary'     => ['type' => 'varchar', 'constraint' => 255],
+			'description' => ['type' => 'text', 'null' => true],
+			'created_at'  => ['type' => 'datetime', 'null' => true],
+			'updated_at'  => ['type' => 'datetime', 'null' => true],
+			'deleted_at'  => ['type' => 'datetime', 'null' => true],
 		];
 		
 		$this->forge->addField('id');
@@ -57,12 +57,12 @@ class CreateWorkflowsTables extends Migration
 
 		/* Stages */
 		$fields = [
-			'action_id'        => ['type' => 'int', 'unsigned' => true],
-			'workflow_id'    => ['type' => 'int', 'unsigned' => true],
-			'input'          => ['type' => 'varchar', 'constraint' => 63],
-			'required'       => ['type' => 'boolean', 'default' => 1],
-			'created_at'     => ['type' => 'datetime', 'null' => true],
-			'updated_at'     => ['type' => 'datetime', 'null' => true],
+			'action_id'   => ['type' => 'int', 'unsigned' => true],
+			'workflow_id' => ['type' => 'int', 'unsigned' => true],
+			'input'       => ['type' => 'varchar', 'constraint' => 63, 'null' => true],
+			'required'    => ['type' => 'boolean', 'default' => 1],
+			'created_at'  => ['type' => 'datetime', 'null' => true],
+			'updated_at'  => ['type' => 'datetime', 'null' => true],
 		];
 		
 		$this->forge->addField('id');
@@ -75,13 +75,13 @@ class CreateWorkflowsTables extends Migration
 
 		/* Jobs */
 		$fields = [
-			'name'           => ['type' => 'varchar', 'constraint' => 255],
-			'summary'        => ['type' => 'varchar', 'constraint' => 255],
-			'workflow_id'    => ['type' => 'int', 'unsigned' => true],
-			'stage_id'       => ['type' => 'int', 'unsigned' => true, 'null' => true],
-			'created_at'     => ['type' => 'datetime', 'null' => true],
-			'updated_at'     => ['type' => 'datetime', 'null' => true],
-			'deleted_at'     => ['type' => 'datetime', 'null' => true],
+			'name'        => ['type' => 'varchar', 'constraint' => 255],
+			'summary'     => ['type' => 'varchar', 'constraint' => 255],
+			'workflow_id' => ['type' => 'int', 'unsigned' => true],
+			'stage_id'    => ['type' => 'int', 'unsigned' => true, 'null' => true],
+			'created_at'  => ['type' => 'datetime', 'null' => true],
+			'updated_at'  => ['type' => 'datetime', 'null' => true],
+			'deleted_at'  => ['type' => 'datetime', 'null' => true],
 		];
 		
 		$this->forge->addField('id');
@@ -94,11 +94,11 @@ class CreateWorkflowsTables extends Migration
 	
 		// Job change log
 		$fields = [
-			'job_id'         => ['type' => 'int', 'unsigned' => true],
-			'stage_from'     => ['type' => 'int', 'unsigned' => true, 'null' => true],
-			'stage_to'       => ['type' => 'int', 'unsigned' => true, 'null' => true],
-			'user_id'        => ['type' => 'int', 'unsigned' => true, 'null' => true],
-			'created_at'     => ['type' => 'datetime', 'null' => true],
+			'job_id'     => ['type' => 'int', 'unsigned' => true],
+			'stage_from' => ['type' => 'int', 'unsigned' => true, 'null' => true],
+			'stage_to'   => ['type' => 'int', 'unsigned' => true, 'null' => true],
+			'user_id'    => ['type' => 'int', 'unsigned' => true, 'null' => true],
+			'created_at' => ['type' => 'datetime', 'null' => true],
 		];
 		
 		$this->forge->addField('id');
@@ -112,10 +112,10 @@ class CreateWorkflowsTables extends Migration
 
 	public function down()
 	{
-		$this->forge->dropTable('workflows');
-		$this->forge->dropTable('actions');
-		$this->forge->dropTable('stages');
-		$this->forge->dropTable('jobs');
 		$this->forge->dropTable('joblogs');
+		$this->forge->dropTable('jobs');
+		$this->forge->dropTable('stages');
+		$this->forge->dropTable('actions');
+		$this->forge->dropTable('workflows');
 	}
 }
