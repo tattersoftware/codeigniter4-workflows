@@ -15,7 +15,7 @@ class Simulator
 	/**
 	 * Whether initialize() has been run
 	 *
-	 * @var array
+	 * @var bool
 	 */
 	static public $initialized = false;
 

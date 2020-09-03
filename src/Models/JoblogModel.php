@@ -9,7 +9,7 @@ class JoblogModel extends Model
 	protected $returnType = 'Tatter\Workflows\Entities\Joblog';
 
 	protected $useTimestamps  = true;
-	protected $updatedField   = false;
+	protected $updatedField   = '';
 	protected $useSoftDeletes = false;
 	protected $skipValidation = true;
 

@@ -42,8 +42,6 @@ abstract class BaseAction
 		$this->request = service('request');
 		$this->config  = config('Workflows');
 		$this->jobs    = model($this->config->jobModel);
-
-		return $this;
 	}
 
     /**
