@@ -35,7 +35,7 @@ class Simulator
 	/**
 	 * Initialize the simulation.
 	 *
-	 * @param array  Array of target items to create
+	 * @param array $targets  Array of target items to create
 	 */
 	static public function initialize($targets = ['actions', 'jobs', 'stages', 'workflows'])
 	{

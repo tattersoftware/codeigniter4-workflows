@@ -9,9 +9,9 @@ class Action extends Entity
 	protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
     /**
-     * Cached ActionInterface instance for "class" attribute.
+     * Cached Action instance for "class" attribute.
      *
-     * @var ActionInterface
+     * @var BaseAction
      */
     protected $instance;
 

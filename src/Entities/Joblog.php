@@ -39,7 +39,7 @@ class Joblog extends \CodeIgniter\Entity
     /**
      * Sets the "from" stage - mostly used by the model to seed entities
      *
-     * @param Stage|null  Stage the job moved to
+     * @param Stage|null $stage  Stage the job moved to
      */
 	public function setFrom(Stage $stage = null)
 	{
@@ -49,7 +49,7 @@ class Joblog extends \CodeIgniter\Entity
     /**
      * Loads (if necessary) and returns the stage this logs the job changing to.
      *
-     * @return Stage|null  Stage the job moved from
+     * @return Stage|null $stage  Stage the job moved from
      */
 	public function getTo(): ?Stage
 	{
@@ -64,7 +64,7 @@ class Joblog extends \CodeIgniter\Entity
     /**
      * Sets the "to" stage - mostly used by the model to seed entities
      *
-     * @param Stage|null  Stage the job moved from
+     * @param Stage|null $stage  Stage the job moved from
      */
 	public function setTo(Stage $stage = null)
 	{

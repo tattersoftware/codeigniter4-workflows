@@ -4,6 +4,10 @@ parameters:
     excludes_analyse:
         - src/Views/*
     ignoreErrors:
+        - '#Access to an undefined property .+\\Entities\\[A-Za-z]+::\$[a-z]+#'
+        - '#Access to an undefined property Faker\\Generator::\$[A-Za-z]+#'
+        - '#Access to protected property .+\\Entities\\[A-Za-z]+::\$[a-z]+#'
+        - '#Cannot access property [\$a-z_]+ on (array|object)#'
         - '#Unsafe usage of new static\(\)*#'
     scanDirectories:
         - vendor/codeigniter4/codeigniter4/system/Helpers

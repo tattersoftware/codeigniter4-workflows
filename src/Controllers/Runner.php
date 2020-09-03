@@ -101,10 +101,10 @@ class Runner extends Controller
      */
 	protected function resume($jobId)
 	{
-		// Load the job, stage, and action
-		$this->job = $this->jobs->find($jobId);
-
-		if (empty($this->job))
+		// Get the Job
+		/** @var Job $job */
+		$job = $this->jobs->find($jobId);
+		if (empty($job))
 		{
 			if ($this->config->silent)
 			{
@@ -114,22 +114,25 @@ class Runner extends Controller
 			throw WorkflowsException::forJobNotFound();
 		}
 
-		// If the job is completed then display a message and quit
-		if (empty($this->job->stage_id))
+		// If the Job is completed then display a message and quit
+		if (empty($job->stage_id))
 		{
-			return view($this->config->views['messages'], ['layout' => $this->config->layouts['public'], 'message' => lang('Workflows.jobAlreadyComplete')]);
+			return view($this->config->views['messages'], [
+				'layout'  => $this->config->layouts['public'],
+				'message' => lang('Workflows.jobAlreadyComplete'),
+			]);
 		}
 
-		$this->stage = model(StageModel::class)->find($this->job->stage_id);
-		if (empty($this->stage))
+		// Check for a current Stage
+		if (! $stage = model(StageModel::class)->find($job->stage_id))
 		{
-			return view($this->config->views['messages'], ['layout' => $this->config->layouts['public'], 'error' => lang('Workflows.jobAlreadyComplete')]);
+			return view($this->config->views['messages'], [
+				'layout' => $this->config->layouts['public'],
+				'error'  => lang('Workflows.jobAlreadyComplete'),
+			]);
 		}
 
-		$action = model(ActionModel::class)->find($this->stage->action_id);
-		$route  = "/{$this->config->routeBase}/{$action->uid}/{$this->job->id}";
-
-		return redirect()->to($route);
+		return redirect()->to($stage->action->getRoute($job->id));
 	}
 
     /**
@@ -246,7 +249,7 @@ class Runner extends Controller
 		{
 			return view($this->config->views['filter'], [
 				'layout' => $this->config->layouts['public'],
-				'job'    => $this->job,
+				'job'    => $job,
 			]);
 		}
 		
@@ -331,7 +334,7 @@ class Runner extends Controller
      * Parses the result of an Action method call.
      *
      * @param mixed $result  Result from the Action method
-     * @param mixed $job     The current Job
+     * @param Job $job       The current Job
      *
      * @return string|RedirectResponse  A view to display or a RedirectResponse
      * @throws WorkflowsException
@@ -368,7 +371,7 @@ class Runner extends Controller
 
 			return view($this->config->views['complete'], [
 				'layout' => $this->config->layouts['public'],
-				'job'    => $this->job,
+				'job'    => $job,
 			]);
 		}
 
