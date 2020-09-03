@@ -102,10 +102,7 @@ class Job extends Entity
 	public function previous(): ?Stage
 	{
 		// Look through all the Stages backwards
-		$stages = $this->getStages();
-		array_reverse($stages);
-
-		return $this->_next($stages);
+		return $this->_next(array_reverse($this->getStages()));
 	}
 
     /**
