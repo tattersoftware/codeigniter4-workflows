@@ -1,5 +1,6 @@
 <?php namespace Tatter\Workflows;
 
+use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Models\ActionModel;
 
 /**
@@ -45,7 +46,7 @@ abstract class BaseAction
 	}
 
     /**
-	 * Magic wrapper for getting values from the definition
+	 * Magic wrapper for getting values from the definition.
 	 *
 	 * @param string $name
 	 *
@@ -59,7 +60,7 @@ abstract class BaseAction
 	//--------------------------------------------------------------------
 
     /**
-	 * Creates the database record for this class based on its definition
+	 * Creates the database record for this class based on its definition.
 	 *
 	 * @return int|bool  int for inserted ID, true for existing entry, false for failure
 	 */
@@ -77,7 +78,7 @@ abstract class BaseAction
 	}
 
     /**
-	 * Deletes this action from the database (soft)
+	 * Deletes this action from the database (soft).
 	 *
 	 * @return bool  Result from the model
 	 */
@@ -86,10 +87,24 @@ abstract class BaseAction
 		return model(ActionModel::class)->where('uid', $this->definition['uid'])->delete();
 	}
 
+    /**
+	 * Sets the Job for this Action to run against.
+	 *
+	 * @param Job $job
+	 *
+	 * @return $this
+	 */
+	public function setJob(Job $job): self
+	{
+		$this->job = $job;
+
+		return $this;
+	}
+
 	//--------------------------------------------------------------------
 
     /**
-	 * Runs when a job progresses forward through the workflow
+	 * Runs when a job progresses forward through the workflow.
 	 *
 	 * @return mixed
 	 */
@@ -99,7 +114,7 @@ abstract class BaseAction
 	}
 	
     /**
-	 * Runs when job regresses back through the workflow
+	 * Runs when job regresses back through the workflow.
 	 *
 	 * @return mixed
 	 */

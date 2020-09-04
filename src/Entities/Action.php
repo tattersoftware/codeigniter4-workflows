@@ -25,7 +25,6 @@ class Action extends Entity
 		if ($this->instance === null)
 		{
 			$this->instance = new $this->attributes['class']();
-			$this->instance->initialize();
 		}
 
 		return $this->instance;
@@ -56,7 +55,7 @@ class Action extends Entity
      *
      * @return bool
      */
-	protected function mayAccess(): bool
+	public function mayAccess(): bool
 	{
 		// If role filtering is not set up then allow through
 		if (! function_exists('has_permission'))
@@ -92,6 +91,6 @@ class Action extends Entity
 			throw WorkflowsException::forUnsupportedActionMethod($this->attributes['name'], $name);
 		}
 
-		return $instance->$name();
+		return $instance->$name(...$params);
 	}
 }

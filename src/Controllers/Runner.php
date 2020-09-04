@@ -230,9 +230,9 @@ class Runner extends Controller
 		}
 
 		// Extract parsed variables
-		list($action, $job, $stage, $workflow) = $parsed;
+		list($action, $job, $stage) = $parsed;
 
-		// Intercept jobs that are already completed
+		// Intercept Jobs that are already completed
 		if (empty($stage))
 		{
 			return redirect()->to(site_url($this->config->routeBase . '/show/' . $job->id));
@@ -255,8 +255,8 @@ class Runner extends Controller
 		
 		// Determine the request method and run the corresponding Action method
 		$method = $this->request->getMethod();
-		$result = $action->$method;
-		
+		$result = $action->setJob($job)->$method();
+
 		// Handle return values by their type
 		return $this->parseResult($result, $job);
 	}
@@ -271,9 +271,7 @@ class Runner extends Controller
      */
 	protected function parseRoute(array $params)
 	{
-		$parsed = [];
-
-		// Strip off the action & job identifiers
+		// Strip off the Action & Job identifiers
 		$uid   = array_shift($params);
 		$jobId = array_shift($params);
 
@@ -290,14 +288,14 @@ class Runner extends Controller
 			throw WorkflowsException::forMissingJobId($uid);
 		}
 
-		// Look up the action by its UID
-		if (! $parsed['action'] = model(ActionModel::class)->where('uid', $uid)->first())
+		// Look up the Action by its UID
+		if (! $action = model(ActionModel::class)->where('uid', $uid)->first())
 		{
 			throw WorkflowsException::forActionNotFound();
 		}
 
 		// Load the Job
-		if (! $parsed['job'] = $this->jobs->find($jobId))
+		if (! $job = $this->jobs->find($jobId))
 		{
 			if ($this->config->silent)
 			{
@@ -310,8 +308,8 @@ class Runner extends Controller
 			throw WorkflowsException::forJobNotFound();
 		}
 
-		// Verify the workflow
-		if (! $parsed['workflow'] = model(WorkflowModel::class)->find($parsed['job']->workflow_id))
+		// Verify the Workflow
+		if (! $workflow = model(WorkflowModel::class)->find($job->workflow_id))
 		{
 			if ($this->config->silent)
 			{
@@ -324,10 +322,10 @@ class Runner extends Controller
 			throw WorkflowsException::forWorkflowNotFound();
 		}
 
-		// stage_id may be empty (completed job)
-		$parsed['stage'] = $parsed['job']->stage_id ? model(StageModel::class)->find($parsed['job']->stage_id) : null;
+		// stage_id may be empty (completed Job)
+		$stage = $job->stage_id ? model(StageModel::class)->find($job->stage_id) : null;
 
-		return $parsed;
+		return [$action, $job, $stage];
 	}
 
     /**

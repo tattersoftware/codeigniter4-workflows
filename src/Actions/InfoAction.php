@@ -12,8 +12,12 @@ class InfoAction extends BaseAction
 		'icon'     => 'fas fa-info-circle',
 		'summary'  => 'Set basic details of a job',
 	];
-	
-	// Display the edit form
+
+	/**
+	 * Display the edit form.
+	 *
+	 * @return string The view
+	 */
 	public function get(): string
 	{
 		return view('Tatter\Workflows\Views\actions\info', [
@@ -22,7 +26,7 @@ class InfoAction extends BaseAction
 			'job'    => $this->job,
 		]);
 	}
-	
+
 	/**
 	 * Validates and processes form submission.
 	 *
