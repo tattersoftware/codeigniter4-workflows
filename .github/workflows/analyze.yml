@@ -22,7 +22,7 @@ on:
 
 jobs:
   build:
-    name: Analyze code (PHPStan)
+    name: Analyze code
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

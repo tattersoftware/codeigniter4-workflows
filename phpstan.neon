@@ -20,4 +20,3 @@ parameters:
 	dynamicConstantNames:
 		- ENVIRONMENT
 		- CI_DEBUG
-	treatPhpDocTypesAsCertain: false
