@@ -1,15 +1,25 @@
 <?php namespace Tatter\Workflows;
 
+use Tatter\Handlers\BaseHandler;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Models\ActionModel;
 
 /**
  * Class reference and common functions for all Actions.
  */
-abstract class BaseAction
+abstract class BaseAction extends BaseHandler
 {
 	/**
-	 * @var array<string> Implemented by child class
+	 * Attributes to Tatter\Handlers, implemented by child class
+	 *
+	 * @var array<string>|null
+	 */
+	public $attributes;
+
+	/**
+	 * @var array<string>|null
+	 *
+	 * @deprecated
 	 */
 	public $definition;
 
@@ -43,19 +53,13 @@ abstract class BaseAction
 		$this->request = service('request');
 		$this->config  = config('Workflows');
 		$this->jobs    = model($this->config->jobModel);
-	}
 
-    /**
-	 * Magic wrapper for getting values from the definition.
-	 *
-	 * @param string $name
-	 *
-	 * @return string
-	 */
-    public function __get(string $name): string
-    {
-		return $this->definition[$name];
-    }
+		// Check for legacy definition
+		if (is_null($this->attributes) && ! is_null($this->definition))
+		{
+			$this->attributes = $this->definition;
+		}
+	}
 
 	//--------------------------------------------------------------------
 
@@ -69,12 +73,12 @@ abstract class BaseAction
 		$actions = model(ActionModel::class);
 
 		// Check for an existing entry
-		if ($action = $actions->where('uid', $this->definition['uid'])->first())
+		if ($action = $actions->where('uid', $this->attributes['uid'])->first())
 		{
 			return true;
 		}
 
-		return $actions->insert($this->definition);
+		return $actions->insert($this->toArray());
 	}
 
     /**
@@ -84,7 +88,7 @@ abstract class BaseAction
 	 */
 	public function remove(): bool
 	{
-		return model(ActionModel::class)->where('uid', $this->definition['uid'])->delete();
+		return model(ActionModel::class)->where('uid', $this->attributes['uid'])->delete();
 	}
 
     /**

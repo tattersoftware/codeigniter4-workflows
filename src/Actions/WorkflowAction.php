@@ -4,7 +4,7 @@ use Tatter\Workflows\BaseAction;
 
 class WorkflowAction extends BaseAction
 {
-	public $definition = [
+	public $attributes = [
 		'category' => 'Core',
 		'name'     => 'Workflow',
 		'uid'      => 'workflow',

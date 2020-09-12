@@ -2,75 +2,51 @@
 
 use CodeIgniter\CLI\CLI;
 use Config\Services;
+use Tatter\Handlers\Handlers;
 use Tatter\Workflows\Models\ActionModel;
 
 /**
- * Class to handle Action registration.
+ * Class to register Actions in the database.
  */
 class Registrar
 {
 	/**
 	 * Scans all namespaces for new Actions to load into the database
 	 *
-	 * @return int  Number of new actions registered
+	 * @return int  Number of new Actions registered
 	 */
 	static public function actions(): int
     {
-		$actions = model(ActionModel::class);
-		$locator = Services::locator(true);
+		$model    = model(ActionModel::class);
+		$handlers = new Handlers('Actions');
 
-		// Get all namespaces from the autoloader
-		$namespaces = Services::autoloader()->getNamespace();
-		
-		// Scan each namespace for Actions
 		$count = 0;
-		foreach ($namespaces as $namespace => $paths)
+		foreach ($handlers->all() as $class)
 		{
-			// Get any files in the Actions sub-directory for this namespace
-			foreach ($locator->listNamespaceFiles($namespace, '/Actions/') as $file)
+			$instance = new $class();
+				
+			// Validate the method
+			if (! is_callable([$instance, 'register']))
 			{
-				// Skip non-PHP files
-				if (substr($file, -4) !== '.php')
-				{
-					continue;
-				}
-				
-				// Get namespaced class name
-				$name  = basename($file, '.php');
-				$class = $namespace . '\Actions\\' . $name;
-				
-				include_once $file;
+				throw new \RuntimeException("Missing 'register' method for {$class}");
+			}
 
-				// Validate the class
-				if (! class_exists($class, false))
-				{
-					throw new \RuntimeException("Could not locate {$class} in {$file}");
-				}
-				$instance = new $class();
+			// Register it
+			$result = $instance->register();
 				
-				// Validate the method
-				if (! is_callable([$instance, 'register']))
+			// If this was a new registration, add the namespaced class
+			if (is_int($result))
+			{
+				$model->update($result,
+					['class' => $class],
+				);
+				
+				if (ENVIRONMENT !== 'testing' && is_cli())
 				{
-					throw new \RuntimeException("Missing 'register' method for {$class} in {$file}");
+					CLI::write("Registered {$class}", 'green');
 				}
 
-				// Register it
-				$result = $instance->register();
-				
-				// If this was a new registration, add the namespaced class
-				if (is_int($result))
-				{
-					$count++;
-					
-					$action = $actions->find($result);
-					$action->class = $class;
-					$actions->save($action);
-				
-					if (ENVIRONMENT !== 'testing' && is_cli())
-					{
-						CLI::write("Registered {$action->name} from {$class}", 'green');
-					}
-				}
+				$count++;
 			}
 		}
 		

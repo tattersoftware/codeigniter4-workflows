@@ -37,6 +37,7 @@
 		"tatter/alerts": "^2.0",
 		"tatter/assets": "^2.0",
 		"tatter/audits": "^1.0",
+		"tatter/handlers": "^2.0",
 		"npm-asset/sortablejs": "^1.10",
 		"components/jquery": "^3.3",
 		"fortawesome/font-awesome": "^5.8",
@@ -45,9 +46,9 @@
 	"require-dev": {
 		"codeigniter4/codeigniter4": "dev-develop",
 		"phpunit/phpunit": "^8.5",
+		"phpstan/phpstan": "^0.12",
 		"fzaninotto/faker": "^1.9@dev",
-		"myth/auth": "dev-develop",
-		"phpstan/phpstan": "^0.12"
+		"myth/auth": "dev-develop"
 	},
 	"autoload": {
 		"psr-4": {
