@@ -1,7 +1,6 @@
 <?php namespace Tatter\Workflows;
 
 use CodeIgniter\CLI\CLI;
-use Config\Services;
 use Tatter\Handlers\Handlers;
 use Tatter\Workflows\Models\ActionModel;
 
@@ -37,9 +36,7 @@ class Registrar
 			// If this was a new registration, add the namespaced class
 			if (is_int($result))
 			{
-				$model->update($result,
-					['class' => $class],
-				);
+				$model->update($result, ['class' => $class]);
 				
 				if (ENVIRONMENT !== 'testing' && is_cli())
 				{
