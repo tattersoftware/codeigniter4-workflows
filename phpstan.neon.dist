@@ -12,6 +12,9 @@ parameters:
 	ignoreErrors:
 		- '#Cannot access property [\$a-z_]+ on (array|object)#'
 		- '#Unsafe usage of new static\(\)*#'
+	universalObjectCratesClasses:
+		- CodeIgniter\Entity
+		- Faker\Generator
 	scanDirectories:
 		- vendor/codeigniter4/codeigniter4/system/Helpers
 		- vendor/myth/auth/src/Helpers
