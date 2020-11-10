@@ -50,8 +50,11 @@ class Job extends Entity
 	{
 		if (! $this->stageFlag)
 		{
-			$this->stage     = model(StageModel::class)->find($this->attributes['stage_id']);
 			$this->stageFlag = true;
+
+			$this->stage = isset($this->attributes['stage_id'])
+				? model(StageModel::class)->find($this->attributes['stage_id'])
+				: null;
 		}
 
 		return $this->stage;
