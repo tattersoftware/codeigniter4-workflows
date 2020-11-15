@@ -48,6 +48,24 @@ class Job extends Entity
      */
     protected $flags;
 
+    /**
+     * Verifies the primary key to prevent operations on
+     * un-created database entries.
+     *
+     * @return $this
+     *
+     * @throws \RuntimeException
+     */
+	protected function ensureCreated(): self
+	{
+		if (empty($this->attributes['id']))
+		{
+			throw new \RuntimeException('Job must be created first.');
+		}
+
+		return $this;
+	}
+
 	//--------------------------------------------------------------------
 
     /**
@@ -57,10 +75,7 @@ class Job extends Entity
      */
 	public function getFlags(): array
 	{
-		if (empty($this->attributes['id']))
-		{
-			throw new \RuntimeException('Cannot fetch flags for uncreated job entity.');
-		}
+		$this->ensureCreated();
 
 		if (is_null($this->flags))
 		{
@@ -121,6 +136,8 @@ class Job extends Entity
      */
 	public function clearFlag(string $name): self
 	{
+		$this->ensureCreated();
+
 		model(JobflagModel::class)
 			->where('job_id', $this->attributes['id'])
 			->where('name', $name)
@@ -130,6 +147,24 @@ class Job extends Entity
 		{
 			unset($this->flags[$name]);
 		}
+
+		return $this;
+	}
+
+    /**
+     * Removes all flags
+     *
+     * @return $this
+     */
+	public function clearFlags(): self
+	{
+		$this->ensureCreated();
+
+		model(JobflagModel::class)
+			->where('job_id', $this->attributes['id'])
+			->delete();
+
+		$this->flags = [];
 
 		return $this;
 	}
@@ -244,6 +279,8 @@ class Job extends Entity
      */
 	public function travel(int $actionId): array
 	{
+		$this->ensureCreated();
+
 		// Make sure the target Stage exists
 		if (! $target = model(StageModel::class)
 			->where('action_id', $actionId)
