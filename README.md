@@ -57,3 +57,43 @@ You may limit access to individual Actions using the `role` attribute of its def
 By default the "user" `role` is accessible by anyone. To restrict access, define a
 `has_permission()` function which takes a single `string` parameter with the name of the role
 (hint: or use **Myth:Auth**'s existing version).
+
+## Logging
+
+Jobs track their activity through two supplemental database tables and their entities.
+
+`Joblogs` are created automatically any time a job changes stages, and will record:
+* The stage the job leaves (`null` for new jobs)
+* The stage the job enters (`null` for completed jobs)
+* The ID of the current user (if available)
+* The timestamp of the activity
+
+Since jobs may progress and regress through a stage multiple times, `Joblogs` are not
+a good indicator of status. `Jobflags` are set by the developer and represent a definitive
+job state. A flag is a string key and `CodeIgniter\I18n\Time` timestamp value. Flags are
+managed from the `Job` entity methods:
+* `getFlags(): array`
+* `getFlag($name): Time`
+* `setFlag($name)`
+* `clearFlag($name)`
+* `clearFlags()`
+
+For example, an `Action` may require a user to accept the "Terms of Service" agreement
+before proceeding. Its code may look like this:
+```
+public function get()
+{
+	if (! $this->job->getFlag('accepted'))
+	{
+		return view('accept_form');
+	}
+
+	return true;
+}
+
+public function accept_submit()
+{
+	$this->job->setFlag('accepted');
+	return true;
+}
+```

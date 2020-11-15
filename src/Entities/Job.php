@@ -1,10 +1,12 @@
 <?php namespace Tatter\Workflows\Entities;
 
 use CodeIgniter\Entity;
+use CodeIgniter\I18n\Time;
 use Tatter\Workflows\Entities\Action;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Entities\Workflow;
 use Tatter\Workflows\Exceptions\WorkflowsException;
+use Tatter\Workflows\Models\JobflagModel;
 use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\ActionModel;
@@ -19,7 +21,7 @@ class Job extends Entity
 	];
 
     /**
-     * Cached entity for the current Stage. Can be null for completed Jobs.
+     * Stored entity for the current Stage. Can be null for completed Jobs.
      *
      * @var Stage|null
      */
@@ -33,11 +35,139 @@ class Job extends Entity
     protected $stageFlag = false;
 
     /**
-     * Cached entity for the Workflow.
+     * Stored entity for the Workflow.
      *
      * @var Workflow
      */
     protected $workflow;
+
+    /**
+     * Stored flags from `jobflags`.
+     *
+     * @var array<string,Time>|null
+     */
+    protected $flags;
+
+    /**
+     * Verifies the primary key to prevent operations on
+     * un-created database entries.
+     *
+     * @return $this
+     *
+     * @throws \RuntimeException
+     */
+	protected function ensureCreated(): self
+	{
+		if (empty($this->attributes['id']))
+		{
+			throw new \RuntimeException('Job must be created first.');
+		}
+
+		return $this;
+	}
+
+	//--------------------------------------------------------------------
+
+    /**
+     * Fetches, stores, and returns all this job's flags (from `jobflags`)
+     *
+     * @return array<string,Time>
+     */
+	public function getFlags(): array
+	{
+		$this->ensureCreated();
+
+		if (is_null($this->flags))
+		{
+			$this->flags = [];
+
+			foreach (model(JobflagModel::class)->where('job_id', $this->attributes['id'])->findAll() as $flag)
+			{
+				$this->flags[$flag->name] = new Time($flag->created_at);
+			}
+		}
+
+		return $this->flags;
+	}
+
+    /**
+     * Gets a flag by its name
+     *
+     * @return Time|null
+     */
+	public function getFlag(string $name): ?Time
+	{
+		return $this->getFlags()[$name] ?? null;
+	}
+
+    /**
+     * Creates a flag for the given name
+     *
+     * @return $this
+     */
+	public function setFlag(string $name): self
+	{
+		if (isset($this->getFlags()[$name]))
+		{
+			model(JobflagModel::class)
+				->where('job_id', $this->attributes['id'])
+				->where('name', $name)
+				->update(null, [
+					'created_at' => date('Y-m-d H:i:s'),
+				]);
+		}
+		else
+		{
+			$this->flags[$name] = new Time('now');
+
+			model(JobflagModel::class)->insert([
+				'job_id' => $this->attributes['id'],
+				'name'   => $name,
+			]);
+		}
+
+		return $this;
+	}
+
+    /**
+     * Removes a flag for the given name
+     *
+     * @return $this
+     */
+	public function clearFlag(string $name): self
+	{
+		$this->ensureCreated();
+
+		model(JobflagModel::class)
+			->where('job_id', $this->attributes['id'])
+			->where('name', $name)
+			->delete();
+
+		if (is_array($this->flags) && isset($this->flags[$name]))
+		{
+			unset($this->flags[$name]);
+		}
+
+		return $this;
+	}
+
+    /**
+     * Removes all flags
+     *
+     * @return $this
+     */
+	public function clearFlags(): self
+	{
+		$this->ensureCreated();
+
+		model(JobflagModel::class)
+			->where('job_id', $this->attributes['id'])
+			->delete();
+
+		$this->flags = [];
+
+		return $this;
+	}
 
 	//--------------------------------------------------------------------
 
@@ -149,6 +279,8 @@ class Job extends Entity
      */
 	public function travel(int $actionId): array
 	{
+		$this->ensureCreated();
+
 		// Make sure the target Stage exists
 		if (! $target = model(StageModel::class)
 			->where('action_id', $actionId)
