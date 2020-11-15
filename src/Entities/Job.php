@@ -71,7 +71,7 @@ class Job extends Entity
     /**
      * Fetches, stores, and returns all this job's flags (from `jobflags`)
      *
-     * @return array<string,bool>
+     * @return array<string,Time>
      */
 	public function getFlags(): array
 	{
