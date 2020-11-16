@@ -334,7 +334,7 @@ class Job extends Entity
 				($method == 'down' && $stage->id <= $current->id)
 			)
 			{
-				$results[$stage->id] = $stage->action->$method();
+				$results[$stage->id] = $stage->action->setJob($this)->$method();
 			}
 
 			// If the target was reached then we're done
