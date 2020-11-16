@@ -6,20 +6,24 @@ use Tatter\Workflows\BaseAction;
 
 class Action extends Entity
 {
-	protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+	protected $dates = [
+		'created_at',
+		'updated_at',
+		'deleted_at',
+	];
 
-    /**
-     * Cached Action instance for "class" attribute.
-     *
-     * @var BaseAction
-     */
-    protected $instance;
+	/**
+	 * Cached Action instance for "class" attribute.
+	 *
+	 * @var BaseAction
+	 */
+	protected $instance;
 
-    /**
-     * Gets the associated Action instance
-     *
-     * @return BaseAction
-     */
+	/**
+	 * Gets the associated Action instance
+	 *
+	 * @return BaseAction
+	 */
 	public function getInstance(): BaseAction
 	{
 		if ($this->instance === null)
@@ -30,14 +34,14 @@ class Action extends Entity
 		return $this->instance;
 	}
 
-    /**
-     * Formulate the current route for this Action, with optional job
-     * E.g.: return redirect()->to(site_url($action->route));
-     *
-	 * @param string|int|null $jobId
+	/**
+	 * Formulate the current route for this Action, with optional job
+	 * E.g.: return redirect()->to(site_url($action->route));
 	 *
-     * @return string
-     */
+	 * @param string|integer|null $jobId
+	 *
+	 * @return string
+	 */
 	public function getRoute($jobId = null): string
 	{
 		$route = '/' . config('Workflows')->routeBase . '/' . $this->attributes['uid'];
@@ -50,11 +54,11 @@ class Action extends Entity
 		return $route;
 	}
 
-    /**
-     * Checks if role filter is enabled and if the current user may access this action.
-     *
-     * @return bool
-     */
+	/**
+	 * Checks if role filter is enabled and if the current user may access this action.
+	 *
+	 * @return boolean
+	 */
 	public function mayAccess(): bool
 	{
 		// If role filtering is not set up then allow through
@@ -74,14 +78,14 @@ class Action extends Entity
 	}
 
 	/**
-     * Validates and runs the specified method from the instance.
+	 * Validates and runs the specified method from the instance.
 	 *
 	 * @param string $name
 	 * @param array  $params
 	 *
-     * @return mixed  Result of the instance method
-     * @throws WorkflowsException
-     */
+	 * @return mixed  Result of the instance method
+	 * @throws WorkflowsException
+	 */
 	public function __call(string $name, array $params)
 	{
 		// Make sure the instance supports the requested method

@@ -3,6 +3,7 @@
 use CodeIgniter\Controller;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\RedirectResponse;
+use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Entities\Action;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Entities\Stage;
@@ -18,12 +19,11 @@ use Tatter\Workflows\Models\WorkflowModel;
  *
  * Functions as a super-controller, routing jobs to their specific actions
  * and action functions with included metadata.
- *
  */
 class Runner extends Controller
 {
 	/**
-	 * @var \Tatter\Workflows\Config\Workflows
+	 * @var WorkflowsConfig
 	 */
 	protected $config;
 
@@ -52,23 +52,23 @@ class Runner extends Controller
 	 */
 	protected $workflow;
 
-    /**
-     * Preload the config class and Model for jobs.
-     */	
+	/**
+	 * Preload the config class and Model for jobs.
+	 */
 	public function __construct()
-	{		
+	{
 		$this->config = config('Workflows');
 		$this->jobs   = model($this->config->jobModel);
 	}
-	
-    /**
-     * Display a job.
-     *
-     * @param string $jobId  ID of the job (int)
-     *
-     * @return string
-     * @throws WorkflowsException
-     */
+
+	/**
+	 * Display a job.
+	 *
+	 * @param string $jobId ID of the job (int)
+	 *
+	 * @return string
+	 * @throws WorkflowsException
+	 */
 	public function show(string $jobId = null): string
 	{
 		// Load the job
@@ -92,19 +92,17 @@ class Runner extends Controller
 		]);
 	}
 
-    /**
-     * Resume a Job at its current Stage.
-     *
-     * @param string $jobId  ID of the job to resume (int)
-     *
-     * @return string|RedirectResponse  A view to display or a RedirectResponse
-     */
+	/**
+	 * Resume a Job at its current Stage.
+	 *
+	 * @param string $jobId ID of the job to resume (int)
+	 *
+	 * @return string|RedirectResponse  A view to display or a RedirectResponse
+	 */
 	protected function resume($jobId)
 	{
 		// Get the Job
-		/** @var Job $job */
-		$job = $this->jobs->find($jobId);
-		if (empty($job))
+		if (empty($jobId) || ! ($job = $this->jobs->find($jobId)))
 		{
 			if ($this->config->silent)
 			{
@@ -135,18 +133,21 @@ class Runner extends Controller
 		return redirect()->to($stage->action->getRoute($job->id));
 	}
 
-    /**
-     * Start a new Job in the given Workflow.
-     *
-     * @param string|null $workflowId  ID of the Workflow to use for the new Job (int)
-     *
-     * @return RedirectResponse
-     * @throws WorkflowsException
-     */
+	/**
+	 * Start a new Job in the given Workflow.
+	 *
+	 * @param string|null $workflowId ID of the Workflow to use for the new Job (int)
+	 *
+	 * @return RedirectResponse
+	 * @throws WorkflowsException
+	 */
 	public function new(string $workflowId = null): RedirectResponse
 	{
 		// Get the workflow, or if not provided then use the first available
-		$workflow = ($workflowId) ? model(WorkflowModel::class)->find($workflowId) : model(WorkflowModel::class)->first();
+		$workflow = ($workflowId)
+			? model(WorkflowModel::class)->find($workflowId)
+			: model(WorkflowModel::class)->first();
+
 		if (empty($workflow))
 		{
 			throw WorkflowsException::forWorkflowNotFound();
@@ -166,28 +167,28 @@ class Runner extends Controller
 			'workflow_id' => $workflow->id,
 			'stage_id'    => $stage->id,
 		]);
-		
+
 		// Send to the first action
-		$action  = $stage->action;
-		$route = "/{$this->config->routeBase}/{$action->uid}/{$jobId}";
+		$action = $stage->action;
+		$route  = "/{$this->config->routeBase}/{$action->uid}/{$jobId}";
 
 		return redirect()->to($route)->with('success', lang('Workflows.newJobSuccess'));
 	}
-	
-    /**
-     * Deletes a job.
-     *
-     * @param string $jobId  ID of the job to remove (int)
-     *
-     * @return string  A view notifying the user that the job was removed.
-     * @throws PageNotFoundException
-     */
+
+	/**
+	 * Deletes a job.
+	 *
+	 * @param string $jobId ID of the job to remove (int)
+	 *
+	 * @return string  A view notifying the user that the job was removed.
+	 * @throws PageNotFoundException
+	 */
 	public function delete(string $jobId): string
-	{		
+	{
 		// Verify the job
 		if (! $job = $this->jobs->find($jobId))
 		{
-			throw PageNotFoundException::forPageNotFound();			
+			throw PageNotFoundException::forPageNotFound();
 		}
 
 		// Delete the job (soft)
@@ -198,31 +199,31 @@ class Runner extends Controller
 			'job'    => $job,
 		]);
 	}
-	
-    /**
-     * Receives route input and handles action coordination.
-     *
-     * @param string ...$params  Parameters coming from the router (so all strings)
-     *
-     * @return string|RedirectResponse  A view to display or a RedirectResponse
-     * @throws PageNotFoundException
-     */
+
+	/**
+	 * Receives route input and handles action coordination.
+	 *
+	 * @param string ...$params Parameters coming from the router (so all strings)
+	 *
+	 * @return string|RedirectResponse  A view to display or a RedirectResponse
+	 * @throws PageNotFoundException
+	 */
 	public function run(string ...$params)
 	{
 		if (empty($params))
 		{
 			throw PageNotFoundException::forPageNotFound();
 		}
-		
+
 		// Look for a resume request (job ID, nothing else)
-		if (count($params) == 1 && is_numeric($params[0]))
+		if (count($params) === 1 && is_numeric($params[0]))
 		{
 			return $this->resume($params[0]);
 		}
 
 		// Parse the route parameters
 		$parsed = $this->parseRoute($params);
-		
+
 		// If parseRoute() returned an error view then display it
 		if (is_string($parsed))
 		{
@@ -237,13 +238,13 @@ class Runner extends Controller
 		{
 			return redirect()->to(site_url($this->config->routeBase . '/show/' . $job->id));
 		}
-		
+
 		// If the requested Action differs from the job's current action then travel the workflow
-		if ($action->id != $stage->action_id)
+		if ($action->id !== $stage->action_id)
 		{
 			$job->travel($action->id);
 		}
-		
+
 		// Check the Action's role against a potential current user
 		if (! $action->mayAccess())
 		{
@@ -252,7 +253,7 @@ class Runner extends Controller
 				'job'    => $job,
 			]);
 		}
-		
+
 		// Determine the request method and run the corresponding Action method
 		$method = $this->request->getMethod();
 		$result = $action->setJob($job)->$method();
@@ -261,14 +262,14 @@ class Runner extends Controller
 		return $this->parseResult($result, $job);
 	}
 
-    /**
-     * Validates and parses values from a route.
-     *
-     * @param array $params  Parameters coming from the router (so all strings)
-     *
-     * @return array|string  Array of parsed data, or a string view to display instead of continuing
-     * @throws WorkflowsException
-     */
+	/**
+	 * Validates and parses values from a route.
+	 *
+	 * @param array $params Parameters coming from the router (so all strings)
+	 *
+	 * @return array|string  Array of parsed data, or a string view to display instead of continuing
+	 * @throws WorkflowsException
+	 */
 	protected function parseRoute(array $params)
 	{
 		// Strip off the Action & Job identifiers
@@ -282,7 +283,8 @@ class Runner extends Controller
 			{
 				return view($this->config->views['messages'], [
 					'layout' => $this->config->layouts['public'],
-					'error'  => lang('Workflows.routeMissingJobId', [$uid])]);
+					'error'  => lang('Workflows.routeMissingJobId', [$uid], ),
+				]);
 			}
 
 			throw WorkflowsException::forMissingJobId($uid);
@@ -325,18 +327,22 @@ class Runner extends Controller
 		// stage_id may be empty (completed Job)
 		$stage = $job->stage_id ? model(StageModel::class)->find($job->stage_id) : null;
 
-		return [$action, $job, $stage];
+		return [
+			$action,
+			$job,
+			$stage,
+		];
 	}
 
-    /**
-     * Parses the result of an Action method call.
-     *
-     * @param mixed $result  Result from the Action method
-     * @param Job $job       The current Job
-     *
-     * @return string|RedirectResponse  A view to display or a RedirectResponse
-     * @throws WorkflowsException
-     */
+	/**
+	 * Parses the result of an Action method call.
+	 *
+	 * @param mixed $result Result from the Action method
+	 * @param Job   $job    The current Job
+	 *
+	 * @return string|RedirectResponse  A view to display or a RedirectResponse
+	 * @throws WorkflowsException
+	 */
 	protected function parseResult($result, Job $job)
 	{
 		// Simple string for display (usually a view)
@@ -344,7 +350,7 @@ class Runner extends Controller
 		{
 			return $result;
 		}
-		
+
 		// Simple RedirectResponse
 		if ($result instanceof RedirectResponse)
 		{
@@ -353,7 +359,7 @@ class Runner extends Controller
 
 		// Boolean true means this Stage is complete
 		if ($result === true)
-		{		
+		{
 			// Get the next Stage
 			if ($stage = $job->next())
 			{
@@ -386,7 +392,7 @@ class Runner extends Controller
 
 			throw new WorkflowsException(implode('. ', $result));
 		}
-			
+
 		// Borked
 		if ($this->config->silent)
 		{

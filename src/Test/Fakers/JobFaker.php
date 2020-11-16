@@ -20,7 +20,7 @@ class JobFaker extends JobModel
 			'name'        => $faker->catchPhrase,
 			'summary'     => $faker->sentence,
 			'workflow_id' => rand(1, Fabricator::getCount('workflows') ?: 4),
-			'stage_id'    => rand(1, Fabricator::getCount('stages')    ?: 99),
+			'stage_id'    => rand(1, Fabricator::getCount('stages') ?: 99),
 		]);
 	}
 }

@@ -43,11 +43,11 @@ abstract class BaseAction extends BaseHandler
 	 */
 	public $request;
 
-    /**
-     * Sets up common resources for Actions.
-     *
-     * @return $this
-     */
+	/**
+	 * Sets up common resources for Actions.
+	 *
+	 * @return $this
+	 */
 	public function __construct()
 	{
 		$this->request = service('request');
@@ -63,10 +63,10 @@ abstract class BaseAction extends BaseHandler
 
 	//--------------------------------------------------------------------
 
-    /**
+	/**
 	 * Creates the database record for this class based on its definition.
 	 *
-	 * @return int|bool  int for inserted ID, true for existing entry, false for failure
+	 * @return integer|boolean  int for inserted ID, true for existing entry, false for failure
 	 */
 	public function register()
 	{
@@ -81,17 +81,17 @@ abstract class BaseAction extends BaseHandler
 		return $actions->insert($this->toArray());
 	}
 
-    /**
+	/**
 	 * Deletes this action from the database (soft).
 	 *
-	 * @return bool  Result from the model
+	 * @return boolean  Result from the model
 	 */
 	public function remove(): bool
 	{
 		return model(ActionModel::class)->where('uid', $this->attributes['uid'])->delete();
 	}
 
-    /**
+	/**
 	 * Sets the Job for this Action to run against.
 	 *
 	 * @param Job $job
@@ -107,7 +107,7 @@ abstract class BaseAction extends BaseHandler
 
 	//--------------------------------------------------------------------
 
-    /**
+	/**
 	 * Runs when a job progresses forward through the workflow.
 	 *
 	 * @return mixed
@@ -116,8 +116,8 @@ abstract class BaseAction extends BaseHandler
 	{
 		/* Optionally implemented by child class */
 	}
-	
-    /**
+
+	/**
 	 * Runs when job regresses back through the workflow.
 	 *
 	 * @return mixed

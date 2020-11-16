@@ -12,10 +12,10 @@ class Registrar
 	/**
 	 * Scans all namespaces for new Actions to load into the database
 	 *
-	 * @return int  Number of new Actions registered
+	 * @return integer  Number of new Actions registered
 	 */
 	static public function actions(): int
-    {
+	{
 		$model    = model(ActionModel::class);
 		$handlers = new Handlers('Actions');
 
@@ -23,7 +23,7 @@ class Registrar
 		foreach ($handlers->all() as $class)
 		{
 			$instance = new $class();
-				
+
 			// Validate the method
 			if (! is_callable([$instance, 'register']))
 			{
@@ -32,12 +32,12 @@ class Registrar
 
 			// Register it
 			$result = $instance->register();
-				
+
 			// If this was a new registration, add the namespaced class
 			if (is_int($result))
 			{
 				$model->update($result, ['class' => $class]);
-				
+
 				if (ENVIRONMENT !== 'testing' && is_cli())
 				{
 					CLI::write("Registered {$class}", 'green');
@@ -46,7 +46,7 @@ class Registrar
 				$count++;
 			}
 		}
-		
+
 		return $count;
 	}
 }

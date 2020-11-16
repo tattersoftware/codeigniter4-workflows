@@ -18,7 +18,7 @@ class WorkflowTest extends DatabaseTestCase
 	protected function setUp(): void
 	{
 		parent::setUp();
-		
+
 		$this->workflow = fake(WorkflowFaker::class);
 	}
 
@@ -28,7 +28,7 @@ class WorkflowTest extends DatabaseTestCase
 
 		$result = $this->workflow->addAction($action);
 		$this->assertIsInt($result);
-		
+
 		$stage = model(StageModel::class)->find($result);
 
 		$this->assertEquals($action->id, $stage->action_id);

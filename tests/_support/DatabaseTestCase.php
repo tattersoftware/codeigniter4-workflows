@@ -20,7 +20,7 @@ class DatabaseTestCase extends CIDatabaseTestCase
 	 *
 	 * @var string|array|null
 	 */
-    protected $namespace = 'Tatter\Workflows';
+	protected $namespace = 'Tatter\Workflows';
 
 	/**
 	 * Preconfigured config instance.
@@ -30,11 +30,11 @@ class DatabaseTestCase extends CIDatabaseTestCase
 	protected function setUp(): void
 	{
 		parent::setUp();
-		
+
 		$this->config         = new \Tatter\Workflows\Config\Workflows();
 		$this->config->silent = false;
 	}
-	
+
 	protected function tearDown(): void
 	{
 		parent::tearDown();

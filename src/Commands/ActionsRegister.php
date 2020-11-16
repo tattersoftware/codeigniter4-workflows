@@ -7,15 +7,15 @@ use Tatter\Workflows\Registrar;
 
 class ActionsRegister extends BaseCommand
 {
-    protected $group       = 'Workflows';
-    protected $name        = 'actions:register';
-    protected $description = 'Search for new actions and add them to the database';
-    
+	protected $group       = 'Workflows';
+	protected $name        = 'actions:register';
+	protected $description = 'Search for new actions and add them to the database';
+
 	protected $usage     = 'actions:register';
 	protected $arguments = [];
 
 	public function run(array $params = [])
-    {
+	{
 		$count = Registrar::actions();
 
 		if ($count === 0)
@@ -23,7 +23,7 @@ class ActionsRegister extends BaseCommand
 			CLI::write('No new actions found in any namespace.', 'yellow');
 			return;
 		}
-		
+
 		$this->call('actions:list');
 	}
 }

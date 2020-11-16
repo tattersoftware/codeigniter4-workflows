@@ -6,35 +6,38 @@ use Tatter\Workflows\Models\ActionModel;
 
 class Stage extends Entity
 {
-	protected $dates = ['created_at', 'updated_at'];
+	protected $dates = [
+		'created_at',
+		'updated_at',
+	];
 	protected $casts = [
 		'action_id'   => 'int',
 		'workflow_id' => 'int',
 		'required'    => 'bool',
 	];
 
-    /**
-     * Cached entity for the associated Action.
-     *
-     * @var Action
-     */
-    protected $action;
+	/**
+	 * Cached entity for the associated Action.
+	 *
+	 * @var Action
+	 */
+	protected $action;
 
-    /**
-     * Passes through name requests to the Action
-     *
-     * @return string
-     */
+	/**
+	 * Passes through name requests to the Action
+	 *
+	 * @return string
+	 */
 	public function getName(): string
 	{
 		return $this->getAction()->name ?? '';
 	}
 
-    /**
-     * Gets the associated Action
-     *
-     * @return Action
-     */
+	/**
+	 * Gets the associated Action
+	 *
+	 * @return Action
+	 */
 	public function getAction(): Action
 	{
 		if ($this->action === null)

@@ -14,7 +14,7 @@ class SimulatorTest extends DatabaseTestCase
 	public function testFakeStageUsesCounts()
 	{
 		Fabricator::setCount('workflows', 10000);
-		
+
 		$sum = 0;
 
 		for ($i = 0; $i < 3; $i++)
@@ -29,10 +29,10 @@ class SimulatorTest extends DatabaseTestCase
 	public function testInitializeCreatesMinimumObjects()
 	{
 		Simulator::initialize();
-		
+
 		$this->assertGreaterThanOrEqual(10, model(ActionFaker::class)->countAllResults());
-		$this->assertGreaterThanOrEqual(2,  model(WorkflowFaker::class)->countAllResults());
-		$this->assertGreaterThanOrEqual(8,  model(StageFaker::class)->countAllResults());
+		$this->assertGreaterThanOrEqual(2, model(WorkflowFaker::class)->countAllResults());
+		$this->assertGreaterThanOrEqual(8, model(StageFaker::class)->countAllResults());
 		$this->assertGreaterThanOrEqual(40, model(JobFaker::class)->countAllResults());
 	}
 

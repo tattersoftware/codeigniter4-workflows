@@ -7,17 +7,17 @@ use Tatter\Workflows\Models\ActionModel;
 
 class ActionsList extends BaseCommand
 {
-    protected $group       = 'Workflows';
-    protected $name        = 'actions:list';
-    protected $description = 'List all registered actions';
-    
+	protected $group       = 'Workflows';
+	protected $name        = 'actions:list';
+	protected $description = 'List all registered actions';
+
 	protected $usage     = 'actions:list';
 	protected $arguments = [];
 
 	public function run(array $params = [])
-    {
+	{
 		$actions = new ActionModel();
-		
+
 		// get all actions
 		$rows = $actions
 			->select('id, name, category, uid, role, class, summary')
@@ -30,7 +30,15 @@ class ActionsList extends BaseCommand
 		}
 		else
 		{
-			$thead = ['Action ID', 'Name', 'Category', 'UID', 'Role', 'Class', 'Summary'];
+			$thead = [
+				'Action ID',
+				'Name',
+				'Category',
+				'UID',
+				'Role',
+				'Class',
+				'Summary',
+			];
 			CLI::table($rows, $thead);
 		}
 	}

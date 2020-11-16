@@ -9,10 +9,10 @@ class Actions extends Controller
 	public function index()
 	{
 		$data = [
-			'layout' => config('Workflows')->layouts['manage'],
-			'actions'  => (new ActionModel())->orderBy('name')->findAll(),
+			'layout'  => config('Workflows')->layouts['manage'],
+			'actions' => (new ActionModel())->orderBy('name')->findAll(),
 		];
-		
+
 		return view('Tatter\Workflows\Views\actions\index', $data);
 	}
 }

@@ -15,14 +15,14 @@ class Simulator
 	/**
 	 * Whether initialize() has been run
 	 *
-	 * @var bool
+	 * @var boolean
 	 */
 	static public $initialized = false;
 
 	/**
 	 * LEGACY - Replaced by Fabricator::counts
 	 *
-	 * @var array
+	 * @var        array
 	 * @deprecated 2.0.2
 	 */
 	static public $counts = [
@@ -35,7 +35,7 @@ class Simulator
 	/**
 	 * Initialize the simulation.
 	 *
-	 * @param array $targets  Array of target items to create
+	 * @param array $targets Array of target items to create
 	 */
 	static public function initialize($targets = ['actions', 'jobs', 'stages', 'workflows'])
 	{
@@ -63,7 +63,7 @@ class Simulator
 				fake(WorkflowFaker::class);
 			}
 		}
-		
+
 		// Create stages up to N
 		if (in_array('stages', $targets))
 		{

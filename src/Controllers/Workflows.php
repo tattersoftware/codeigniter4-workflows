@@ -28,9 +28,9 @@ class Workflows extends Controller
 	 */
 	protected $config;
 
-    /**
-     * Loads the common dependencies
-     */	
+	/**
+	 * Loads the common dependencies
+	 */
 	public function __construct()
 	{
 		$this->model   = new WorkflowModel();
@@ -39,11 +39,11 @@ class Workflows extends Controller
 		$this->config  = config('Workflows');
 	}
 
-    /**
-     * Displays a list of available Workflows.
-     *
-     * @return string
-     */	
+	/**
+	 * Displays a list of available Workflows.
+	 *
+	 * @return string
+	 */
 	public function index(): string
 	{
 		$data = [
@@ -57,13 +57,13 @@ class Workflows extends Controller
 		return view('Tatter\Workflows\Views\workflows\index', $data);
 	}
 
-    /**
-     * Shows details for one Workflow.
-     *
-     * @param string $workflowId
-     *
-     * @return string
-     */	
+	/**
+	 * Shows details for one Workflow.
+	 *
+	 * @param string $workflowId
+	 *
+	 * @return string
+	 */
 	public function show(string $workflowId): string
 	{
 		$data = [
@@ -80,11 +80,11 @@ class Workflows extends Controller
 		return view('Tatter\Workflows\Views\workflows\show', $data);
 	}
 
-    /**
-     * Displays the form for a new Workflow.
-     *
-     * @return string
-     */	
+	/**
+	 * Displays the form for a new Workflow.
+	 *
+	 * @return string
+	 */
 	public function new(): string
 	{
 		$data = [
@@ -101,21 +101,21 @@ class Workflows extends Controller
 
 		$data['json'] = json_encode($json);
 
-		return view('Tatter\Workflows\Views\workflows\new', $data);		
+		return view('Tatter\Workflows\Views\workflows\new', $data);
 	}
 
-    /**
-     * Creates a Workflow from the new form data.
-     *
-     * @return RedirectResponse
-     */
+	/**
+	 * Creates a Workflow from the new form data.
+	 *
+	 * @return RedirectResponse
+	 */
 	public function create(): RedirectResponse
-	{		
+	{
 		// Validate
 		$rules = [
 			'name'    => 'required|max_length[255]',
 			'summary' => 'required|max_length[255]',
-			'actions'   => 'required',
+			'actions' => 'required',
 		];
 
 		if (! $this->validate($rules))
@@ -127,15 +127,15 @@ class Workflows extends Controller
 		$workflow = $this->request->getPost();
 		if (! $workflowId = $this->model->insert($workflow, true))
 		{
-            return redirect()->back()->withInput()->with('errors', $this->model->errors());
-        }
+			return redirect()->back()->withInput()->with('errors', $this->model->errors());
+		}
 
-        // Create action-to-workflow stages
+		// Create action-to-workflow stages
 		foreach (explode(',', $this->request->getPost('actions')) as $actionId)
 		{
 			$stage = [
 				'workflow_id' => $workflowId,
-				'action_id'     => $actionId,
+				'action_id'   => $actionId,
 			];
 
 			$this->stages->insert($stage);
@@ -144,15 +144,15 @@ class Workflows extends Controller
 		return redirect()->to('/workflows/' . $workflowId)->with('success', lang('Workflows.newWorkflowSuccess'));
 	}
 
-    /**
-     * Update workflow details.
-     *
-     * @param string $workflowId
-     *
-     * @return RedirectResponse
-     */
+	/**
+	 * Update workflow details.
+	 *
+	 * @param string $workflowId
+	 *
+	 * @return RedirectResponse
+	 */
 	public function update(string $workflowId): RedirectResponse
-	{		
+	{
 		// Validate
 		$rules = [
 			'name'    => 'required|max_length[255]',
@@ -162,26 +162,26 @@ class Workflows extends Controller
 		{
 			return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
 		}
-		
+
 		// try to update the workflow
 		$workflow = $this->request->getPost();
 		if (! $this->model->update($workflowId, $workflow))
 		{
-            return redirect()->back()->withInput()->with('errors', $this->model->errors());
-        }
-        		
+			return redirect()->back()->withInput()->with('errors', $this->model->errors());
+		}
+
 		return redirect()->to('/workflows/' . $workflowId)->with('success', lang('Workflows.updateWorkflowSuccess'));
 	}
 
-    /**
-     * Delete the workflow (soft).
-     *
-     * @param string $workflowId
-     *
-     * @return RedirectResponse
-     */
+	/**
+	 * Delete the workflow (soft).
+	 *
+	 * @param string $workflowId
+	 *
+	 * @return RedirectResponse
+	 */
 	public function delete(string $workflowId): RedirectResponse
-	{		
+	{
 		$this->model->delete($workflowId);
 
 		return redirect()->to('/workflows')->with('success', lang('Workflows.deletedWorkflowSuccess'));

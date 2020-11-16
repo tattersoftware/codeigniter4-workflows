@@ -27,7 +27,7 @@ trait JobsTrait
 
 		return $data;
 	}
-	
+
 	// Log updates that result in a stage change
 	protected function logUpdate(array $data)
 	{
@@ -35,7 +35,7 @@ trait JobsTrait
 
 		// Determine user source from config
 		$userId = session(config('Workflows')->userSource);
-		
+
 		// Process each updated entry
 		foreach ($data['id'] as $id)
 		{
@@ -51,9 +51,9 @@ trait JobsTrait
 			{
 				continue;
 			}
-			
+
 			// Ignore when the stage is the same
-			if ($data['data']['stage_id'] == $job->stage_id)
+			if ($data['data']['stage_id'] === $job->stage_id)
 			{
 				continue;
 			}
@@ -66,11 +66,11 @@ trait JobsTrait
 				'user_id'    => $userId,
 				'created_at' => date('Y-m-d H:i:s'),
 			];
-		
+
 			// Add it to the database
 			$db->table('joblogs')->insert($row);
 		}
-		
+
 		return $data;
 	}
 }

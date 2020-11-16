@@ -6,7 +6,11 @@ use Tatter\Workflows\Models\StageModel;
 
 class Workflow extends Entity
 {
-	protected $dates = ['created_at', 'updated_at', 'deleted_at'];
+	protected $dates = [
+		'created_at',
+		'updated_at',
+		'deleted_at',
+	];
 
 	// Get this workflow's stages
 	// Returns ordered stage objects with their IDs as keys
@@ -28,10 +32,10 @@ class Workflow extends Entity
 	/**
 	 * Adds an action to this workflow
 	 *
-	 * @param mixed $action  The action to add to this workflow; can be an Action, ID, or uid
-	 * @param bool $required Whether the subsequent stage will be required
+	 * @param mixed   $action   The action to add to this workflow; can be an Action, ID, or uid
+	 * @param boolean $required Whether the subsequent stage will be required
 	 *
-	 * @return int|string|bool  Return from StageModel::insert()
+	 * @return integer|string|boolean  Return from StageModel::insert()
 	 */
 	public function addAction($action, bool $required = false)
 	{

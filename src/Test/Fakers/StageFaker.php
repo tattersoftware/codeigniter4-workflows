@@ -17,7 +17,7 @@ class StageFaker extends StageModel
 	public function fake(Generator &$faker): Stage
 	{
 		return new Stage([
-			'action_id'   => rand(1, Fabricator::getCount('actions')     ?: 12),
+			'action_id'   => rand(1, Fabricator::getCount('actions') ?: 12),
 			'workflow_id' => rand(1, Fabricator::getCount('workflows') ?: 4),
 			'required'    => (bool) rand(0, 5),
 		]);
