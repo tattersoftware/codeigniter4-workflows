@@ -102,11 +102,20 @@ class Runner extends Controller
 	protected function resume($jobId)
 	{
 		// Get the Job
-		if (empty($jobId) || ! ($job = $this->jobs->find($jobId)))
+		if ($jobId)
+		{
+			/** @var Job $job */
+			$job = $this->jobs->find($jobId);
+		}
+
+		if (empty($job))
 		{
 			if ($this->config->silent)
 			{
-				return view($this->config->views['messages'], ['layout' => $this->config->layouts['public'], 'error' => lang('Workflows.jobNotFound')]);
+				return view($this->config->views['messages'], [
+					'layout' => $this->config->layouts['public'],
+					'error'  => lang('Workflows.jobNotFound'),
+				]);
 			}
 
 			throw WorkflowsException::forJobNotFound();
@@ -283,7 +292,7 @@ class Runner extends Controller
 			{
 				return view($this->config->views['messages'], [
 					'layout' => $this->config->layouts['public'],
-					'error'  => lang('Workflows.routeMissingJobId', [$uid], ),
+					'error'  => lang('Workflows.routeMissingJobId', [$uid]),
 				]);
 			}
 
