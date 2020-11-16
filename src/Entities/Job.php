@@ -313,10 +313,15 @@ class Job extends Entity
 
 			$method = 'up';
 		}
-		else
+		elseif ($current->id > $target->id)
 		{
 			$method = 'down';
 			arsort($stages);
+		}
+		// Already there!
+		else
+		{
+			return [];
 		}
 
 		// Travel the Workflow running the appropriate method
@@ -325,11 +330,11 @@ class Job extends Entity
 		{
 			// Check if we need to run this action
 			if (
-				($method == 'up'   && $stage->id >= $current->id) ||
+				($method == 'up'   && $stage->id > $current->id) ||
 				($method == 'down' && $stage->id <= $current->id)
 			)
 			{
-				$results[$stage->id] = $stage->action->$method();
+				$results[$stage->id] = $stage->action->setJob($this)->$method();
 			}
 
 			// If the target was reached then we're done

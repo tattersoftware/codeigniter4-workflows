@@ -357,8 +357,8 @@ class Runner extends Controller
 			// Get the next Stage
 			if ($stage = $job->next())
 			{
-				// Update the Job
-				$this->jobs->update($job->id, ['stage_id' => $stage->id]);
+				// Travel to the target Action
+				$job->travel($stage->action_id);
 
 				// Redirect to the next Action
 				return redirect()->to($stage->action->getRoute($job->id));
