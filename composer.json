@@ -1,5 +1,6 @@
 {
 	"name": "tatter/workflows",
+	"type": "library",
 	"description": "Job task control through dynamic workflows, for CodeIgniter 4",
 	"keywords": [
 		"codeigniter",
@@ -18,6 +19,35 @@
 			"role": "Developer"
 		}
 	],
+	"require": {
+		"php": ">=7.2",
+		"components/jquery": "^3.3",
+		"fortawesome/font-awesome": "^5.8",
+		"npm-asset/sortablejs": "^1.10",
+		"tatter/alerts": "^2.0",
+		"tatter/assets": "^2.0",
+		"tatter/audits": "^1.0",
+		"tatter/handlers": "^2.0",
+		"twbs/bootstrap": "^4.3"
+	},
+	"require-dev": {
+		"codeigniter4/codeigniter4": "dev-develop",
+		"myth/auth": "dev-develop",
+		"tatter/tools": "^1.2"
+	},
+	"autoload": {
+		"psr-4": {
+			"Tatter\\Workflows\\": "src"
+		},
+		"exclude-from-classmap": [
+			"**/Database/Migrations/**"
+		]
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Tests\\Support\\": "tests/_support"
+		}
+	},
 	"repositories": [
 		{
 			"type": "vcs",
@@ -32,39 +62,11 @@
 			"url": "https://asset-packagist.org"
 		}
 	],
-	"require": {
-		"php" : ">=7.2",
-		"tatter/alerts": "^2.0",
-		"tatter/assets": "^2.0",
-		"tatter/audits": "^1.0",
-		"tatter/handlers": "^2.0",
-		"npm-asset/sortablejs": "^1.10",
-		"components/jquery": "^3.3",
-		"fortawesome/font-awesome": "^5.8",
-		"twbs/bootstrap": "^4.3"
-	},
-	"require-dev": {
-		"codeigniter4/codeigniter4": "dev-develop",
-		"phpunit/phpunit": "^8.5",
-		"phpstan/phpstan": "^0.12",
-		"fzaninotto/faker": "^1.9@dev",
-		"myth/auth": "dev-develop"
-	},
-	"autoload": {
-		"psr-4": {
-			"Tatter\\Workflows\\": "src"
-		}
-	},
-	"autoload-dev": {
-		"psr-4": {
-			"Tests\\Support\\": "tests/_support"
-		}
-	},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
 	"scripts": {
 		"analyze": "phpstan analyze",
-		"test": "phpunit",
-		"post-update-cmd": [
-			"composer dump-autoload"
-		]
+		"style": "phpcbf --standard=./vendor/codeigniter4/codeigniter4-standard/CodeIgniter4 tests/ src/",
+		"test": "phpunit"
 	}
 }
