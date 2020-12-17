@@ -3,6 +3,7 @@
 use CodeIgniter\Controller;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\RedirectResponse;
+use CodeIgniter\HTTP\ResponseInterface;
 use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Entities\Action;
 use Tatter\Workflows\Entities\Job;
@@ -214,7 +215,7 @@ class Runner extends Controller
 	 *
 	 * @param string ...$params Parameters coming from the router (so all strings)
 	 *
-	 * @return string|RedirectResponse  A view to display or a RedirectResponse
+	 * @return string|ResponseInterface  A view to display or a Response
 	 * @throws PageNotFoundException
 	 */
 	public function run(string ...$params)
@@ -349,7 +350,7 @@ class Runner extends Controller
 	 * @param mixed $result Result from the Action method
 	 * @param Job   $job    The current Job
 	 *
-	 * @return string|RedirectResponse  A view to display or a RedirectResponse
+	 * @return string|ResponseInterface  A view to display or a Response
 	 * @throws WorkflowsException
 	 */
 	protected function parseResult($result, Job $job)
@@ -360,8 +361,8 @@ class Runner extends Controller
 			return $result;
 		}
 
-		// Simple RedirectResponse
-		if ($result instanceof RedirectResponse)
+		// Simple Response
+		if ($result instanceof ResponseInterface)
 		{
 			return $result;
 		}
