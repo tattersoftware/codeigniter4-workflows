@@ -1,6 +1,7 @@
 <?php namespace Tests\Support;
 
 use CodeIgniter\Test\CIDatabaseTestCase;
+use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Test\Simulator;
 
 class DatabaseTestCase extends CIDatabaseTestCase
@@ -20,7 +21,7 @@ class DatabaseTestCase extends CIDatabaseTestCase
 	 *
 	 * @var string|array|null
 	 */
-	protected $namespace = 'Tatter\Workflows';
+	protected $namespace = null;
 
 	/**
 	 * Preconfigured config instance.
@@ -31,7 +32,7 @@ class DatabaseTestCase extends CIDatabaseTestCase
 	{
 		parent::setUp();
 
-		$this->config         = new \Tatter\Workflows\Config\Workflows();
+		$this->config         = new WorkflowsConfig();
 		$this->config->silent = false;
 	}
 
