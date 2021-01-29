@@ -20,6 +20,7 @@
 		}
 	],
 	"require": {
+		"php": "^7.3 || ^8.0",
 		"components/jquery": "^3.3",
 		"fortawesome/font-awesome": "^5.8",
 		"npm-asset/sortablejs": "^1.10",
