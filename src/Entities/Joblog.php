@@ -22,6 +22,13 @@ class Joblog extends \CodeIgniter\Entity
 	protected $to;
 
 	/**
+	 * Cached result for user lookup
+	 *
+	 * @var array|object|null
+	 */
+	private $user;
+
+	/**
 	 * Loads (if necessary) and returns the stage this logs the job changing from.
 	 *
 	 * @return Stage|null  Stage the job moved from
@@ -69,5 +76,30 @@ class Joblog extends \CodeIgniter\Entity
 	public function setTo(Stage $stage = null)
 	{
 		$this->to = $stage;
+	}
+
+	/**
+	 * Attempts to locate a user corresponding to user_id.
+	 * Relies on locating a UserModel class via Factories.
+	 *
+	 * @return array|object|null
+	 */
+	public function getUser()
+	{
+		if (empty($this->attributes['user_id']))
+		{
+			return null;
+		}
+
+		if (is_null($this->user))
+		{
+			// Try to locate a Model
+			if ($model = model('UserModel'))
+			{
+				$this->user = $model->find($this->attributes['user_id']);
+			}
+		}
+
+		return $this->user;
 	}
 }

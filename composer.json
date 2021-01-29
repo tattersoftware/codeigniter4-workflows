@@ -20,7 +20,7 @@
 		}
 	],
 	"require": {
-		"php": ">=7.2",
+		"php": "^7.3 || ^8.0",
 		"components/jquery": "^3.3",
 		"fortawesome/font-awesome": "^5.8",
 		"npm-asset/sortablejs": "^1.10",
@@ -33,7 +33,7 @@
 	"require-dev": {
 		"codeigniter4/codeigniter4": "dev-develop",
 		"myth/auth": "dev-develop",
-		"tatter/tools": "^1.2"
+		"tatter/tools": "^1.4"
 	},
 	"autoload": {
 		"psr-4": {
