@@ -73,7 +73,7 @@ class Runner extends Controller
 	public function show(string $jobId = null): string
 	{
 		// Load the job
-		if (! $job = $this->jobs->find($jobId))
+		if (! $job = $this->jobs->withDeleted()->find($jobId))
 		{
 			if ($this->config->silent)
 			{
