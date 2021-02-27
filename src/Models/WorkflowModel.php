@@ -1,7 +1,7 @@
 <?php namespace Tatter\Workflows\Models;
 
 use CodeIgniter\Model;
-
+use Tatter\Workflows\Entities\Workflow;
 use Tatter\Workflows\Models\StageModel;
 
 class WorkflowModel extends Model
@@ -9,7 +9,7 @@ class WorkflowModel extends Model
 	use \Tatter\Audits\Traits\AuditsTrait;
 	
 	protected $table          = 'workflows';
-	protected $returnType     = '\Tatter\Workflows\Entities\Workflow';
+	protected $returnType     = Workflow::class;
 	protected $useSoftDeletes = true;
 	protected $useTimestamps  = true;
 	protected $allowedFields  = [
@@ -37,7 +37,7 @@ class WorkflowModel extends Model
 			return $result;
 		}
 
-		foreach ((new StageModel())
+		foreach (model(StageModel::class)
 			->whereIn('workflow_id', $workflowIds)
 			->orderBy('id', 'asc')
 			->findAll() as $stage)

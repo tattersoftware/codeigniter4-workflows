@@ -11,9 +11,13 @@ class JoblogModel extends Model
 	protected $useTimestamps  = true;
 	protected $updatedField   = '';
 	protected $useSoftDeletes = false;
-	protected $skipValidation = true;
-
 	protected $allowedFields  = ['job_id', 'stage_from', 'stage_to', 'user_id'];
+
+	protected $validationRules = [
+		'job_id'     => 'required|is_natural_no_zero]',
+		'stage_from' => 'permit_empty|is_natural_no_zero',
+		'stage_to'   => 'permit_empty|is_natural_no_zero',
+	];
 
     /**
      * Returns all logs for a job seeded with their "from" and "to" stages

@@ -20,19 +20,6 @@ class Simulator
 	static public $initialized = false;
 
 	/**
-	 * LEGACY - Replaced by Fabricator::counts
-	 *
-	 * @var        array
-	 * @deprecated 2.0.2
-	 */
-	static public $counts = [
-		'jobs'      => 0,
-		'stages'    => 0,
-		'actions'   => 0,
-		'workflows' => 0,
-	];
-
-	/**
 	 * Initialize the simulation.
 	 *
 	 * @param array $targets Array of target items to create

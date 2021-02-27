@@ -1,25 +1,34 @@
 <?php namespace Tatter\Workflows\Entities;
 
+use CodeIgniter\Entity;
+use Config\Services;
+use Tatter\Users\UserEntity;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Models\StageModel;
 
-class Joblog extends \CodeIgniter\Entity
+class Joblog extends Entity
 {
 	protected $dates = ['created_at'];
+	protected $casts = [
+		'job_id'     => 'int',
+		'user_id'    => '?int',
+		'stage_from' => '?int',
+		'stage_to'   => '?int',
+	];
 
 	/**
 	 * Cached entity for the "from" Stage
 	 *
 	 * @var Stage
 	 */
-	protected $from;
+	private $from;
 
 	/**
 	 * Cached entity for the "to" Stage
 	 *
 	 * @var Stage
 	 */
-	protected $to;
+	private $to;
 
 	/**
 	 * Cached result for user lookup
@@ -37,7 +46,7 @@ class Joblog extends \CodeIgniter\Entity
 	{
 		if ($this->from === null && $this->attributes['stage_from'])
 		{
-			$this->from = (new StageModel())->find($this->attributes['stage_from']);
+			$this->from = model(StageModel::class)->find($this->attributes['stage_from']);
 		}
 
 		return $this->from;
@@ -62,7 +71,7 @@ class Joblog extends \CodeIgniter\Entity
 	{
 		if ($this->to === null && $this->attributes['stage_to'])
 		{
-			$this->to = (new StageModel())->find($this->attributes['stage_to']);
+			$this->to = model(StageModel::class)->find($this->attributes['stage_to']);
 		}
 
 		return $this->to;
@@ -79,12 +88,11 @@ class Joblog extends \CodeIgniter\Entity
 	}
 
 	/**
-	 * Attempts to locate a user corresponding to user_id.
-	 * Relies on locating a UserModel class via Factories.
+	 * Returns the UserEntity corresponding to user_id.
 	 *
-	 * @return array|object|null
+	 * @return UserEntity|null
 	 */
-	public function getUser()
+	public function getUser(): ?UserEntity
 	{
 		if (empty($this->attributes['user_id']))
 		{
@@ -93,11 +101,7 @@ class Joblog extends \CodeIgniter\Entity
 
 		if (is_null($this->user))
 		{
-			// Try to locate a Model
-			if ($model = model('UserModel'))
-			{
-				$this->user = $model->find($this->attributes['user_id']);
-			}
+			$this->user = Services::users()->findById($this->attributes['user_id']);
 		}
 
 		return $this->user;

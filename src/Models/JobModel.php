@@ -23,4 +23,71 @@ class JobModel extends Model
 	
 	protected $afterInsert  = ['logInsert'];
 	protected $beforeUpdate = ['logUpdate'];
+
+	/**
+	 * Logs successful insertions
+	 *
+	 * @param array $eventData
+	 */
+	protected function logInsert(array $eventData)
+	{
+		if (! $eventData['result'])
+		{
+			return false;
+		}
+
+		// Build the row
+		$row = [
+			'job_id'     => $eventData['id'],
+			'stage_to'   => $eventData['data']['stage_id'],
+			'user_id'    => user_id(),
+			'created_at' => date('Y-m-d H:i:s'),
+		];
+
+		// Add it to the database
+		$this->builder('joblogs')->insert($row);
+
+		return $eventData;
+	}
+
+	// Log updates that result in a stage change
+	protected function logUpdate(array $data)
+	{
+		// Process each updated entry
+		foreach ($data['id'] as $id)
+		{
+			// Get the job to be updated
+			$job = $this->find($id);
+			if (empty($job))
+			{
+				continue;
+			}
+
+			// Ignore when the stage will not be not touched
+			if (! in_array('stage_id', array_keys($data['data'])))
+			{
+				continue;
+			}
+
+			// Ignore when the stage is the same
+			if ($data['data']['stage_id'] === $job->stage_id)
+			{
+				continue;
+			}
+
+			// Build the row
+			$row = [
+				'job_id'     => $job->id,
+				'stage_from' => $job->stage_id,
+				'stage_to'   => $data['data']['stage_id'],
+				'user_id'    => user_id(),
+				'created_at' => date('Y-m-d H:i:s'),
+			];
+
+			// Add it to the database
+			$this->builder('joblogs')->insert($row);
+		}
+
+		return $data;
+	}
 }

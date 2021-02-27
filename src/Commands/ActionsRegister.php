@@ -20,7 +20,7 @@ class ActionsRegister extends BaseCommand
 
 		if ($count === 0)
 		{
-			CLI::write('No new actions found in any namespace.', 'yellow');
+			CLI::write('No Actions found in any namespace.', 'yellow');
 			return;
 		}
 

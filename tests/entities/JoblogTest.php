@@ -1,7 +1,7 @@
 <?php
 
-use Myth\Auth\Entities\User;
 use Myth\Auth\Test\Fakers\UserFaker;
+use Tatter\Users\UserEntity;
 use Tatter\Workflows\Entities\Joblog;
 use Tests\Support\DatabaseTestCase;
 
@@ -26,12 +26,7 @@ class JoblogTest extends DatabaseTestCase
 		]);
 	}
 
-	/**
-	 * Tests the Entity's ability to locate
-	 * a valid UserModel and return a User
-	 * matched to its user_id attrbiute
-	 */
-	public function testCanLocateUser()
+	public function testGetUser()
 	{
 		$user = fake(UserFaker::class);
 
@@ -39,7 +34,7 @@ class JoblogTest extends DatabaseTestCase
 
 		$result = $this->joblog->getUser();
 
-		$this->assertInstanceOf(User::class, $result);
-		$this->assertEquals($user->id, $result->id);
+		$this->assertInstanceOf(UserEntity::class, $result);
+		$this->assertEquals($user->id, $result->getId());
 	}
 }

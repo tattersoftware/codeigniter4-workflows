@@ -1,11 +1,12 @@
 <?php namespace Tatter\Workflows\Models;
 
 use CodeIgniter\Model;
+use Tatter\Workflows\Entities\Action;
 
 class ActionModel extends Model
 {
 	protected $table          = 'actions';
-	protected $returnType     = 'Tatter\Workflows\Entities\Action';
+	protected $returnType     = Action::class;
 	protected $useSoftDeletes = true;
 	protected $useTimestamps  = true;
 	protected $allowedFields  = [

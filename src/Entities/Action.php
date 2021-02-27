@@ -15,9 +15,9 @@ class Action extends Entity
 	/**
 	 * Cached Action instance for "class" attribute.
 	 *
-	 * @var BaseAction
+	 * @var BaseAction|null
 	 */
-	protected $instance;
+	private $instance;
 
 	/**
 	 * Gets the associated Action instance
@@ -46,7 +46,7 @@ class Action extends Entity
 	{
 		$route = '/' . config('Workflows')->routeBase . '/' . $this->attributes['uid'];
 
-		if ($jobId)
+		if ($jobId !== null)
 		{
 			$route .= '/' . $jobId;
 		}
@@ -57,7 +57,7 @@ class Action extends Entity
 	/**
 	 * Checks if role filter is enabled and if the current user may access this action.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function mayAccess(): bool
 	{
@@ -83,7 +83,8 @@ class Action extends Entity
 	 * @param string $name
 	 * @param array  $params
 	 *
-	 * @return mixed  Result of the instance method
+	 * @return mixed Result of the instance method
+	 *
 	 * @throws WorkflowsException
 	 */
 	public function __call(string $name, array $params)

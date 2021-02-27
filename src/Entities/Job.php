@@ -11,6 +11,7 @@ use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\WorkflowModel;
+use RuntimeException;
 
 class Job extends Entity
 {
@@ -19,6 +20,7 @@ class Job extends Entity
 		'updated_at',
 		'deleted_at',
 	];
+
 	protected $casts = [
 		'workflow_id' => 'int',
 		'stage_id'    => '?int',
@@ -58,13 +60,13 @@ class Job extends Entity
 	 *
 	 * @return $this
 	 *
-	 * @throws \RuntimeException
+	 * @throws RuntimeException
 	 */
 	protected function ensureCreated(): self
 	{
 		if (empty($this->attributes['id']))
 		{
-			throw new \RuntimeException('Job must be created first.');
+			throw new RuntimeException('Job must be created first.');
 		}
 
 		return $this;
