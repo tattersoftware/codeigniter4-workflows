@@ -1,6 +1,8 @@
 <?php namespace Tatter\Workflows\Entities;
 
 use CodeIgniter\Entity;
+use Config\Services;
+use Tatter\Users\Interfaces\HasPermission;
 use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\BaseAction;
 
@@ -10,6 +12,13 @@ class Action extends Entity
 		'created_at',
 		'updated_at',
 		'deleted_at',
+	];
+
+	/**
+	 * Default set of attributes
+	 */
+	protected $attributes = [
+		'role' => '',
 	];
 
 	/**
@@ -55,26 +64,35 @@ class Action extends Entity
 	}
 
 	/**
-	 * Checks if role filter is enabled and if the current user may access this action.
+	 * Checks if role filter is enabled and if a user
+	 * (defaults to current) may access this action.
+	 *
+	 * @param HasPermission|null $user
 	 *
 	 * @return bool
 	 */
-	public function mayAccess(): bool
+	public function mayAccess(HasPermission $user = null): bool
 	{
-		// If role filtering is not set up then allow through
-		if (! function_exists('has_permission'))
-		{
-			return true;
-		}
-
 		// Anyone can run user actions
-		if (empty($this->attributes['role']) || $this->attributes['role'] === 'user')
+		if ($this->attributes['role'] === '' || $this->attributes['role'] === 'user')
 		{
 			return true;
 		}
 
-		// Otherwise check for Action role permission
-		return has_permission($this->attributes['role']);
+		// If no user was provided then get the current user
+		if (is_null($user))
+		{
+			/** @var HasPermission|null $user */
+			$user = Services::users()->findById(user_id());
+		}
+
+		// If still no user then deny
+		if (is_null($user))
+		{
+			return false;
+		}
+
+		return $user->hasPermission($this->attributes['role']);
 	}
 
 	/**
