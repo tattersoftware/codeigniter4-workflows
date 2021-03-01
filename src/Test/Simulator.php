@@ -2,10 +2,10 @@
 
 use CodeIgniter\Test\Fabricator;
 use Tatter\Workflows\Registrar;
-use Tatter\Workflows\Test\Fakers\JobFaker;
-use Tatter\Workflows\Test\Fakers\StageFaker;
-use Tatter\Workflows\Test\Fakers\ActionFaker;
-use Tatter\Workflows\Test\Fakers\WorkflowFaker;
+use Tatter\Workflows\Models\JobModel;
+use Tatter\Workflows\Models\StageModel;
+use Tatter\Workflows\Models\ActionModel;
+use Tatter\Workflows\Models\WorkflowModel;
 
 /**
  * Support class for simulating a complete workflow environment.
@@ -37,7 +37,7 @@ class Simulator
 			$count = rand(10, 20);
 			while (Fabricator::getCount('actions') < $count)
 			{
-				fake(ActionFaker::class);
+				fake(ActionModel::class);
 			}
 		}
 
@@ -47,7 +47,7 @@ class Simulator
 			$count = rand(2, 7);
 			while (Fabricator::getCount('workflows') < $count)
 			{
-				fake(WorkflowFaker::class);
+				fake(WorkflowModel::class);
 			}
 		}
 
@@ -57,7 +57,7 @@ class Simulator
 			$count = Fabricator::getCount('workflows') * rand(4, 8);
 			while (Fabricator::getCount('stages') < $count)
 			{
-				fake(StageFaker::class);
+				fake(StageModel::class);
 			}
 		}
 
@@ -67,7 +67,7 @@ class Simulator
 			$count = rand(40, 200);
 			while (Fabricator::getCount('jobs') < $count)
 			{
-				fake(JobFaker::class);
+				fake(JobModel::class);
 			}
 		}
 

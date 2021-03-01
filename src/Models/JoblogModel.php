@@ -1,12 +1,15 @@
 <?php namespace Tatter\Workflows\Models;
 
 use CodeIgniter\Model;
+use CodeIgniter\Test\Fabricator;
+use Faker\Generator;
+use Tatter\Workflows\Entities\Joblog;
 
 class JoblogModel extends Model
 {
 	protected $table      = 'joblogs';
 	protected $primaryKey = 'id';
-	protected $returnType = 'Tatter\Workflows\Entities\Joblog';
+	protected $returnType = Joblog::class;
 
 	protected $useTimestamps  = true;
 	protected $updatedField   = '';
@@ -52,5 +55,21 @@ class JoblogModel extends Model
 		}
 
 		return $logs;
+	}
+
+	/**
+	 * Faked data for Fabricator.
+	 *
+	 * @param Generator $faker
+	 *
+	 * @return Joblog
+	 */
+	public function fake(Generator &$faker): Joblog
+	{
+		return new Joblog([
+			'job_id'     => rand(1, Fabricator::getCount('jobs') ?: 5),
+			'stage_from' => rand(1, Fabricator::getCount('stages') ?: 10),
+			'stage_to'   => rand(1, Fabricator::getCount('stages') ?: 10),
+		]);
 	}
 }

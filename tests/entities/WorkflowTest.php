@@ -2,10 +2,9 @@
 
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Entities\Workflow;
+use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\StageModel;
-use Tatter\Workflows\Test\Fakers\ActionFaker;
-use Tatter\Workflows\Test\Fakers\StageFaker;
-use Tatter\Workflows\Test\Fakers\WorkflowFaker;
+use Tatter\Workflows\Models\WorkflowModel;
 use Tests\Support\DatabaseTestCase;
 
 class WorkflowTest extends DatabaseTestCase
@@ -21,12 +20,12 @@ class WorkflowTest extends DatabaseTestCase
 	{
 		parent::setUp();
 
-		$this->workflow = fake(WorkflowFaker::class);
+		$this->workflow = fake(WorkflowModel::class);
 	}
 
 	public function testGetStages()
 	{
-		$stage = fake(StageFaker::class, [
+		$stage = fake(StageModel::class, [
 			'workflow_id' => $this->workflow->id,
 		]);
 

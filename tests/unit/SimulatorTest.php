@@ -2,10 +2,10 @@
 
 use CodeIgniter\Test\Fabricator;
 use Tatter\Workflows\Entities\Workflow;
-use Tatter\Workflows\Test\Fakers\ActionFaker;
-use Tatter\Workflows\Test\Fakers\JobFaker;
-use Tatter\Workflows\Test\Fakers\StageFaker;
-use Tatter\Workflows\Test\Fakers\WorkflowFaker;
+use Tatter\Workflows\Models\ActionModel;
+use Tatter\Workflows\Models\JobModel;
+use Tatter\Workflows\Models\StageModel;
+use Tatter\Workflows\Models\WorkflowModel;
 use Tatter\Workflows\Test\Simulator;
 use Tests\Support\DatabaseTestCase;
 
@@ -19,7 +19,7 @@ class SimulatorTest extends DatabaseTestCase
 
 		for ($i = 0; $i < 3; $i++)
 		{
-			$stage = fake(StageFaker::class);
+			$stage = fake(StageModel::class);
 			$sum  += $stage->workflow_id;
 		}
 
@@ -30,17 +30,17 @@ class SimulatorTest extends DatabaseTestCase
 	{
 		Simulator::initialize();
 
-		$this->assertGreaterThanOrEqual(10, model(ActionFaker::class)->countAllResults());
-		$this->assertGreaterThanOrEqual(2, model(WorkflowFaker::class)->countAllResults());
-		$this->assertGreaterThanOrEqual(8, model(StageFaker::class)->countAllResults());
-		$this->assertGreaterThanOrEqual(40, model(JobFaker::class)->countAllResults());
+		$this->assertGreaterThanOrEqual(10, model(ActionModel::class)->countAllResults());
+		$this->assertGreaterThanOrEqual(2, model(WorkflowModel::class)->countAllResults());
+		$this->assertGreaterThanOrEqual(8, model(StageModel::class)->countAllResults());
+		$this->assertGreaterThanOrEqual(40, model(JobModel::class)->countAllResults());
 	}
 
 	public function testInitializeRegistersActions()
 	{
 		Simulator::initialize();
 
-		$result = model(ActionFaker::class)->first();
+		$result = model(ActionModel::class)->first();
 
 		$this->assertEquals('info', $result->uid);
 	}
