@@ -1,11 +1,13 @@
 <?php namespace Tests\Support;
 
-use CodeIgniter\Test\CIDatabaseTestCase;
+use CodeIgniter\Test\CIUnitTestCase;
 use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Test\Simulator;
 
-class DatabaseTestCase extends CIDatabaseTestCase
+class DatabaseTestCase extends CIUnitTestCase
 {
+	use \CodeIgniter\Test\DatabaseTestTrait;
+
 	/**
 	 * Should the database be refreshed before each test?
 	 *
@@ -28,6 +30,19 @@ class DatabaseTestCase extends CIDatabaseTestCase
 	 */
 	protected $config;
 
+	/**
+	 * Loads the auth helper
+	 */
+	public static function setUpBeforeClass(): void
+	{
+		parent::setUpBeforeClass();
+
+		helper('auth');
+	}
+
+	/**
+	 * Makes sure an errors throw exceptions
+	 */
 	protected function setUp(): void
 	{
 		parent::setUp();
@@ -36,6 +51,9 @@ class DatabaseTestCase extends CIDatabaseTestCase
 		$this->config->silent = false;
 	}
 
+	/**
+	 * Resets the Simulator
+	 */
 	protected function tearDown(): void
 	{
 		parent::tearDown();

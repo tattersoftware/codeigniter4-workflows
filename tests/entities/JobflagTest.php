@@ -5,7 +5,7 @@ use CodeIgniter\I18n\Time;
 use Tatter\Workflows\Test\Fakers\JobFaker;
 use Tests\Support\DatabaseTestCase;
 
-class FlagTest extends DatabaseTestCase
+class JobflagTest extends DatabaseTestCase
 {
 	/**
 	 * Common timestamp to use during testing
