@@ -14,7 +14,7 @@ class JoblogModel extends Model
 	protected $allowedFields  = ['job_id', 'stage_from', 'stage_to', 'user_id'];
 
 	protected $validationRules = [
-		'job_id'     => 'required|is_natural_no_zero]',
+		'job_id'     => 'required|is_natural_no_zero',
 		'stage_from' => 'permit_empty|is_natural_no_zero',
 		'stage_to'   => 'permit_empty|is_natural_no_zero',
 	];

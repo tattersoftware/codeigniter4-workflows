@@ -17,8 +17,8 @@ class StageModel extends Model
 	];
 
 	protected $validationRules = [
-		'action_id'   => 'required|is_natural_no_zero]',
-		'workflow_id' => 'required|is_natural_no_zero]',
+		'action_id'   => 'required|is_natural_no_zero',
+		'workflow_id' => 'required|is_natural_no_zero',
 	];
 	
 	/*** Tatter\Audits ***/
