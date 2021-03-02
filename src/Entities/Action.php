@@ -65,7 +65,7 @@ class Action extends Entity
 
 	/**
 	 * Checks if role filter is enabled and if a user
-	 * (defaults to current) may access this action.
+	 * (defaults to current) may access this Action.
 	 *
 	 * @param HasPermission|null $user
 	 *

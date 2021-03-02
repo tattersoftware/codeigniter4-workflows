@@ -2,6 +2,7 @@
 
 use CodeIgniter\Model;
 use Faker\Generator;
+use Tatter\Users\Interfaces\HasPermission;
 use Tatter\Workflows\Entities\Workflow;
 use Tatter\Workflows\Models\StageModel;
 
@@ -27,8 +28,15 @@ class WorkflowModel extends Model
 	protected $afterUpdate = ['auditUpdate'];
 	protected $afterDelete = ['auditDelete'];
 	
-	// Batch load related stages for the given workflows
-	public function fetchStages($workflows)
+	/**
+	 * Batch load related Stages for the
+	 * supplied workflows.
+	 *
+	 * @param Workflow[]
+	 *
+	 * @return array<int,Stage> Stages indexed by their Workflow
+	 */
+	public function fetchStages(array $workflows)
 	{
 		$result = [];
 
@@ -52,6 +60,35 @@ class WorkflowModel extends Model
 		}
 
 		return $result;
+	}
+	
+	/**
+	 * Get Workflows allowed for a user.
+	 *
+	 * @param HasPermission $userId
+	 *
+	 * @return Workflow[]
+	 */
+	public function getForUser(HasPermission $user)
+	{
+		// First load this user's explicit associations
+		$explicits = [];
+		foreach (model(ExplicitModel::class)->where('user_id', $user->getId())->findAll() as $explicit)
+		{
+			$explicits[$explicit->workflow_id] = (bool) $explicit->permitted;
+		}
+
+		// Cross check all Workflows
+		$workflows = [];
+		foreach ($this->findAll() as $workflow)
+		{
+			if ($workflow->mayAccess($user, $explicits))
+			{
+				$workflows[] = $workflow;
+			}
+		}
+
+		return $workflows;
 	}
 
 	/**

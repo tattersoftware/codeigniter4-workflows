@@ -1,8 +1,11 @@
 <?php
 
+use Myth\Auth\Test\Fakers\UserFaker;
+use Tatter\Users\Factories\MythFactory;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Entities\Workflow;
 use Tatter\Workflows\Models\ActionModel;
+use Tatter\Workflows\Models\ExplicitModel;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\WorkflowModel;
 use Tests\Support\DatabaseTestCase;
@@ -10,11 +13,29 @@ use Tests\Support\DatabaseTestCase;
 class WorkflowTest extends DatabaseTestCase
 {
 	/**
-	 * A random workflow to test with
+	 * A fake Workflow to test with
 	 *
 	 * @var Workflow
 	 */
-	protected $workflow;
+	private $workflow;
+
+	/**
+	 * Create a fake explicit to test with
+	 *
+	 * @return object
+	 */
+	private function createExplicit(array $data = []): object
+	{
+		$user = fake(UserFaker::class);
+
+		$data = array_merge([
+			'user_id'     => $user->id,
+			'workflow_id' => $this->workflow->id,
+			'permitted'   => 1,
+		], $data);
+
+		return fake(ExplicitModel::class, $data);
+	}
 
 	protected function setUp(): void
 	{
@@ -37,5 +58,112 @@ class WorkflowTest extends DatabaseTestCase
 		$result = reset($result);
 		$this->assertInstanceOf(Stage::class, $result);
 		$this->assertEquals($stage->id, $result->id);
+	}
+
+	public function testMayAccessEmpty()
+	{
+		$this->workflow->role = '';
+
+		$this->assertTrue($this->workflow->mayAccess());
+	}
+
+	public function testMayAccessUser()
+	{
+		$this->workflow->role = 'user';
+
+		$this->assertTrue($this->workflow->mayAccess());
+	}
+
+	public function testMayAccessExplicit()
+	{
+		$explicit = $this->createExplicit();
+		$_SESSION['logged_in'] = $explicit->user_id;
+
+		$this->workflow->role = 'restricted';
+
+		$this->assertTrue($this->workflow->mayAccess());
+	}
+
+	public function testMayAccessExplicitWithUser()
+	{
+		$explicit = $this->createExplicit();
+
+		// Get the UserEntity with HasPermission
+		$user = (new MythFactory)->findById($explicit->user_id);
+
+		$this->workflow->role = 'restricted';
+
+		$this->assertTrue($this->workflow->mayAccess($user));
+	}
+
+	public function testMayAccessExplicitWithExplicits()
+	{
+		$explicit = $this->createExplicit();
+
+		$this->workflow->role = 'restricted';
+
+		$this->assertTrue($this->workflow->mayAccess(null, [$explicit->id => $explicit->permitted]));
+	}
+
+	public function testMayAccessExplicitWithBoth()
+	{
+		$explicit = $this->createExplicit();
+
+		// Get the UserEntity with HasPermission
+		$user = (new MythFactory)->findById($explicit->user_id);
+
+		$this->workflow->role = 'restricted';
+
+		$this->assertTrue($this->workflow->mayAccess($user, [$explicit->id => $explicit->permitted]));
+	}
+
+	public function testMayNotAccess()
+	{
+		$this->workflow->role = 'restricted';
+
+		$this->assertFalse($this->workflow->mayAccess());
+	}
+
+	public function testMayNotAccessExplicit()
+	{
+		$explicit = $this->createExplicit(['permitted' => 0]);
+		$_SESSION['logged_in'] = $explicit->user_id;
+
+		$this->workflow->role = 'user';
+
+		$this->assertFalse($this->workflow->mayAccess());
+	}
+
+	public function testMayNotAccessExplicitWithUser()
+	{
+		$explicit = $this->createExplicit(['permitted' => 0]);
+
+		// Get the UserEntity with HasPermission
+		$user = (new MythFactory)->findById($explicit->user_id);
+
+		$this->workflow->role = 'user';
+
+		$this->assertFalse($this->workflow->mayAccess($user));
+	}
+
+	public function testMayNotAccessExplicitWithExplicits()
+	{
+		$explicit = $this->createExplicit(['permitted' => 0]);
+
+		$this->workflow->role = 'user';
+
+		$this->assertFalse($this->workflow->mayAccess(null, [$explicit->id => $explicit->permitted]));
+	}
+
+	public function testMayNotAccessExplicitWithBoth()
+	{
+		$explicit = $this->createExplicit(['permitted' => 0]);
+
+		// Get the UserEntity with HasPermission
+		$user = (new MythFactory)->findById($explicit->user_id);
+
+		$this->workflow->role = 'user';
+
+		$this->assertFalse($this->workflow->mayAccess($user, [$explicit->id => $explicit->permitted]));
 	}
 }
