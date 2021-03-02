@@ -34,7 +34,7 @@
 	},
 	"require-dev": {
 		"codeigniter4/codeigniter4": "dev-develop",
-		"myth/auth": "dev-provision",
+		"myth/auth": "dev-develop",
 		"tatter/tools": "^1.6"
 	},
 	"autoload": {
@@ -57,7 +57,7 @@
 		},
 		{
 			"type": "vcs",
-			"url": "https://github.com/MGatner/myth-auth"
+			"url": "https://github.com/lonnieezell/myth-auth"
 		},
 		{
 			"type": "composer",
