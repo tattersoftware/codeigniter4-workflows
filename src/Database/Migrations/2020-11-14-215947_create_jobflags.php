@@ -7,7 +7,7 @@ class CreateJobflags extends Migration
 	public function up()
 	{
 		$fields = [
-			'job_id'     => ['type' => 'int', 'unsigned' => true, 'null' => true],
+			'job_id'     => ['type' => 'int', 'unsigned' => true],
 			'name'       => ['type' => 'varchar', 'constraint' => 255],
 			'created_at' => ['type' => 'datetime', 'null' => true],
 		];

@@ -5,9 +5,19 @@ use CodeIgniter\Exceptions\FrameworkException;
 
 class WorkflowsException extends \RuntimeException implements ExceptionInterface
 {
+	public static function forNoWorkflowAvailable()
+	{
+		return new static(lang('Workflows.noWorkflowAvailable'), 404);
+	}
+
 	public static function forWorkflowNotFound()
 	{
 		return new static(lang('Workflows.workflowNotFound'), 404);
+	}
+
+	public static function forWorkflowNotPermitted()
+	{
+		return new static(lang('Workflows.workflowNotPermitted'), 403);
 	}
 
 	public static function forActionNotFound()

@@ -21,7 +21,7 @@ class Stage extends Entity
 	 *
 	 * @var Action
 	 */
-	protected $action;
+	private $action;
 
 	/**
 	 * Passes through name requests to the Action

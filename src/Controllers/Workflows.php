@@ -9,37 +9,6 @@ use Tatter\Workflows\Models\WorkflowModel;
 class Workflows extends Controller
 {
 	/**
-	 * @var WorkflowModel
-	 */
-	protected $model;
-
-	/**
-	 * @var ActionModel
-	 */
-	protected $actions;
-
-	/**
-	 * @var StageModel
-	 */
-	protected $stages;
-
-	/**
-	 * @var \Tatter\Workflows\Config\Workflows
-	 */
-	protected $config;
-
-	/**
-	 * Loads the common dependencies
-	 */
-	public function __construct()
-	{
-		$this->model   = new WorkflowModel();
-		$this->stages  = new StageModel();
-		$this->actions = new ActionModel();
-		$this->config  = config('Workflows');
-	}
-
-	/**
 	 * Displays a list of available Workflows.
 	 *
 	 * @return string
@@ -47,12 +16,12 @@ class Workflows extends Controller
 	public function index(): string
 	{
 		$data = [
-			'layout'    => $this->config->layouts['manage'],
-			'workflows' => $this->model->orderBy('name')->findAll(),
+			'layout'    => config('Workflows')->layouts['manage'],
+			'workflows' => model(WorkflowModel::class)->orderBy('name')->findAll(),
 		];
 
 		// Prefetch the stages
-		$data['stages'] = $this->model->fetchStages($data['workflows']);
+		$data['stages'] = model(WorkflowModel::class)->fetchStages($data['workflows']);
 
 		return view('Tatter\Workflows\Views\workflows\index', $data);
 	}
@@ -67,11 +36,11 @@ class Workflows extends Controller
 	public function show(string $workflowId): string
 	{
 		$data = [
-			'config'    => $this->config,
-			'layout'    => $this->config->layouts['manage'],
-			'workflow'  => $this->model->find($workflowId),
-			'workflows' => $this->model->orderBy('name', 'asc')->findAll(),
-			'actions'   => $this->actions->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
+			'config'    => config('Workflows'),
+			'layout'    => config('Workflows')->layouts['manage'],
+			'workflow'  => model(WorkflowModel::class)->find($workflowId),
+			'workflows' => model(WorkflowModel::class)->orderBy('name', 'asc')->findAll(),
+			'actions'   => model(ActionModel::class)->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
 		];
 
 		// Add the stages
@@ -88,8 +57,8 @@ class Workflows extends Controller
 	public function new(): string
 	{
 		$data = [
-			'layout'  => $this->config->layouts['manage'],
-			'actions' => $this->actions->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
+			'layout'  => config('Workflows')->layouts['manage'],
+			'actions' => model(ActionModel::class)->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
 		];
 
 		// Prepare action data to be JSON encoded for JSSortable
@@ -125,9 +94,9 @@ class Workflows extends Controller
 
 		// Try to create the workflow
 		$workflow = $this->request->getPost();
-		if (! $workflowId = $this->model->insert($workflow, true))
+		if (! $workflowId = model(WorkflowModel::class)->insert($workflow, true))
 		{
-			return redirect()->back()->withInput()->with('errors', $this->model->errors());
+			return redirect()->back()->withInput()->with('errors', model(WorkflowModel::class)->errors());
 		}
 
 		// Create action-to-workflow stages
@@ -138,7 +107,7 @@ class Workflows extends Controller
 				'action_id'   => $actionId,
 			];
 
-			$this->stages->insert($stage);
+			model(StageModel::class)->insert($stage);
 		}
 
 		return redirect()->to('/workflows/' . $workflowId)->with('success', lang('Workflows.newWorkflowSuccess'));
@@ -165,9 +134,9 @@ class Workflows extends Controller
 
 		// try to update the workflow
 		$workflow = $this->request->getPost();
-		if (! $this->model->update($workflowId, $workflow))
+		if (! model(WorkflowModel::class)->update($workflowId, $workflow))
 		{
-			return redirect()->back()->withInput()->with('errors', $this->model->errors());
+			return redirect()->back()->withInput()->with('errors', model(WorkflowModel::class)->errors());
 		}
 
 		return redirect()->to('/workflows/' . $workflowId)->with('success', lang('Workflows.updateWorkflowSuccess'));
@@ -182,7 +151,7 @@ class Workflows extends Controller
 	 */
 	public function delete(string $workflowId): RedirectResponse
 	{
-		$this->model->delete($workflowId);
+		model(WorkflowModel::class)->delete($workflowId);
 
 		return redirect()->to('/workflows')->with('success', lang('Workflows.deletedWorkflowSuccess'));
 	}

@@ -1,8 +1,10 @@
 <?php
 
 return [
+	'noWorkflowAvailable'    => 'There are no available workflows',
 	'workflowNotFound'       => 'Could not find that workflow.',
-	'actionNotFound'           => 'Could not find that action.',
+	'workflowNotPermitted'   => 'You do not have permission to use that workflow.',
+	'actionNotFound'         => 'Could not find that action.',
 	'jobNotFound'            => 'Could not find that job.',
 	'stageNotFound'          => 'Could not find that job action.',
 	'newWorkflowSuccess'     => 'New workflow created successfully.',
@@ -12,7 +14,7 @@ return [
 	'skipRequiredStage'      => 'Cannot skip the required "{0}" action',
 	'newJobSuccess'          => 'New job created successfully.',
 	'routeMissingJobId'      => 'Job ID missing for "{0}" action',
-	'actionMissingMethod'      => 'The "{0}" action does not support the "{1}" method.',
+	'actionMissingMethod'    => 'The "{0}" action does not support the "{1}" method.',
 	'jobAlreadyComplete'     => 'That job is already complete.',
-	'invalidActionReturn'      => 'Unable to interpret action return.',
+	'invalidActionReturn'    => 'Unable to interpret action return.',
 ];

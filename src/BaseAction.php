@@ -1,8 +1,12 @@
 <?php namespace Tatter\Workflows;
 
+use CodeIgniter\HTTP\RequestInterface;
 use Tatter\Handlers\BaseHandler;
+use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Models\ActionModel;
+use Tatter\Workflows\Models\JobModel;
+use RuntimeException;
 
 /**
  * Class reference and common functions for all Actions.
@@ -14,51 +18,58 @@ abstract class BaseAction extends BaseHandler
 	 *
 	 * @var array<string>|null
 	 */
-	public $attributes;
+	protected $attributes;
 
 	/**
-	 * @var array<string>|null
+	 * Default set of attributes and their types.
 	 *
-	 * @deprecated
+	 * @var array<string>|null
 	 */
-	public $definition;
+	protected $defaults = [
+		'category' => '',
+		'name'     => '',
+		'uid'      => '',
+		'role'     => 'user',
+		'icon'     => 'fas fa-tasks',
+		'summary'  => '',
+	];
 
 	/**
-	 * @var \Tatter\Workflows\Config\Workflows
+	 * @var WorkflowsConfig
 	 */
 	public $config;
 
 	/**
-	 * @var \Tatter\Workflows\Entities\Job
+	 * @var Job|null
 	 */
 	public $job;
 
 	/**
-	 * @var \Tatter\Workflows\Models\JobModel
+	 * @var JobModel
 	 */
 	public $jobs;
 
 	/**
-	 * @var \CodeIgniter\HTTP\RequestInterface
+	 * @var RequestInterface
 	 */
 	public $request;
 
 	/**
 	 * Sets up common resources for Actions.
 	 *
-	 * @return $this
+	 * @param WorkflowsConfig|null $config
+	 * @param Job|null $job
+	 * @param JobModel|null $jobs
+	 * @param RequestInterface|null $request
 	 */
-	public function __construct()
+	public function __construct(WorkflowsConfig $config = null, Job $job = null, JobModel $jobs = null, RequestInterface $request = null)
 	{
-		$this->request = service('request');
-		$this->config  = config('Workflows');
-		$this->jobs    = model($this->config->jobModel);
+		parent::__construct();
 
-		// Check for legacy definition
-		if (is_null($this->attributes) && ! is_null($this->definition))
-		{
-			$this->attributes = $this->definition;
-		}
+		$this->config  = $config ?? config('Workflows');
+		$this->job     = $job;
+		$this->jobs    = $jobs ?? model($this->config->jobModel);
+		$this->request = $request ?? service('request');
 	}
 
 	//--------------------------------------------------------------------
@@ -66,25 +77,30 @@ abstract class BaseAction extends BaseHandler
 	/**
 	 * Creates the database record for this class based on its definition.
 	 *
-	 * @return integer|boolean  int for inserted ID, true for existing entry, false for failure
+	 * @return int The ID of the new/exsiting class
+	 *
+	 * @throws RuntimeException for insert failures
 	 */
-	public function register()
+	public function register(): int
 	{
 		$actions = model(ActionModel::class);
 
 		// Check for an existing entry
 		if ($action = $actions->where('uid', $this->attributes['uid'])->first())
 		{
-			return true;
+			return $action->id;
 		}
 
-		return $actions->insert($this->toArray());
+		$row          = $this->toArray();
+		$row['class'] = get_class($this);
+
+		return (int) $actions->insert($row);
 	}
 
 	/**
 	 * Deletes this action from the database (soft).
 	 *
-	 * @return boolean  Result from the model
+	 * @return bool Result from the model
 	 */
 	public function remove(): bool
 	{

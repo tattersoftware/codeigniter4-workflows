@@ -20,7 +20,10 @@ class JobflagModel extends Model
 	protected $useTimestamps  = true;
 	protected $updatedField   = '';
 	protected $useSoftDeletes = false;
-	protected $skipValidation = true;
-
 	protected $allowedFields  = ['job_id', 'name', 'created_at'];
+
+	protected $validationRules = [
+		'job_id' => 'required|is_natural_no_zero',
+		'name'   => 'required',
+	];
 }

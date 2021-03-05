@@ -3,6 +3,7 @@ Job action control through dynamic workflows, for CodeIgniter 4
 
 [![](https://github.com/tattersoftware/codeigniter4-workflows/workflows/PHPUnit/badge.svg)](https://github.com/tattersoftware/codeigniter4-workflows/actions?query=workflow%3A%22PHPUnit%22)
 [![](https://github.com/tattersoftware/codeigniter4-workflows/workflows/PHPStan/badge.svg)](https://github.com/tattersoftware/codeigniter4-workflows/actions?query=workflow%3A%PHPStan%22)
+[![Coverage Status](https://coveralls.io/repos/github/tattersoftware/codeigniter4-workflows/badge.svg?branch=develop)](https://coveralls.io/github/tattersoftware/codeigniter4-workflows?branch=develop)
 
 ## Quick Start
 
@@ -35,6 +36,10 @@ The library's default behavior can be altered by extending its config file. Copy
 **examples/Workflows.php** to **app/Config/** and follow the instructions
 in the comments. If no config file is found in app/Config the library will use its own.
 
+**Workflows** uses [Tatter\Users](https://github.com/tattersoftware/codeigniter4-users) to
+work with user records. Follow the instructions to verify you have a compatible authentication
+library with classes that implement the `UserEntity` and `HasPermission` interfaces.
+
 ## Usage
 
 The CLI command `spark actions:register` will search all namespaces for valid action files
@@ -54,9 +59,8 @@ routes that match `/jobs/`, but this can be changed in the config file.
 ## Action permissions
 
 You may limit access to individual Actions using the `role` attribute of its definition.
-By default the "user" `role` is accessible by anyone. To restrict access, define a
-`has_permission()` function which takes a single `string` parameter with the name of the role
-(hint: or use **Myth:Auth**'s existing version).
+By default the "user" `role` is available to everyone. Actions will use the `UserEntity`
+with `HasPermission` interface to test for allowed users.
 
 ## Logging
 

@@ -17,7 +17,7 @@
 				<div class="card-body">
 					<h5 class="card-title"><i class="<?= $workflow->icon ?: 'far fa-circle' ?>"></i> <?= $workflow->name ?></h5>
 					<h6 class="card-subtitle mb-2 text-muted"><?= $workflow->category ?: 'No' ?> Category</h6>
-
+					<p><?= $workflow->role ?: '<em>Unrestricted</em>'?></p>
 					<p class="card-text"><?= $workflow->summary ?></p>
 
 					<a href="#" class="card-link btn btn-primary" onclick="$('#workflow-card .card').toggle(); return false;">Edit</a>
@@ -33,6 +33,7 @@
 							<input name="icon" type="text" class="form-control" id="icon" aria-describedby="iconHelp" placeholder="Workflow icon" value="<?= $workflow->icon ?>">
 							<input name="name" type="text" class="form-control" id="name" placeholder="Workflow name" value="<?= $workflow->name ?>" required>
 						</h5>
+						<input name="role" type="text" class="form-control" id="role" placeholder="Role restriction" value="<?= $workflow->role ?>">
 						<input name="category" type="text" class="form-control" id="category" placeholder="Workflow category" value="<?= $workflow->category ?>">
 						<p class="card-text">
 							<input name="summary" type="text" class="form-control" id="icon" placeholder="Workflow summary" value="<?= $workflow->summary ?>" required>

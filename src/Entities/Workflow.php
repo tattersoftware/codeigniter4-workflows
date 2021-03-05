@@ -1,8 +1,12 @@
 <?php namespace Tatter\Workflows\Entities;
 
 use CodeIgniter\Entity;
+use Config\Services;
+use Tatter\Users\Interfaces\HasPermission;
 use Tatter\Workflows\Models\ActionModel;
+use Tatter\Workflows\Models\ExplicitModel;
 use Tatter\Workflows\Models\StageModel;
+use RuntimeException;
 
 class Workflow extends Entity
 {
@@ -10,6 +14,13 @@ class Workflow extends Entity
 		'created_at',
 		'updated_at',
 		'deleted_at',
+	];
+
+	/**
+	 * Default set of attributes
+	 */
+	protected $attributes = [
+		'role' => '',
 	];
 
 	// Get this workflow's stages
@@ -30,48 +41,54 @@ class Workflow extends Entity
 	}
 
 	/**
-	 * Adds an action to this workflow
+	 * Checks if role filter is enabled and if a user
+	 * (defaults to current) may access this Workflow.
 	 *
-	 * @param mixed   $action   The action to add to this workflow; can be an Action, ID, or uid
-	 * @param boolean $required Whether the subsequent stage will be required
+	 * @param HasPermission|null $user
+	 * @param array<int,bool>|null $explicits An array of explicit associations from
+	 *                                        users_workflows. Mostly injected so when
+	 *                                        checking many Workflows at once to prevent
+	 *                                        duplicate database calls
 	 *
-	 * @return integer|string|boolean  Return from StageModel::insert()
+	 * @return bool
 	 */
-	public function addAction($action, bool $required = false)
+	public function mayAccess(HasPermission $user = null, array $explicits = null): bool
 	{
-		if (empty($this->attributes['id']))
+		// If no user was provided then try for the current user
+		if (is_null($user) && $userId = user_id())
 		{
-			throw new \RuntimeException('Workflow must be created before adding actions.');
+			/** @var HasPermission|null $user */
+			$user = Services::users()->findById($userId);
 		}
 
-		// Check for a UID string and look it up
-		if (is_string($action) && ! is_numeric($action))
+		// Check explicits first
+		if (is_null($explicits))
 		{
-			$action = model(ActionModel::class)->where('uid', $action)->first();
+			if ($user && $explicit = model(ExplicitModel::class)
+				->where('user_id', $user->getId())
+				->where('workflow_id', $this->attributes['id'])
+				->first())
+			{
+				return (bool) $explicit->permitted;
+			}
+		}
+		elseif (isset($explicits[$this->attributes['id']]))
+		{
+			return (bool) $explicits[$this->attributes['id']];
 		}
 
-		// Determine the ID
-		if (is_numeric($action))
+		// Anyone else is allowed unrestricted Workflows
+		if ($this->attributes['role'] === '' || $this->attributes['role'] === 'user')
 		{
-			$id = $action;
-		}
-		elseif (is_object($action))
-		{
-			$id = $action->id;
-		}
-		elseif (is_array($action))
-		{
-			$id = $action['id'];
-		}
-		else
-		{
-			throw new \RuntimeException('Unable to locate the ID for the target action: ' . print_r($action, true));
+			return true;
 		}
 
-		return model(StageModel::class)->insert([
-			'action_id'   => $id,
-			'workflow_id' => $this->attributes['id'],
-			'required'    => $required,
-		]);
+		// If still no user then deny
+		if (is_null($user))
+		{
+			return false;
+		}
+
+		return $user->hasPermission($this->attributes['role']);
 	}
 }

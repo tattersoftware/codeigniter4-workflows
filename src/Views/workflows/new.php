@@ -38,6 +38,11 @@
 					<small id="nameHelp" class="form-text text-muted">A short descriptive name to identify this workflow.</small>
 				</div>
 				<div class="form-group">
+					<label for="role">Role</label>
+					<input name="role" type="text" class="form-control" id="role" aria-describedby="roleHelp" placeholder="Role restriction" value="<?= old('role') ?>">
+					<small id="roleHelp" class="form-text text-muted">An optional role to check if restricting this workflow.</small>
+				</div>
+				<div class="form-group">
 					<label for="icon">Icon</label>
 					<input name="icon" type="text" class="form-control" id="icon" aria-describedby="iconHelp" placeholder="Workflow icon" value="<?= old('icon') ?>">
 					<small id="iconHelp" class="form-text text-muted">An icon class for this workflow (usually: FontAwesome).</small>

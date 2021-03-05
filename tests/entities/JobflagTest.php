@@ -2,10 +2,10 @@
 
 use CodeIgniter\Database\BaseBuilder;
 use CodeIgniter\I18n\Time;
-use Tatter\Workflows\Test\Fakers\JobFaker;
+use Tatter\Workflows\Models\JobModel;
 use Tests\Support\DatabaseTestCase;
 
-class FlagTest extends DatabaseTestCase
+class JobflagTest extends DatabaseTestCase
 {
 	/**
 	 * Common timestamp to use during testing
@@ -33,7 +33,7 @@ class FlagTest extends DatabaseTestCase
 		parent::setUp();
 
 		$this->now     = date('Y-m-d H:i:s');
-		$this->job     = fake(JobFaker::class);
+		$this->job     = fake(JobModel::class);
 		$this->builder = $this->db->table('jobflags');
 	}
 

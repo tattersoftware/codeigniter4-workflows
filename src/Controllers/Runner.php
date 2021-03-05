@@ -68,6 +68,7 @@ class Runner extends Controller
 	 * @param string $jobId ID of the job (int)
 	 *
 	 * @return string
+	 *
 	 * @throws WorkflowsException
 	 */
 	public function show(string $jobId = null): string
@@ -77,10 +78,7 @@ class Runner extends Controller
 		{
 			if ($this->config->silent)
 			{
-				return view($this->config->views['messages'], [
-					'layout' => $this->config->layouts['public'],
-					'error'  => lang('Workflows.jobNotFound'),
-				]);
+				return $this->showError(lang('Workflows.jobNotFound'));
 			}
 
 			throw WorkflowsException::forJobNotFound();
@@ -113,10 +111,7 @@ class Runner extends Controller
 		{
 			if ($this->config->silent)
 			{
-				return view($this->config->views['messages'], [
-					'layout' => $this->config->layouts['public'],
-					'error'  => lang('Workflows.jobNotFound'),
-				]);
+				return $this->showError(lang('Workflows.jobNotFound'));
 			}
 
 			throw WorkflowsException::forJobNotFound();
@@ -134,10 +129,7 @@ class Runner extends Controller
 		// Check for a current Stage
 		if (! $stage = model(StageModel::class)->find($job->stage_id))
 		{
-			return view($this->config->views['messages'], [
-				'layout' => $this->config->layouts['public'],
-				'error'  => lang('Workflows.jobAlreadyComplete'),
-			]);
+			return $this->showError(lang('Workflows.jobAlreadyComplete'));
 		}
 
 		return redirect()->to($stage->action->getRoute($job->id));
@@ -146,32 +138,78 @@ class Runner extends Controller
 	/**
 	 * Start a new Job in the given Workflow.
 	 *
-	 * @param string|null $workflowId ID of the Workflow to use for the new Job (int)
+	 * @param string|int|null $workflowId ID of the Workflow to use for the new Job (int)
 	 *
-	 * @return RedirectResponse
+	 * @return RedirectResponse|string
+	 *
 	 * @throws WorkflowsException
 	 */
-	public function new(string $workflowId = null): RedirectResponse
+	public function new($workflowId = null)
 	{
-		// Get the workflow, or if not provided then use the first available
-		$workflow = ($workflowId)
-			? model(WorkflowModel::class)->find($workflowId)
-			: model(WorkflowModel::class)->first();
-
-		if (empty($workflow))
+		// If no Workflow was specified then load available
+		if (! isset($workflowId))
 		{
+			// Find available Workflows
+			$workflows = [];
+			foreach (model(WorkflowModel::class)->findAll() as $workflow)
+			{
+				if ($workflow->mayAccess())
+				{
+					$workflows[] = $workflow;
+				}
+			}
+
+			if ($workflows === [])
+			{
+				if ($this->config->silent)
+				{
+					return $this->showError(lang('Workflows.noWorkflowAvailable'));
+				}
+
+				throw WorkflowsException::forNoWorkflowAvailable();
+			}
+
+			// If more than one Workflow was available then display a selection
+			if (count($workflows) > 1)
+			{
+				return view($this->config->views['workflow'], [
+					'layout'    => $this->config->layouts['public'],
+					'workflows' => $workflows,
+				]);
+			}
+
+			$workflow = reset($workflows);
+		}
+		elseif (! $workflow = model(WorkflowModel::class)->find($workflowId))
+		{
+			if ($this->config->silent)
+			{
+				return $this->showError(lang('Workflows.workflowNotFound'));
+			}
+
 			throw WorkflowsException::forWorkflowNotFound();
 		}
 
+		// Verify access
+		if (! $workflow->mayAccess())
+		{
+			if ($this->config->silent)
+			{
+				return $this->showError(lang('Workflows.workflowNotPermitted'));
+			}
+
+			throw WorkflowsException::forWorkflowNotPermitted();
+		}
+
 		// Determine the starting point
-		$stages = $workflow->stages;
-		if (empty($stages))
+		if (! $stages = $workflow->stages)
 		{
 			throw WorkflowsException::forMissingStages();
 		}
+
 		$stage = reset($stages);
 
-		// Create the job
+		// Create the Job
 		$jobId = $this->jobs->insert([
 			'name'        => 'My New Job',
 			'workflow_id' => $workflow->id,
@@ -182,7 +220,7 @@ class Runner extends Controller
 		$action = $stage->action;
 		$route  = "/{$this->config->routeBase}/{$action->uid}/{$jobId}";
 
-		return redirect()->to($route)->with('success', lang('Workflows.newJobSuccess'));
+		return redirect()->to(site_url($route))->with('success', lang('Workflows.newJobSuccess'));
 	}
 
 	/**
@@ -291,10 +329,7 @@ class Runner extends Controller
 		{
 			if ($this->config->silent)
 			{
-				return view($this->config->views['messages'], [
-					'layout' => $this->config->layouts['public'],
-					'error'  => lang('Workflows.routeMissingJobId', [$uid]),
-				]);
+				return $this->showError(lang('Workflows.routeMissingJobId', [$uid]));
 			}
 
 			throw WorkflowsException::forMissingJobId($uid);
@@ -311,10 +346,7 @@ class Runner extends Controller
 		{
 			if ($this->config->silent)
 			{
-				return view($this->config->views['messages'], [
-					'layout' => $this->config->layouts['public'],
-					'error'  => lang('Workflows.jobNotFound'),
-				]);
+				return $this->showError(lang('Workflows.jobNotFound'));
 			}
 
 			throw WorkflowsException::forJobNotFound();
@@ -325,10 +357,7 @@ class Runner extends Controller
 		{
 			if ($this->config->silent)
 			{
-				return view($this->config->views['messages'], [
-					'layout' => $this->config->layouts['public'],
-					'error'  => lang('Workflows.workflowNotFound'),
-				]);
+				return $this->showError(lang('Workflows.workflowNotFound'));
 			}
 
 			throw WorkflowsException::forWorkflowNotFound();
@@ -394,10 +423,7 @@ class Runner extends Controller
 		{
 			if ($this->config->silent)
 			{
-				return view($this->config->views['messages'], [
-					'layout' => $this->config->layouts['public'],
-					'errors' => $result,
-				]);
+				return $this->showError(implode('. ', $result));
 			}
 
 			throw new WorkflowsException(implode('. ', $result));
@@ -406,12 +432,24 @@ class Runner extends Controller
 		// Borked
 		if ($this->config->silent)
 		{
-			return view($this->config->views['messages'], [
-				'layout' => $this->config->layouts['public'],
-				'error'  => lang('Workflows.invalidActionReturn'),
-			]);
+			return $this->showError(lang('Workflows.invalidActionReturn'));
 		}
 
 		throw new WorkflowsException(lang('Workflows.invalidActionReturn'));
+	}
+
+	/**
+	 * Handles errors based on Config settings.
+	 *
+	 * @param string $message The error message
+	 *
+	 * @return string The error view
+	 */
+	protected function showError(string $message)
+	{
+		return view($this->config->views['messages'], [
+			'layout' => $this->config->layouts['public'],
+			'error'  => $message,
+		]);
 	}
 }
