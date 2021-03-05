@@ -23,8 +23,7 @@ class JobflagModel extends Model
 	protected $allowedFields  = ['job_id', 'name', 'created_at'];
 
 	protected $validationRules = [
-		'job_id'     => 'required|is_natural_no_zero',
-		'stage_from' => 'permit_empty|is_natural_no_zero',
-		'stage_to'   => 'permit_empty|is_natural_no_zero',
+		'job_id' => 'required|is_natural_no_zero',
+		'name'   => 'required',
 	];
 }

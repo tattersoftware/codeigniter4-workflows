@@ -7,8 +7,8 @@ class CreateWorkflowsUsers extends Migration
 	public function up()
 	{
 		$fields = [
-			'user_id'     => ['type' => 'int', 'unsigned' => true, 'null' => true],
-			'workflow_id' => ['type' => 'varchar', 'constraint' => 255],
+			'user_id'     => ['type' => 'int', 'unsigned' => true],
+			'workflow_id' => ['type' => 'int', 'unsigned' => true],
 			'permitted'   => ['type' => 'bool', 'default' => 1],
 			'created_at'  => ['type' => 'datetime', 'null' => true],
 		];
@@ -23,7 +23,7 @@ class CreateWorkflowsUsers extends Migration
 
 		// Add the "role" column to workflows for broader restrictions
 		$this->forge->addColumn('workflows', [
-			'role' => ['type' => 'varchar', 'constraint' => 63],
+			'role' => ['type' => 'varchar', 'constraint' => 63, 'default' => ''],
 		]);
 	}
 

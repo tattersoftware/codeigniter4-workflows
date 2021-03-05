@@ -9,10 +9,10 @@ class CreateWorkflowsTables extends Migration
 		/* Workflows */
 		$fields = [
 			'name'        => ['type' => 'varchar', 'constraint' => 63],
-			'category'    => ['type' => 'varchar', 'constraint' => 63],
-			'icon'        => ['type' => 'varchar', 'constraint' => 63],
+			'category'    => ['type' => 'varchar', 'constraint' => 63, 'default' => ''],
+			'icon'        => ['type' => 'varchar', 'constraint' => 63, 'default' => ''],
 			'summary'     => ['type' => 'varchar', 'constraint' => 255],
-			'description' => ['type' => 'text'],
+			'description' => ['type' => 'text', 'default' => ''],
 			'created_at'  => ['type' => 'datetime', 'null' => true],
 			'updated_at'  => ['type' => 'datetime', 'null' => true],
 			'deleted_at'  => ['type' => 'datetime', 'null' => true],
@@ -35,10 +35,10 @@ class CreateWorkflowsTables extends Migration
 			'uid'         => ['type' => 'varchar', 'constraint' => 63],
 			'class'       => ['type' => 'varchar', 'constraint' => 63, 'null' => true],
 			'input'       => ['type' => 'varchar', 'constraint' => 63, 'null' => true],
-			'role'        => ['type' => 'varchar', 'constraint' => 63],
-			'icon'        => ['type' => 'varchar', 'constraint' => 63],
-			'summary'     => ['type' => 'varchar', 'constraint' => 255],
-			'description' => ['type' => 'text', 'null' => true],
+			'role'        => ['type' => 'varchar', 'constraint' => 63, 'default' => 1],
+			'icon'        => ['type' => 'varchar', 'constraint' => 63, 'default' => 1],
+			'summary'     => ['type' => 'varchar', 'constraint' => 255, 'default' => 1],
+			'description' => ['type' => 'text', 'default' => 1],
 			'created_at'  => ['type' => 'datetime', 'null' => true],
 			'updated_at'  => ['type' => 'datetime', 'null' => true],
 			'deleted_at'  => ['type' => 'datetime', 'null' => true],
@@ -76,7 +76,7 @@ class CreateWorkflowsTables extends Migration
 		/* Jobs */
 		$fields = [
 			'name'        => ['type' => 'varchar', 'constraint' => 255],
-			'summary'     => ['type' => 'varchar', 'constraint' => 255],
+			'summary'     => ['type' => 'varchar', 'constraint' => 255, 'default' => ''],
 			'workflow_id' => ['type' => 'int', 'unsigned' => true],
 			'stage_id'    => ['type' => 'int', 'unsigned' => true, 'null' => true],
 			'created_at'  => ['type' => 'datetime', 'null' => true],

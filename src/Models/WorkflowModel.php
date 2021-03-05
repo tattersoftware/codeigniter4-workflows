@@ -16,7 +16,7 @@ class WorkflowModel extends Model
 	protected $useSoftDeletes = true;
 	protected $useTimestamps  = true;
 	protected $allowedFields  = [
-		'name', 'category', 'role', 'icon', 'summary', 'description'
+		'name', 'category', 'role', 'icon', 'summary', 'description',
 	];
 
 	protected $validationRules    = [
