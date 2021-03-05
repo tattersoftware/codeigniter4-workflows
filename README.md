@@ -59,7 +59,7 @@ routes that match `/jobs/`, but this can be changed in the config file.
 ## Action permissions
 
 You may limit access to individual Actions using the `role` attribute of its definition.
-By default the "user" `role` is available to everyone. Actions will use the `UserEntity`
+By default an empty `role` is available to everyone. Actions will use the `UserEntity`
 with `HasPermission` interface to test for allowed users.
 
 ## Logging
