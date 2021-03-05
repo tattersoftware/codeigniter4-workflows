@@ -67,13 +67,6 @@ class WorkflowTest extends DatabaseTestCase
 		$this->assertTrue($this->workflow->mayAccess());
 	}
 
-	public function testMayAccessUser()
-	{
-		$this->workflow->role = 'user';
-
-		$this->assertTrue($this->workflow->mayAccess());
-	}
-
 	public function testMayAccessExplicit()
 	{
 		$explicit = $this->createExplicit();
@@ -129,7 +122,7 @@ class WorkflowTest extends DatabaseTestCase
 		$explicit = $this->createExplicit(['permitted' => 0]);
 		$_SESSION['logged_in'] = $explicit->user_id;
 
-		$this->workflow->role = 'user';
+		$this->workflow->role = '';
 
 		$this->assertFalse($this->workflow->mayAccess());
 	}
@@ -141,7 +134,7 @@ class WorkflowTest extends DatabaseTestCase
 		// Get the UserEntity with HasPermission
 		$user = (new MythFactory)->findById($explicit->user_id);
 
-		$this->workflow->role = 'user';
+		$this->workflow->role = '';
 
 		$this->assertFalse($this->workflow->mayAccess($user));
 	}
@@ -150,7 +143,7 @@ class WorkflowTest extends DatabaseTestCase
 	{
 		$explicit = $this->createExplicit(['permitted' => 0]);
 
-		$this->workflow->role = 'user';
+		$this->workflow->role = '';
 
 		$this->assertFalse($this->workflow->mayAccess(null, [$explicit->id => $explicit->permitted]));
 	}
@@ -162,7 +155,7 @@ class WorkflowTest extends DatabaseTestCase
 		// Get the UserEntity with HasPermission
 		$user = (new MythFactory)->findById($explicit->user_id);
 
-		$this->workflow->role = 'user';
+		$this->workflow->role = '';
 
 		$this->assertFalse($this->workflow->mayAccess($user, [$explicit->id => $explicit->permitted]));
 	}

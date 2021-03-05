@@ -74,7 +74,7 @@ class Action extends Entity
 	public function mayAccess(HasPermission $user = null): bool
 	{
 		// Anyone can run user actions
-		if ($this->attributes['role'] === '' || $this->attributes['role'] === 'user')
+		if ($this->attributes['role'] === '')
 		{
 			return true;
 		}

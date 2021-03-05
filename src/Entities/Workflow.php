@@ -78,7 +78,7 @@ class Workflow extends Entity
 		}
 
 		// Anyone else is allowed unrestricted Workflows
-		if ($this->attributes['role'] === '' || $this->attributes['role'] === 'user')
+		if ($this->attributes['role'] === '')
 		{
 			return true;
 		}

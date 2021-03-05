@@ -9,7 +9,7 @@ class WorkflowAction extends BaseAction
 		'name'     => 'Workflow',
 		'uid'      => 'workflow',
 		'input'    => 'workflow',
-		'role'     => 'user',
+		'role'     => '',
 		'icon'     => 'fas fa-project-diagram',
 		'summary'  => 'Run another workflow as a subordinate action',
 	];

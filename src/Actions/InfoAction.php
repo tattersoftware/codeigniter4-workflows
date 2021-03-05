@@ -8,7 +8,7 @@ class InfoAction extends BaseAction
 		'category' => 'Core',
 		'name'     => 'Info',
 		'uid'      => 'info',
-		'role'     => 'user',
+		'role'     => '',
 		'icon'     => 'fas fa-info-circle',
 		'summary'  => 'Set basic details of a job',
 	];
