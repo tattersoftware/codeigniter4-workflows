@@ -44,6 +44,7 @@ class Workflows extends BaseConfig
 	 */
 	public $views = [
 		'job'      => 'Tatter\Workflows\Views\job',
+		'workflow' => 'Tatter\Workflows\Views\workflow',
 		'messages' => 'Tatter\Workflows\Views\messages',
 		'complete' => 'Tatter\Workflows\Views\complete',
 		'deleted'  => 'Tatter\Workflows\Views\deleted',

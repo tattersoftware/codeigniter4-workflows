@@ -3,6 +3,7 @@
 use CodeIgniter\Model;
 use Faker\Generator;
 use Tatter\Users\Interfaces\HasPermission;
+use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Entities\Workflow;
 use Tatter\Workflows\Models\StageModel;
 
@@ -15,7 +16,7 @@ class WorkflowModel extends Model
 	protected $useSoftDeletes = true;
 	protected $useTimestamps  = true;
 	protected $allowedFields  = [
-		'name', 'category', 'icon', 'summary', 'description'
+		'name', 'category', 'role', 'icon', 'summary', 'description'
 	];
 
 	protected $validationRules    = [
@@ -32,9 +33,9 @@ class WorkflowModel extends Model
 	 * Batch load related Stages for the
 	 * supplied workflows.
 	 *
-	 * @param Workflow[]
+	 * @param Workflow[] $workflows
 	 *
-	 * @return array<int,Stage> Stages indexed by their Workflow
+	 * @return array<int,Stage[]> Stages indexed by their Workflow
 	 */
 	public function fetchStages(array $workflows)
 	{
@@ -51,6 +52,7 @@ class WorkflowModel extends Model
 			->orderBy('id', 'asc')
 			->findAll() as $stage)
 		{
+			/** @var Stage $stage */
 			if (! isset($result[$stage->workflow_id]))
 			{
 				$result[$stage->workflow_id] = [];
@@ -65,7 +67,7 @@ class WorkflowModel extends Model
 	/**
 	 * Get Workflows allowed for a user.
 	 *
-	 * @param HasPermission $userId
+	 * @param HasPermission $user
 	 *
 	 * @return Workflow[]
 	 */
