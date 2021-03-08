@@ -3,6 +3,7 @@
 use CodeIgniter\Controller;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\RedirectResponse;
+use CodeIgniter\HTTP\ResponseInterface;
 use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\Models\JobModel;
@@ -36,7 +37,7 @@ class Jobs extends Controller
 	public function __construct()
 	{
 		$this->config = config('Workflows');
-		$this->jobs   = model($this->config->jobModel, ['instanceOf' => JobModel::class]);
+		$this->jobs   = model($this->config->jobModel);
 	}
 
 	/**

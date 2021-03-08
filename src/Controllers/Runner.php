@@ -137,10 +137,24 @@ class Runner extends Controller
 
 		// Determine the request method and run the corresponding Action method
 		$method = $this->request->getMethod();
-		$result = $action->setJob($job)->$method();
 
-		// Handle return values by their type
-		return $this->parseResult($result, $job);
+		try
+		{
+			$result = $action->setJob($job)->$method();
+		}
+		catch (WorkflowsException $e)
+		{
+			return $this->handleError($e);
+		}
+
+		// If it was a Response then we are done
+		if ($result instanceof ResponseInterface)
+		{
+			return $result;
+		}
+
+		// Null means the Stage is complete
+		return $this->progress($job);
 	}
 
 	/**
@@ -179,7 +193,7 @@ class Runner extends Controller
 		// Verify the Workflow
 		if (! $workflow = model(WorkflowModel::class)->find($job->workflow_id))
 		{
-			throw WorkflowsException::forWorkflowNotFound());
+			throw WorkflowsException::forWorkflowNotFound();
 		}
 
 		// stage_id may be empty (completed Job)
@@ -193,57 +207,33 @@ class Runner extends Controller
 	}
 
 	/**
-	 * Parses the result of an Action method call.
+	 * Progresses a Job after an Action indicates
+	 * that the current Stage is done.
 	 *
-	 * @param mixed $result Result from the Action method
-	 * @param Job   $job    The current Job
+	 * @param Job $job
 	 *
-	 * @return string|ResponseInterface  A view to display or a Response
-	 * @throws WorkflowsException
+	 * @return RedirectResponse|ResponseInterface
 	 */
-	protected function parseResult($result, Job $job)
+	protected function progress(Job $job): ResponseInterface
 	{
-		// Simple string for display (usually a view)
-		if (is_string($result))
+		// Get the next Stage
+		if ($stage = $job->next())
 		{
-			return $result;
+			// Travel to the target Action
+			$job->travel($stage->action_id);
+
+			// Redirect to the next Action
+			return redirect()->to($stage->action->getRoute($job->id));
 		}
 
-		// Simple Response
-		if ($result instanceof ResponseInterface)
-		{
-			return $result;
-		}
+		// Update the Job as complete
+		$this->jobs->update($job->id, ['stage_id' => null]);
 
-		// Boolean true means this Stage is complete
-		if ($result === true)
-		{
-			// Get the next Stage
-			if ($stage = $job->next())
-			{
-				// Travel to the target Action
-				$job->travel($stage->action_id);
+		$this->response->setBody(view($this->config->views['complete'], [
+			'layout' => $this->config->layouts['public'],
+			'job'    => $job,
+		]));
 
-				// Redirect to the next Action
-				return redirect()->to($stage->action->getRoute($job->id));
-			}
-
-			// Update the Job as complete
-			$this->jobs->update($job->id, ['stage_id' => null]);
-
-			return view($this->config->views['complete'], [
-				'layout' => $this->config->layouts['public'],
-				'job'    => $job,
-			]);
-		}
-
-		// Arrays are error messages
-		if (is_array($result))
-		{
-			return $this->handleError(new WorkflowsException(implode('. ', $result)));
-		}
-
-		// Borked
-		return $this->handleError(new WorkflowsException(lang('Workflows.invalidActionReturn')));
+		return $this->response;
 	}
 }

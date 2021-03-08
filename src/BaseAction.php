@@ -1,15 +1,23 @@
 <?php namespace Tatter\Workflows;
 
 use CodeIgniter\HTTP\RequestInterface;
+use CodeIgniter\HTTP\ResponseInterface;
 use Tatter\Handlers\BaseHandler;
 use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Entities\Job;
+use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\JobModel;
 use RuntimeException;
 
 /**
- * Class reference and common functions for all Actions.
+ * Class reference and common method for
+ * child Actions. Classes may implement any
+ * HTTP verb as a method (e.g. get(), put())
+ * which should behav as follows:
+ *  - User interactions: ResponseInterface
+ *  - Action complete: null
+ *  - Failure: throws WorkflowsException
  */
 abstract class BaseAction extends BaseHandler
 {
@@ -35,19 +43,14 @@ abstract class BaseAction extends BaseHandler
 	];
 
 	/**
-	 * @var WorkflowsConfig
-	 */
-	public $config;
-
-	/**
-	 * @var Job|null
+	 * @var Job
 	 */
 	public $job;
 
 	/**
-	 * @var JobModel
+	 * @var WorkflowsConfig
 	 */
-	public $jobs;
+	public $config;
 
 	/**
 	 * @var RequestInterface
@@ -55,21 +58,33 @@ abstract class BaseAction extends BaseHandler
 	public $request;
 
 	/**
+	 * @var ResponseInterface
+	 */
+	public $response;
+
+	/**
+	 * @var JobModel
+	 */
+	public $jobs;
+
+	/**
 	 * Sets up common resources for Actions.
 	 *
 	 * @param WorkflowsConfig|null $config
-	 * @param Job|null $job
-	 * @param JobModel|null $jobs
+	 * @param Job $job
 	 * @param RequestInterface|null $request
+	 * @param ResponseInterface|null $response
 	 */
-	public function __construct(WorkflowsConfig $config = null, Job $job = null, JobModel $jobs = null, RequestInterface $request = null)
+	public function __construct(Job $job, WorkflowsConfig $config = null, RequestInterface $request = null, ResponseInterface $response = null)
 	{
 		parent::__construct();
 
-		$this->config  = $config ?? config('Workflows');
 		$this->job     = $job;
-		$this->jobs    = $jobs ?? model($this->config->jobModel);
+		$this->config  = $config ?? config('Workflows');
 		$this->request = $request ?? service('request');
+		$this->request = $response ?? service('response');
+
+		$this->jobs = model($this->config->jobModel);
 	}
 
 	//--------------------------------------------------------------------
@@ -141,5 +156,109 @@ abstract class BaseAction extends BaseHandler
 	public function down()
 	{
 		/* Optionally implemented by child class */
+	}
+
+	//--------------------------------------------------------------------
+
+	/**
+	 * HTTP Request Methods
+	 *
+	 * These baseline defaults specify the expected
+	 * return types and exception behavior for the
+	 * supported HTTP methods. Child classes should
+	 * override these methods but follow the correct
+	 * method definition.
+	 *
+	 * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
+	 */
+
+	/**
+	 * @return ResponseInterface|null
+	 *
+	 * @throws WorkflowsException
+	 */
+	public function get(): ?ResponseInterface
+	{
+		throw new WorkflowsException('Not implemented.');
+	}
+
+	/**
+	 * @return ResponseInterface|null
+	 *
+	 * @throws WorkflowsException
+	 */
+	public function head(): ?ResponseInterface
+	{
+		throw new WorkflowsException('Not implemented.');
+	}
+
+	/**
+	 * @return ResponseInterface|null
+	 *
+	 * @throws WorkflowsException
+	 */
+	public function post(): ?ResponseInterface
+	{
+		throw new WorkflowsException('Not implemented.');
+	}
+
+	/**
+	 * @return ResponseInterface|null
+	 *
+	 * @throws WorkflowsException
+	 */
+	public function put(): ?ResponseInterface
+	{
+		throw new WorkflowsException('Not implemented.');
+	}
+
+	/**
+	 * @return ResponseInterface|null
+	 *
+	 * @throws WorkflowsException
+	 */
+	public function delete(): ?ResponseInterface
+	{
+		throw new WorkflowsException('Not implemented.');
+	}
+
+	/**
+	 * @return ResponseInterface|null
+	 *
+	 * @throws WorkflowsException
+	 */
+	public function connect(): ?ResponseInterface
+	{
+		throw new WorkflowsException('Not implemented.');
+	}
+
+	/**
+	 * @return ResponseInterface|null
+	 *
+	 * @throws WorkflowsException
+	 */
+	public function options(): ?ResponseInterface
+	{
+		throw new WorkflowsException('Not implemented.');
+	}
+
+	/**
+	 * @return ResponseInterface|null
+	 *
+	 * @throws WorkflowsException
+	 */
+	public function trace(): ?ResponseInterface
+	{
+		throw new WorkflowsException('Not implemented.');
+	}
+
+	/**
+	 * @return ResponseInterface|null
+	 *
+	 * @throws WorkflowsException
+	 */
+	public function patch(): ?ResponseInterface
+	{
+		throw new WorkflowsException('Not implemented.');
 	}
 }

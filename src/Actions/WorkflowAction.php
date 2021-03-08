@@ -1,6 +1,8 @@
 <?php namespace Tatter\Workflows\Actions;
 
+use CodeIgniter\HTTP\ResponseInterface;
 use Tatter\Workflows\BaseAction;
+use RuntimeException;
 
 class WorkflowAction extends BaseAction
 {
@@ -14,8 +16,8 @@ class WorkflowAction extends BaseAction
 		'summary'  => 'Run another workflow as a subordinate action',
 	];
 
-	public function get()
+	public function get(): ?ResponseInterface
 	{
-		throw new \RuntimeException('Not yet implemented');
+		throw new RuntimeException('Not yet implemented');
 	}
 }

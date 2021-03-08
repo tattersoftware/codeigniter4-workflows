@@ -89,15 +89,17 @@ public function get()
 {
 	if (! $this->job->getFlag('accepted'))
 	{
-		return view('accept_form');
+		return service('response')->setBody(view('accept_form'));
 	}
 
-	return true;
+	// Null returns indicate "Action complete"
+	return null;
 }
 
 public function accept_submit()
 {
 	$this->job->setFlag('accepted');
-	return true;
+
+	return null;
 }
 ```
