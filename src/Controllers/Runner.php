@@ -144,7 +144,12 @@ class Runner extends Controller
 		}
 		catch (WorkflowsException $e)
 		{
-			return $this->handleError($e);
+			$this->response->setBody(view($this->config->views['messages'], [
+				'layout' => $this->config->layouts['public'],
+				'error'  => $e->getMessage(),
+			]));
+
+			return $this->response;
 		}
 
 		// If it was a Response then we are done
