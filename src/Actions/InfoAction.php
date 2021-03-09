@@ -1,5 +1,7 @@
 <?php namespace Tatter\Workflows\Actions;
 
+use CodeIgniter\HTTP\RedirectResponse;
+use CodeIgniter\HTTP\ResponseInterface;
 use Tatter\Workflows\BaseAction;
 
 class InfoAction extends BaseAction
@@ -16,23 +18,25 @@ class InfoAction extends BaseAction
 	/**
 	 * Display the edit form.
 	 *
-	 * @return string The view
+	 * @return ResponseInterface The view
 	 */
-	public function get(): string
+	public function get(): ResponseInterface
 	{
-		return view('Tatter\Workflows\Views\actions\info', [
+		$this->response->setBody(view('Tatter\Workflows\Views\actions\info', [
 			'layout' => $this->config->layouts['public'],
 			'config' => $this->config,
 			'job'    => $this->job,
-		]);
+		]));
+
+		return $this->response;
 	}
 
 	/**
 	 * Validates and processes form submission.
 	 *
-	 * @return \CodeIgniter\HTTP\RedirectResponse|boolean
+	 * @return RedirectResponse|null
 	 */
-	public function post()
+	public function post(): ?ResponseInterface
 	{
 		// Validate
 		$validation = service('validation')->reset()->setRules([
@@ -51,6 +55,6 @@ class InfoAction extends BaseAction
 			return redirect()->back()->withInput()->with('errors', $this->jobs->errors());
 		}
 
-		return true;
+		return null;
 	}
 }

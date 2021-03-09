@@ -23,35 +23,17 @@ use Tatter\Workflows\Models\WorkflowModel;
  */
 class Runner extends Controller
 {
+	use ErrorTrait;
+
 	/**
 	 * @var WorkflowsConfig
 	 */
 	protected $config;
 
 	/**
-	 * @var JobModel  Module version or extension thereof
+	 * @var JobModel Module version or extension thereof
 	 */
 	protected $jobs;
-
-	/**
-	 * @var Job|null
-	 */
-	protected $job;
-
-	/**
-	 * @var Stage|null
-	 */
-	protected $stage;
-
-	/**
-	 * @var Action|null
-	 */
-	protected $action;
-
-	/**
-	 * @var Stage|null
-	 */
-	protected $workflow;
 
 	/**
 	 * Preload the config class and Model for jobs.
@@ -63,42 +45,13 @@ class Runner extends Controller
 	}
 
 	/**
-	 * Display a job.
-	 *
-	 * @param string $jobId ID of the job (int)
-	 *
-	 * @return string
-	 *
-	 * @throws WorkflowsException
-	 */
-	public function show(string $jobId = null): string
-	{
-		// Load the job
-		if (! $job = $this->jobs->withDeleted()->find($jobId))
-		{
-			if ($this->config->silent)
-			{
-				return $this->showError(lang('Workflows.jobNotFound'));
-			}
-
-			throw WorkflowsException::forJobNotFound();
-		}
-
-		return view($this->config->views['job'], [
-			'job'    => $job,
-			'logs'   => model(JoblogModel::class)->findWithStages($job->id),
-			'layout' => $this->config->layouts['public'],
-		]);
-	}
-
-	/**
 	 * Resume a Job at its current Stage.
 	 *
-	 * @param string $jobId ID of the job to resume (int)
+	 * @param string|int $jobId ID of the job to resume
 	 *
-	 * @return string|RedirectResponse  A view to display or a RedirectResponse
+	 * @return ResponseInterface|RedirectResponse  A view to display or a RedirectResponse
 	 */
-	protected function resume($jobId)
+	protected function resume($jobId): ResponseInterface
 	{
 		// Get the Job
 		if ($jobId)
@@ -109,143 +62,27 @@ class Runner extends Controller
 
 		if (empty($job))
 		{
-			if ($this->config->silent)
-			{
-				return $this->showError(lang('Workflows.jobNotFound'));
-			}
-
-			throw WorkflowsException::forJobNotFound();
+			return $this->handleError(WorkflowsException::forJobNotFound());
 		}
 
 		// If the Job is completed then display a message and quit
 		if (empty($job->stage_id))
 		{
-			return view($this->config->views['messages'], [
+			$this->response->setBody(view($this->config->views['messages'], [
 				'layout'  => $this->config->layouts['public'],
 				'message' => lang('Workflows.jobAlreadyComplete'),
-			]);
+			]));
+
+			return $this->response;
 		}
 
 		// Check for a current Stage
 		if (! $stage = model(StageModel::class)->find($job->stage_id))
 		{
-			return $this->showError(lang('Workflows.jobAlreadyComplete'));
+			return $this->handleError(new WorkflowsException(lang('Workflows.stageNotFound')));
 		}
 
 		return redirect()->to($stage->action->getRoute($job->id));
-	}
-
-	/**
-	 * Start a new Job in the given Workflow.
-	 *
-	 * @param string|int|null $workflowId ID of the Workflow to use for the new Job (int)
-	 *
-	 * @return RedirectResponse|string
-	 *
-	 * @throws WorkflowsException
-	 */
-	public function new($workflowId = null)
-	{
-		// If no Workflow was specified then load available
-		if (! isset($workflowId))
-		{
-			// Find available Workflows
-			$workflows = [];
-			foreach (model(WorkflowModel::class)->findAll() as $workflow)
-			{
-				if ($workflow->mayAccess())
-				{
-					$workflows[] = $workflow;
-				}
-			}
-
-			if ($workflows === [])
-			{
-				if ($this->config->silent)
-				{
-					return $this->showError(lang('Workflows.noWorkflowAvailable'));
-				}
-
-				throw WorkflowsException::forNoWorkflowAvailable();
-			}
-
-			// If more than one Workflow was available then display a selection
-			if (count($workflows) > 1)
-			{
-				return view($this->config->views['workflow'], [
-					'layout'    => $this->config->layouts['public'],
-					'workflows' => $workflows,
-				]);
-			}
-
-			$workflow = reset($workflows);
-		}
-		elseif (! $workflow = model(WorkflowModel::class)->find($workflowId))
-		{
-			if ($this->config->silent)
-			{
-				return $this->showError(lang('Workflows.workflowNotFound'));
-			}
-
-			throw WorkflowsException::forWorkflowNotFound();
-		}
-
-		// Verify access
-		if (! $workflow->mayAccess())
-		{
-			if ($this->config->silent)
-			{
-				return $this->showError(lang('Workflows.workflowNotPermitted'));
-			}
-
-			throw WorkflowsException::forWorkflowNotPermitted();
-		}
-
-		// Determine the starting point
-		if (! $stages = $workflow->stages)
-		{
-			throw WorkflowsException::forMissingStages();
-		}
-
-		$stage = reset($stages);
-
-		// Create the Job
-		$jobId = $this->jobs->insert([
-			'name'        => 'My New Job',
-			'workflow_id' => $workflow->id,
-			'stage_id'    => $stage->id,
-		]);
-
-		// Send to the first action
-		$action = $stage->action;
-		$route  = "/{$this->config->routeBase}/{$action->uid}/{$jobId}";
-
-		return redirect()->to(site_url($route))->with('success', lang('Workflows.newJobSuccess'));
-	}
-
-	/**
-	 * Deletes a job.
-	 *
-	 * @param string $jobId ID of the job to remove (int)
-	 *
-	 * @return string  A view notifying the user that the job was removed.
-	 * @throws PageNotFoundException
-	 */
-	public function delete(string $jobId): string
-	{
-		// Verify the job
-		if (! $job = $this->jobs->find($jobId))
-		{
-			throw PageNotFoundException::forPageNotFound();
-		}
-
-		// Delete the job (soft)
-		$this->jobs->delete($jobId);
-
-		return view($this->config->views['deleted'], [
-			'layout' => $this->config->layouts['public'],
-			'job'    => $job,
-		]);
 	}
 
 	/**
@@ -253,33 +90,27 @@ class Runner extends Controller
 	 *
 	 * @param string ...$params Parameters coming from the router (so all strings)
 	 *
-	 * @return string|ResponseInterface  A view to display or a Response
+	 * @return ResponseInterface
+	 *
 	 * @throws PageNotFoundException
 	 */
-	public function run(string ...$params)
+	public function run(string ...$params): ResponseInterface
 	{
 		if (empty($params))
 		{
 			throw PageNotFoundException::forPageNotFound();
 		}
 
-		// Look for a resume request (job ID, nothing else)
-		if (count($params) === 1 && is_numeric($params[0]))
-		{
-			return $this->resume($params[0]);
-		}
-
 		// Parse the route parameters
-		$parsed = $this->parseRoute($params);
-
-		// If parseRoute() returned an error view then display it
-		if (is_string($parsed))
+		try
 		{
-			return $parsed;
+			// Extract parsed variables
+			list($action, $job, $stage) = $this->parseRoute($params);
 		}
-
-		// Extract parsed variables
-		list($action, $job, $stage) = $parsed;
+		catch (WorkflowsException $e)
+		{
+			return $this->handleError($e);
+		}
 
 		// Intercept Jobs that are already completed
 		if (empty($stage))
@@ -287,7 +118,7 @@ class Runner extends Controller
 			return redirect()->to(site_url($this->config->routeBase . '/show/' . $job->id));
 		}
 
-		// If the requested Action differs from the job's current action then travel the workflow
+		// If the requested Action differs from the Job's current Action then travel the Workflow
 		if ($action->id !== $stage->action_id)
 		{
 			$job->travel($action->id);
@@ -296,18 +127,39 @@ class Runner extends Controller
 		// Check the Action's role against a potential current user
 		if (! $action->mayAccess())
 		{
-			return view($this->config->views['filter'], [
+			$this->response->setBody(view($this->config->views['filter'], [
 				'layout' => $this->config->layouts['public'],
 				'job'    => $job,
-			]);
+			]));
+
+			return $this->response;
 		}
 
 		// Determine the request method and run the corresponding Action method
 		$method = $this->request->getMethod();
-		$result = $action->setJob($job)->$method();
 
-		// Handle return values by their type
-		return $this->parseResult($result, $job);
+		try
+		{
+			$result = $action->setJob($job)->$method();
+		}
+		catch (WorkflowsException $e)
+		{
+			$this->response->setBody(view($this->config->views['messages'], [
+				'layout' => $this->config->layouts['public'],
+				'error'  => $e->getMessage(),
+			]));
+
+			return $this->response;
+		}
+
+		// If it was a Response then we are done
+		if ($result instanceof ResponseInterface)
+		{
+			return $result;
+		}
+
+		// Null means the Stage is complete
+		return $this->progress($job);
 	}
 
 	/**
@@ -315,7 +167,8 @@ class Runner extends Controller
 	 *
 	 * @param array $params Parameters coming from the router (so all strings)
 	 *
-	 * @return array|string  Array of parsed data, or a string view to display instead of continuing
+	 * @return array Array of parsed data
+	 *
 	 * @throws WorkflowsException
 	 */
 	protected function parseRoute(array $params)
@@ -327,11 +180,6 @@ class Runner extends Controller
 		// Verify the ID
 		if (empty($jobId) || ! is_numeric($jobId))
 		{
-			if ($this->config->silent)
-			{
-				return $this->showError(lang('Workflows.routeMissingJobId', [$uid]));
-			}
-
 			throw WorkflowsException::forMissingJobId($uid);
 		}
 
@@ -344,22 +192,12 @@ class Runner extends Controller
 		// Load the Job
 		if (! $job = $this->jobs->find($jobId))
 		{
-			if ($this->config->silent)
-			{
-				return $this->showError(lang('Workflows.jobNotFound'));
-			}
-
 			throw WorkflowsException::forJobNotFound();
 		}
 
 		// Verify the Workflow
 		if (! $workflow = model(WorkflowModel::class)->find($job->workflow_id))
 		{
-			if ($this->config->silent)
-			{
-				return $this->showError(lang('Workflows.workflowNotFound'));
-			}
-
 			throw WorkflowsException::forWorkflowNotFound();
 		}
 
@@ -374,82 +212,33 @@ class Runner extends Controller
 	}
 
 	/**
-	 * Parses the result of an Action method call.
+	 * Progresses a Job after an Action indicates
+	 * that the current Stage is done.
 	 *
-	 * @param mixed $result Result from the Action method
-	 * @param Job   $job    The current Job
+	 * @param Job $job
 	 *
-	 * @return string|ResponseInterface  A view to display or a Response
-	 * @throws WorkflowsException
+	 * @return RedirectResponse|ResponseInterface
 	 */
-	protected function parseResult($result, Job $job)
+	protected function progress(Job $job): ResponseInterface
 	{
-		// Simple string for display (usually a view)
-		if (is_string($result))
+		// Get the next Stage
+		if ($stage = $job->next())
 		{
-			return $result;
+			// Travel to the target Action
+			$job->travel($stage->action_id);
+
+			// Redirect to the next Action
+			return redirect()->to($stage->action->getRoute($job->id));
 		}
 
-		// Simple Response
-		if ($result instanceof ResponseInterface)
-		{
-			return $result;
-		}
+		// Update the Job as complete
+		$this->jobs->update($job->id, ['stage_id' => null]);
 
-		// Boolean true means this Stage is complete
-		if ($result === true)
-		{
-			// Get the next Stage
-			if ($stage = $job->next())
-			{
-				// Travel to the target Action
-				$job->travel($stage->action_id);
-
-				// Redirect to the next Action
-				return redirect()->to($stage->action->getRoute($job->id));
-			}
-
-			// Update the Job as complete
-			$this->jobs->update($job->id, ['stage_id' => null]);
-
-			return view($this->config->views['complete'], [
-				'layout' => $this->config->layouts['public'],
-				'job'    => $job,
-			]);
-		}
-
-		// Arrays are error messages
-		if (is_array($result))
-		{
-			if ($this->config->silent)
-			{
-				return $this->showError(implode('. ', $result));
-			}
-
-			throw new WorkflowsException(implode('. ', $result));
-		}
-
-		// Borked
-		if ($this->config->silent)
-		{
-			return $this->showError(lang('Workflows.invalidActionReturn'));
-		}
-
-		throw new WorkflowsException(lang('Workflows.invalidActionReturn'));
-	}
-
-	/**
-	 * Handles errors based on Config settings.
-	 *
-	 * @param string $message The error message
-	 *
-	 * @return string The error view
-	 */
-	protected function showError(string $message)
-	{
-		return view($this->config->views['messages'], [
+		$this->response->setBody(view($this->config->views['complete'], [
 			'layout' => $this->config->layouts['public'],
-			'error'  => $message,
-		]);
+			'job'    => $job,
+		]));
+
+		return $this->response;
 	}
 }

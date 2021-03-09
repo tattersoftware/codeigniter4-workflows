@@ -118,18 +118,17 @@ class Job extends Entity
 			model(JobflagModel::class)
 				->where('job_id', $this->attributes['id'])
 				->where('name', $name)
-				->update(null, [
-					'created_at' => date('Y-m-d H:i:s'),
-				]);
+				->update(null, ['created_at' => date('Y-m-d H:i:s'),
+			]);
 		}
 		else
 		{
 			$this->flags[$name] = new Time('now');
 
 			model(JobflagModel::class)->insert([
-										  'job_id' => $this->attributes['id'],
-										  'name'   => $name,
-									  ]);
+				'job_id' => $this->attributes['id'],
+				'name'   => $name,
+			]);
 		}
 
 		return $this;
