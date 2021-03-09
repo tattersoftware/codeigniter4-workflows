@@ -70,12 +70,12 @@ abstract class BaseAction extends BaseHandler
 	/**
 	 * Sets up common resources for Actions.
 	 *
+	 * @param Job|null $job
 	 * @param WorkflowsConfig|null $config
-	 * @param Job $job
 	 * @param RequestInterface|null $request
 	 * @param ResponseInterface|null $response
 	 */
-	public function __construct(Job $job, WorkflowsConfig $config = null, RequestInterface $request = null, ResponseInterface $response = null)
+	public function __construct(Job $job = null, WorkflowsConfig $config = null, RequestInterface $request = null, ResponseInterface $response = null)
 	{
 		parent::__construct();
 
@@ -124,6 +124,8 @@ abstract class BaseAction extends BaseHandler
 
 	/**
 	 * Sets the Job for this Action to run against.
+	 * Used because Handlers needs to instantiate this
+	 * class without parameters.
 	 *
 	 * @param Job $job
 	 *
