@@ -36,7 +36,7 @@ class InfoAction extends BaseAction
 	 *
 	 * @return RedirectResponse|null
 	 */
-	public function post(): ?RedirectResponse
+	public function post(): ?ResponseInterface
 	{
 		// Validate
 		$validation = service('validation')->reset()->setRules([
