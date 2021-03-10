@@ -2,7 +2,7 @@
 
 use CodeIgniter\Database\Migration;
 
-class CreateWorkflowsUsers extends Migration
+class CreateUsersWorkflows extends Migration
 {
 	public function up()
 	{
