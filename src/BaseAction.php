@@ -26,7 +26,7 @@ abstract class BaseAction extends BaseHandler
 	 *
 	 * @var array<string>|null
 	 */
-	protected $attributes;
+	protected $attributes = [];
 
 	/**
 	 * Default set of attributes and their types.
@@ -43,7 +43,7 @@ abstract class BaseAction extends BaseHandler
 	];
 
 	/**
-	 * @var Job
+	 * @var Job|null
 	 */
 	public $job;
 
