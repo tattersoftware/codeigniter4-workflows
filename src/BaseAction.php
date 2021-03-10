@@ -26,7 +26,7 @@ abstract class BaseAction extends BaseHandler
 	 *
 	 * @var array<string>|null
 	 */
-	protected $attributes;
+	protected $attributes = [];
 
 	/**
 	 * Default set of attributes and their types.
@@ -43,7 +43,7 @@ abstract class BaseAction extends BaseHandler
 	];
 
 	/**
-	 * @var Job
+	 * @var Job|null
 	 */
 	public $job;
 
@@ -79,10 +79,10 @@ abstract class BaseAction extends BaseHandler
 	{
 		parent::__construct();
 
-		$this->job     = $job;
-		$this->config  = $config ?? config('Workflows');
-		$this->request = $request ?? service('request');
-		$this->request = $response ?? service('response');
+		$this->job      = $job;
+		$this->config   = $config ?? config('Workflows');
+		$this->request  = $request ?? service('request');
+		$this->response = $response ?? service('response');
 
 		$this->jobs = model($this->config->jobModel);
 	}
