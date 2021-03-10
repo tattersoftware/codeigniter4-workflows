@@ -79,10 +79,10 @@ abstract class BaseAction extends BaseHandler
 	{
 		parent::__construct();
 
-		$this->job     = $job;
-		$this->config  = $config ?? config('Workflows');
-		$this->request = $request ?? service('request');
-		$this->request = $response ?? service('response');
+		$this->job      = $job;
+		$this->config   = $config ?? config('Workflows');
+		$this->request  = $request ?? service('request');
+		$this->response = $response ?? service('response');
 
 		$this->jobs = model($this->config->jobModel);
 	}
