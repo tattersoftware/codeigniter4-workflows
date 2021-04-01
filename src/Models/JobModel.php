@@ -4,10 +4,11 @@ use CodeIgniter\Model;
 use CodeIgniter\Test\Fabricator;
 use Faker\Generator;
 use Tatter\Workflows\Entities\Job;
+use Tatter\Workflows\Traits\JobsTrait;
 
 class JobModel extends Model
 {
-	use \Tatter\Workflows\Traits\JobsTrait;
+	use JobsTrait;
 
 	protected $table          = 'jobs';
 	protected $returnType     = Job::class;
@@ -41,7 +42,7 @@ class JobModel extends Model
 		// Build the row
 		$row = [
 			'job_id'     => $eventData['id'],
-			'stage_to'   => $eventData['data']['stage_id'],
+			'stage_to'   => $eventData['data']['stage_id'] ?? null,
 			'user_id'    => user_id(),
 			'created_at' => date('Y-m-d H:i:s'),
 		];

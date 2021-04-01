@@ -1,12 +1,13 @@
 <?php namespace Tests\Support;
 
 use CodeIgniter\Test\CIUnitTestCase;
+use CodeIgniter\Test\DatabaseTestTrait;
 use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Test\Simulator;
 
 class DatabaseTestCase extends CIUnitTestCase
 {
-	use \CodeIgniter\Test\DatabaseTestTrait;
+	use DatabaseTestTrait;
 
 	/**
 	 * Should the database be refreshed before each test?
@@ -41,7 +42,7 @@ class DatabaseTestCase extends CIUnitTestCase
 	}
 
 	/**
-	 * Makes sure an errors throw exceptions
+	 * Makes sure all errors throw exceptions
 	 */
 	protected function setUp(): void
 	{

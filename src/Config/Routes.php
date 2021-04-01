@@ -10,6 +10,7 @@ $routes->get($config->routeBase . '/(:num)/delete',  '\Tatter\Workflows\Controll
 $routes->post($config->routeBase . '/(:num)/delete', '\Tatter\Workflows\Controllers\Jobs::delete/$1');
 
 // Runner route
+$routes->get($config->routeBase . '/(:num)',        '\Tatter\Workflows\Controllers\Runner::resume/$1');
 $routes->post($config->routeBase . '/(:num)',        '\Tatter\Workflows\Controllers\Runner::resume/$1');
 $routes->add($config->routeBase . '/(.+)',           '\Tatter\Workflows\Controllers\Runner::run/$1');
 

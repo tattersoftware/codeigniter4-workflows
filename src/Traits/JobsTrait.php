@@ -1,8 +1,15 @@
 <?php namespace Tatter\Workflows\Traits;
 
+/**
+ * @mixin \Tatter\Workflows\Model\JobModel
+ */
 trait JobsTrait
 {
-	// Log successful insertions
+	/**
+	 * Logs successful insertions.
+	 *
+	 * @param array $data Event data from trigger
+	 */
 	protected function logInsert(array $data)
 	{
 		if (! $data['result'])
@@ -22,13 +29,16 @@ trait JobsTrait
 		];
 
 		// Add it to the database
-		$db = db_connect();
-		$db->table('joblogs')->insert($row);
+		$this->builder('joblogs')->insert($row);
 
 		return $data;
 	}
 
-	// Log updates that result in a stage change
+	/**
+	 * Logs updates that result in a stage change.
+	 *
+	 * @param array $data Event data from trigger
+	 */
 	protected function logUpdate(array $data)
 	{
 		$db = db_connect();
@@ -68,7 +78,7 @@ trait JobsTrait
 			];
 
 			// Add it to the database
-			$db->table('joblogs')->insert($row);
+			$this->builder('joblogs')->insert($row);
 		}
 
 		return $data;
