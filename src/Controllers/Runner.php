@@ -51,7 +51,7 @@ class Runner extends Controller
 	 *
 	 * @return ResponseInterface|RedirectResponse  A view to display or a RedirectResponse
 	 */
-	protected function resume($jobId): ResponseInterface
+	public function resume($jobId): ResponseInterface
 	{
 		// Get the Job
 		if ($jobId)
