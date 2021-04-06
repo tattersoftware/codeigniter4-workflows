@@ -279,11 +279,12 @@ class Job extends Entity
 	 * Moves through the Workflow, skipping non-required Stages but running their Action functions.
 	 *
 	 * @param integer $actionId ID of the target Action
+	 * @param bool $checkRequired Whether to check for required stages while traveling
 	 *
 	 * @return array  Array of boolean results from each Action's up/down method
 	 * @throws WorkflowsException
 	 */
-	public function travel(int $actionId): array
+	public function travel(int $actionId, bool $checkRequired = true): array
 	{
 		$this->ensureCreated();
 
@@ -304,17 +305,20 @@ class Job extends Entity
 		// Determine direction of travel
 		if ($current->id < $target->id)
 		{
-			// Make sure this won't skip any required stages
-			$test = model(StageModel::class)
-				->where('id >=', $current->id)
-				->where('id <', $target->id)
-				->where('workflow_id', $this->attributes['workflow_id'])
-				->where('required', 1)
-				->first();
-
-			if (! empty($test))
+			if ($checkRequired)
 			{
-				throw WorkflowsException::forSkipRequiredStage($test->name);
+				// Make sure this won't skip any required stages
+				$test = model(StageModel::class)
+					->where('id >=', $current->id)
+					->where('id <', $target->id)
+					->where('workflow_id', $this->attributes['workflow_id'])
+					->where('required', 1)
+					->first();
+
+				if (! empty($test))
+				{
+					throw WorkflowsException::forSkipRequiredStage($test->name);
+				}
 			}
 
 			$method = 'up';
