@@ -121,7 +121,14 @@ class Runner extends Controller
 		// If the requested Action differs from the Job's current Action then travel the Workflow
 		if ($action->id !== $stage->action_id)
 		{
-			$job->travel($action->id);
+			try
+			{
+				$job->travel($action->id);
+			}
+			catch (WorkflowsException $e)
+			{
+				return $this->handleError($e);
+			}
 		}
 
 		// Check the Action's role against a potential current user
@@ -224,10 +231,9 @@ class Runner extends Controller
 		// Get the next Stage
 		if ($stage = $job->next())
 		{
-			// Travel to the target Action
-			$job->travel($stage->action_id);
+			// Travel to the next Action
+			$job->travel($stage->action_id, false);
 
-			// Redirect to the next Action
 			return redirect()->to($stage->action->getRoute($job->id));
 		}
 
