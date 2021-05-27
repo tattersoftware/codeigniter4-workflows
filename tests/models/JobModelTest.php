@@ -1,7 +1,5 @@
 <?php
 
-use Myth\Auth\Test\Fakers\UserFaker;
-use Tatter\Users\UserEntity;
 use Tatter\Workflows\Entities\Joblog;
 use Tatter\Workflows\Models\JobModel;
 use Tests\Support\DatabaseTestCase;

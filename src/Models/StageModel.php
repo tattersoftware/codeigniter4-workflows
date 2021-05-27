@@ -40,7 +40,7 @@ class StageModel extends Model
 		return new Stage([
 			'action_id'   => rand(1, Fabricator::getCount('actions') ?: 12),
 			'workflow_id' => rand(1, Fabricator::getCount('workflows') ?: 4),
-			'required'    => (bool) rand(0, 5),
+			'required'    => rand(0, 5) ? 1 : 0,
 		]);
 	}
 }
