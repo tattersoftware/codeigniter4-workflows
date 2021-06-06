@@ -33,9 +33,14 @@
         "twbs/bootstrap": "^4.3"
     },
     "require-dev": {
-        "codeigniter4/codeigniter4": "dev-develop",
+        "codeigniter4/codeigniter4": "4.x-dev",
+        "friendsofphp/php-cs-fixer": "^3.0",
         "myth/auth": "dev-develop",
+        "nexusphp/cs-config": "^3.1",
         "tatter/tools": "^1.8"
+    },
+    "config": {
+        "sort-packages": true
     },
     "autoload": {
         "psr-4": {
@@ -47,7 +52,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\Support\\": "tests/_support"
+            "Tests\\Support\\": "tests/_support",
+            "Utils\\": "utils"
         }
     },
     "repositories": [
