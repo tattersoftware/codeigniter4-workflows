@@ -3,6 +3,8 @@
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Config\Factories;
 use Tatter\Workflows\BaseAction;
+use Tatter\Workflows\Entities\Job;
+use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tests\Support\Models\FooModel;
 
 class BaseActionTest extends CIUnitTestCase
@@ -25,5 +27,46 @@ class BaseActionTest extends CIUnitTestCase
 		$action = new class extends BaseAction {};
 
 		$this->assertInstanceOf(FooModel::class, $action->jobs);
+	}
+
+	public function testSetJob()
+	{
+		$action = new class extends BaseAction {};
+		$job    = new Job();
+
+		$action->setJob($job);
+
+		$this->assertSame($job, $action->job);
+	}
+
+	/**
+	 * @dataProvider methodsProvider
+	 */
+	public function testDefaultMethodsThrow(string $method)
+	{
+		$action = new class extends BaseAction {};
+
+		$this->expectException(WorkflowsException::class);
+		$this->expectExceptionMessage('Not implemented.');
+
+		$action->$method();
+	}
+
+	/**
+	 * @return array Array of default methods
+	 */
+	public function methodsProvider(): array
+	{
+		return [
+			['get'],
+			['head'],
+			['post'],
+			['put'],
+			['delete'],
+			['connect'],
+			['options'],
+			['trace'],
+			['patch'],
+		];
 	}
 }
