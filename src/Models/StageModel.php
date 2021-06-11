@@ -21,8 +21,9 @@ class StageModel extends Model
 	protected $validationRules = [
 		'action_id'   => 'required|is_natural_no_zero',
 		'workflow_id' => 'required|is_natural_no_zero',
+		'input'       => 'permit_empty|max_length[63]',
 	];
-	
+
 	/*** Tatter\Audits ***/
 	protected $afterInsert = ['auditInsert'];
 	protected $afterUpdate = ['auditUpdate'];

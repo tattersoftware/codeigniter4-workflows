@@ -16,9 +16,14 @@ class ActionModel extends Model
 	];
 
 	protected $validationRules = [
-		'category' => 'required|max_length[255]',
-		'name'     => 'required|max_length[255]',
-		'uid'      => 'required|max_length[255]',
+		'category' => 'required|max_length[63]',
+		'name'     => 'required|max_length[63]',
+		'uid'      => 'required|max_length[63]',
+		'class'    => 'permit_empty|max_length[63]',
+		'input'    => 'permit_empty|max_length[63]',
+		'role'     => 'permit_empty|max_length[63]',
+		'icon'     => 'permit_empty|max_length[63]',
+		'summary'  => 'permit_empty|max_length[255]',
 	];
 
 	/**
