@@ -20,6 +20,7 @@ class JobModel extends Model
 
 	protected $validationRules = [
 		'name'        => 'required|max_length[255]',
+		'summary'     => 'permit_empty|max_length[255]',
 		'workflow_id' => 'required|is_natural_no_zero',
 		'stage_id'    => 'permit_empty|is_natural_no_zero',
 	];

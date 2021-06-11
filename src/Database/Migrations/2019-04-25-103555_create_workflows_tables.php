@@ -6,7 +6,7 @@ class CreateWorkflowsTables extends Migration
 {
 	public function up()
 	{
-		/* Workflows */
+		// Workflows
 		$fields = [
 			'name'        => ['type' => 'varchar', 'constraint' => 63],
 			'category'    => ['type' => 'varchar', 'constraint' => 63, 'default' => ''],
@@ -28,16 +28,16 @@ class CreateWorkflowsTables extends Migration
 		
 		$this->forge->createTable('workflows');
 
-		/* Actions */
+		// Actions
 		$fields = [
 			'category'    => ['type' => 'varchar', 'constraint' => 63],
 			'name'        => ['type' => 'varchar', 'constraint' => 63],
 			'uid'         => ['type' => 'varchar', 'constraint' => 63],
 			'class'       => ['type' => 'varchar', 'constraint' => 63, 'null' => true],
 			'input'       => ['type' => 'varchar', 'constraint' => 63, 'null' => true],
-			'role'        => ['type' => 'varchar', 'constraint' => 63, 'default' => 1],
-			'icon'        => ['type' => 'varchar', 'constraint' => 63, 'default' => 1],
-			'summary'     => ['type' => 'varchar', 'constraint' => 255, 'default' => 1],
+			'role'        => ['type' => 'varchar', 'constraint' => 63, 'default' => ''],
+			'icon'        => ['type' => 'varchar', 'constraint' => 63, 'default' => ''],
+			'summary'     => ['type' => 'varchar', 'constraint' => 255, 'default' => ''],
 			'description' => ['type' => 'text', 'null' => true],
 			'created_at'  => ['type' => 'datetime', 'null' => true],
 			'updated_at'  => ['type' => 'datetime', 'null' => true],
@@ -55,7 +55,7 @@ class CreateWorkflowsTables extends Migration
 		
 		$this->forge->createTable('actions');
 
-		/* Stages */
+		// Stages
 		$fields = [
 			'action_id'   => ['type' => 'int', 'unsigned' => true],
 			'workflow_id' => ['type' => 'int', 'unsigned' => true],
@@ -73,7 +73,7 @@ class CreateWorkflowsTables extends Migration
 		
 		$this->forge->createTable('stages');
 
-		/* Jobs */
+		// Jobs
 		$fields = [
 			'name'        => ['type' => 'varchar', 'constraint' => 255],
 			'summary'     => ['type' => 'varchar', 'constraint' => 255, 'default' => ''],

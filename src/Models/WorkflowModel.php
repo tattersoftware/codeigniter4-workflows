@@ -20,7 +20,9 @@ class WorkflowModel extends Model
 	];
 
 	protected $validationRules    = [
-		'name'     => 'required|max_length[255]',
+		'name'     => 'required|max_length[63]',
+		'category' => 'permit_empty|max_length[63]',
+		'icon'     => 'permit_empty|max_length[63]',
 		'summary'  => 'required|max_length[255]',
 	];
 
