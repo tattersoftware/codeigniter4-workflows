@@ -68,6 +68,7 @@
 	"prefer-stable": true,
 	"scripts": {
 		"analyze": "phpstan analyze",
+		"inspect": "deptrac analyze --cache-file=build/deptrac.cache",
 		"mutate": "infection --threads=2 --skip-initial-tests --coverage=build/phpunit",
 		"style": "phpcbf --standard=./vendor/codeigniter4/codeigniter4-standard/CodeIgniter4 tests/ src/",
 		"test": "phpunit"

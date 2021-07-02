@@ -1,0 +1,107 @@
+paths:
+  - ./src
+  - ./vendor/codeigniter4/codeigniter4/system
+  - ./vendor/tatter
+exclude_files:
+  - '#.*test.*#i'
+layers:
+  - name: Model
+    collectors:
+      - type: bool
+        must:
+        - type: className
+          regex: .*[A-Za-z]+Model.*
+        - type: directory
+          regex: src/.*
+  - name: Other Model
+    collectors:
+      - type: bool
+        must:
+        - type: className
+          regex: .*[A-Za-z]+Model.*
+        - type: directory
+          regex: vendor/.*
+  - name: Controller
+    collectors:
+      - type: bool
+        must:
+        - type: className
+          regex: .*\/Controllers\/.*
+        - type: directory
+          regex: src/.*
+  - name: Other Controller
+    collectors:
+      - type: bool
+        must:
+        - type: className
+          regex: .*\/Controllers\/.*
+        - type: directory
+          regex: vendor/.*
+  - name: Config
+    collectors:
+      - type: bool
+        must:
+        - type: directory
+          regex: src/Config/.*
+        must_not:
+        - type: className
+          regex: .*Services
+  - name: Other Config
+    collectors:
+      - type: bool
+        must:
+        - type: directory
+          regex: vendor/.*/Config/.*
+        must_not:
+        - type: className
+          regex: .*Services
+  - name: Entity
+    collectors:
+      - type: bool
+        must:
+        - type: directory
+          regex: src/Entities/.*
+  - name: Other Entity
+    collectors:
+      - type: bool
+        must:
+        - type: directory
+          regex: vendor/.*/Entities/.*
+  - name: View
+    collectors:
+      - type: bool
+        must:
+        - type: directory
+          regex: src/Views/.*
+  - name: Other View
+    collectors:
+      - type: bool
+        must:
+        - type: directory
+          regex: vendor/.*/Views/.*
+  - name: Service
+    collectors:
+      - type: className
+        regex: .*Services.*
+ruleset:
+  Entity:
+    - Config
+    - Model
+    - Service
+    - Other Config
+    - Other Model
+  Config:
+    - Service
+  Model:
+    - Config
+    - Entity
+    - Service
+    - Other Config
+    - Other Model
+  Service:
+    - Config
+    - Other Config
+  View:
+skip_violations:
+  Tatter\Workflows\Config\Workflows:
+    - Tatter\Workflows\Models\JobModel
