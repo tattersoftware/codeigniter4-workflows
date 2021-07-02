@@ -11,9 +11,10 @@ layers:
         must:
         - type: className
           regex: .*[A-Za-z]+Model.*
+        must_not:
         - type: directory
-          regex: src/.*
-  - name: Other Model
+          regex: vendor/.*
+  - name: Vendor Model
     collectors:
       - type: bool
         must:
@@ -27,9 +28,10 @@ layers:
         must:
         - type: className
           regex: .*\/Controllers\/.*
+        must_not:
         - type: directory
-          regex: src/.*
-  - name: Other Controller
+          regex: vendor/.*
+  - name: Vendor Controller
     collectors:
       - type: bool
         must:
@@ -46,7 +48,9 @@ layers:
         must_not:
         - type: className
           regex: .*Services
-  - name: Other Config
+        - type: directory
+          regex: vendor/.*
+  - name: Vendor Config
     collectors:
       - type: bool
         must:
@@ -61,7 +65,10 @@ layers:
         must:
         - type: directory
           regex: src/Entities/.*
-  - name: Other Entity
+        must_not:
+        - type: directory
+          regex: vendor/.*
+  - name: Vendor Entity
     collectors:
       - type: bool
         must:
@@ -73,7 +80,10 @@ layers:
         must:
         - type: directory
           regex: src/Views/.*
-  - name: Other View
+        must_not:
+        - type: directory
+          regex: vendor/.*
+  - name: Vendor View
     collectors:
       - type: bool
         must:
@@ -88,20 +98,58 @@ ruleset:
     - Config
     - Model
     - Service
-    - Other Config
-    - Other Model
+    - Vendor Config
+    - Vendor Entity
+    - Vendor Model
   Config:
     - Service
+    - Vendor Config
   Model:
     - Config
     - Entity
     - Service
-    - Other Config
-    - Other Model
+    - Vendor Config
+    - Vendor Model
   Service:
     - Config
-    - Other Config
-  View:
+    - Vendor Config
+
+  # Ignore anything in the Vendor layers
+  Vendor Model:
+    - Service
+    - Vendor Config
+    - Vendor Controller
+    - Vendor Entity
+    - Vendor Model
+    - Vendor View
+  Vendor Controller:
+    - Service
+    - Vendor Config
+    - Vendor Controller
+    - Vendor Entity
+    - Vendor Model
+    - Vendor View
+  Vendor Config:
+    - Service
+    - Vendor Config
+    - Vendor Controller
+    - Vendor Entity
+    - Vendor Model
+    - Vendor View
+  Vendor Entity:
+    - Service
+    - Vendor Config
+    - Vendor Controller
+    - Vendor Entity
+    - Vendor Model
+    - Vendor View
+  Vendor View:
+    - Service
+    - Vendor Config
+    - Vendor Controller
+    - Vendor Entity
+    - Vendor Model
+    - Vendor View
 skip_violations:
   Tatter\Workflows\Config\Workflows:
     - Tatter\Workflows\Models\JobModel
