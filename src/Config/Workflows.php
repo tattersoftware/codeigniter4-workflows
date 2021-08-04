@@ -1,7 +1,6 @@
 <?php namespace Tatter\Workflows\Config;
 
 use CodeIgniter\Config\BaseConfig;
-use Tatter\Workflows\Models\JobModel;
 
 class Workflows extends BaseConfig
 {
@@ -24,7 +23,7 @@ class Workflows extends BaseConfig
 	 *
 	 * @var string
 	 */
-	public $jobModel = JobModel::class;
+	public $jobModel = 'Tatter\Workflows\Models\JobModel';
 
 	/**
 	 * View layouts to use for jobs and administration.

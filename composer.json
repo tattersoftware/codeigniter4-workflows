@@ -1,75 +1,76 @@
 {
-	"name": "tatter/workflows",
-	"type": "library",
-	"description": "Job task control through dynamic workflows, for CodeIgniter 4",
-	"keywords": [
-		"codeigniter",
-		"codeigniter4",
-		"workflows",
-		"actions",
-		"jobs"
-	],
-	"homepage": "https://github.com/tattersoftware/codeigniter4-workflows",
-	"license": "MIT",
-	"authors": [
-		{
-			"name": "Matthew Gatner",
-			"email": "mgatner@tattersoftware.com",
-			"homepage": "https://tattersoftware.com",
-			"role": "Developer"
-		}
-	],
-	"require": {
-		"php": "^7.3 || ^8.0",
-		"codeigniter4/authentication-implementation": "1.0",
-		"components/jquery": "^3.3",
-		"fortawesome/font-awesome": "^5.8",
-		"npm-asset/sortablejs": "^1.10",
-		"tatter/alerts": "^2.0",
-		"tatter/assets": "^2.0",
-		"tatter/audits": "^1.0",
-		"tatter/handlers": "^2.0",
-		"tatter/users": "^1.0",
-		"twbs/bootstrap": "^4.3"
-	},
-	"require-dev": {
-		"codeigniter4/codeigniter4": "dev-develop",
-		"myth/auth": "dev-develop",
-		"tatter/tools": "^1.8"
-	},
-	"autoload": {
-		"psr-4": {
-			"Tatter\\Workflows\\": "src"
-		},
-		"exclude-from-classmap": [
-			"**/Database/Migrations/**"
-		]
-	},
-	"autoload-dev": {
-		"psr-4": {
-			"Tests\\Support\\": "tests/_support"
-		}
-	},
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/codeigniter4/CodeIgniter4"
-		},
-		{
-			"type": "vcs",
-			"url": "https://github.com/lonnieezell/myth-auth"
-		},
-		{
-			"type": "composer",
-			"url": "https://asset-packagist.org"
-		}
-	],
-	"minimum-stability": "dev",
-	"prefer-stable": true,
-	"scripts": {
-		"analyze": "phpstan analyze",
-		"mutate": "infection --threads=2 --skip-initial-tests --coverage=build/phpunit",
-		"style": "phpcbf --standard=./vendor/codeigniter4/codeigniter4-standard/CodeIgniter4 tests/ src/",
-		"test": "phpunit"
-	}
+    "name": "tatter/workflows",
+    "type": "library",
+    "description": "Job task control through dynamic workflows, for CodeIgniter 4",
+    "keywords": [
+        "codeigniter",
+        "codeigniter4",
+        "workflows",
+        "actions",
+        "jobs"
+    ],
+    "homepage": "https://github.com/tattersoftware/codeigniter4-workflows",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matthew Gatner",
+            "email": "mgatner@tattersoftware.com",
+            "homepage": "https://tattersoftware.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.3 || ^8.0",
+        "codeigniter4/authentication-implementation": "1.0",
+        "components/jquery": "^3.3",
+        "fortawesome/font-awesome": "^5.8",
+        "npm-asset/sortablejs": "^1.10",
+        "tatter/alerts": "^2.0",
+        "tatter/assets": "^2.0",
+        "tatter/audits": "^1.0",
+        "tatter/handlers": "^2.0",
+        "tatter/users": "^1.0",
+        "twbs/bootstrap": "^4.3"
+    },
+    "require-dev": {
+        "codeigniter4/codeigniter4": "dev-develop",
+        "myth/auth": "dev-develop",
+        "tatter/tools": "^1.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tatter\\Workflows\\": "src"
+        },
+        "exclude-from-classmap": [
+            "**/Database/Migrations/**"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Support\\": "tests/_support"
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/codeigniter4/CodeIgniter4"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/lonnieezell/myth-auth"
+        },
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "analyze": "phpstan analyze",
+        "inspect": "deptrac analyze --cache-file=build/deptrac.cache",
+        "mutate": "infection --threads=2 --skip-initial-tests --coverage=build/phpunit",
+        "style": "php-cs-fixer fix --verbose --ansi",
+        "test": "phpunit"
+    }
 }
