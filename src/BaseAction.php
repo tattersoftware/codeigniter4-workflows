@@ -85,7 +85,17 @@ abstract class BaseAction extends BaseHandler
 		$this->response = $response ?? service('response');
 
 		$this->jobs = model($this->config->jobModel);
-	}
+
+        $this->initialize();
+    }
+
+    /**
+     * Initializes the instance with any additional steps.
+     * Optionally implemented by child classes.
+     */
+    protected function initialize()
+    {
+    }
 
 	//--------------------------------------------------------------------
 

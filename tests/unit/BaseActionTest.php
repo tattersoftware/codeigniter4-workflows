@@ -29,6 +29,20 @@ class BaseActionTest extends CIUnitTestCase
 		$this->assertInstanceOf(FooModel::class, $action->jobs);
 	}
 
+	public function testInitialize()
+	{
+		$action = new class extends BaseAction {
+			public $initialized = false;
+
+			protected function initialize()
+			{
+				$this->initialized = true;
+			}
+		};
+
+		$this->assertTrue($action->initialized);
+	}
+
 	public function testSetJob()
 	{
 		$action = new class extends BaseAction {};
