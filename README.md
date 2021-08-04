@@ -1,8 +1,9 @@
 # Tatter\Workflows
 Job action control through dynamic workflows, for CodeIgniter 4
 
-[![](https://github.com/tattersoftware/codeigniter4-workflows/workflows/PHPUnit/badge.svg)](https://github.com/tattersoftware/codeigniter4-workflows/actions?query=workflow%3A%22PHPUnit%22)
-[![](https://github.com/tattersoftware/codeigniter4-workflows/workflows/PHPStan/badge.svg)](https://github.com/tattersoftware/codeigniter4-workflows/actions?query=workflow%3A%PHPStan%22)
+[![](https://github.com/tattersoftware/codeigniter4-workflows/workflows/PHPUnit/badge.svg)](https://github.com/tattersoftware/codeigniter4-workflows/actions/workflows/test.yml)
+[![](https://github.com/tattersoftware/codeigniter4-workflows/workflows/PHPStan/badge.svg)](https://github.com/tattersoftware/codeigniter4-workflows/actions/workflows/analyze.yml)
+[![](https://github.com/tattersoftware/codeigniter4-workflows/workflows/Deptrac/badge.svg)](https://github.com/tattersoftware/codeigniter4-workflows/actions/workflows/inspect.yml)
 [![Coverage Status](https://coveralls.io/repos/github/tattersoftware/codeigniter4-workflows/badge.svg?branch=develop)](https://coveralls.io/github/tattersoftware/codeigniter4-workflows?branch=develop)
 
 ## Quick Start
