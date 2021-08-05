@@ -75,5 +75,6 @@ class JobTest extends DatabaseTestCase
 
 		$result = model(JobModel::class)->find($job->id);
 		$this->assertEquals($stageRequired->id, $result->stage_id);
+		$this->assertEquals($stageRequired->id, $job->stage_id);
 	}
 }
