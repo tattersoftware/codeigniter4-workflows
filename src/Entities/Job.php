@@ -355,6 +355,7 @@ class Job extends Entity
 
 		// Update the Job
 		model(JobModel::class)->update($this->attributes['id'], ['stage_id' => $target->id]);
+		$this->attributes['stage_id'] = $target->id;
 
 		return $results;
 	}
