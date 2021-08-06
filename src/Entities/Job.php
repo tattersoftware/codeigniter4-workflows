@@ -254,6 +254,7 @@ class Job extends Entity
 	{
 		// look through the stages
 		$stage = current($stages);
+
 		do
 		{
 			// Check if this is the current stage
@@ -355,7 +356,10 @@ class Job extends Entity
 
 		// Update the Job
 		model(JobModel::class)->update($this->attributes['id'], ['stage_id' => $target->id]);
+
 		$this->attributes['stage_id'] = $target->id;
+		$this->stage                  = null;
+		$this->stageFlag              = false;
 
 		return $results;
 	}
