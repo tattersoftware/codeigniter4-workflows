@@ -1,42 +1,50 @@
-<?php namespace Tatter\Workflows;
+<?php
 
-use CodeIgniter\CLI\CLI;
+/**
+ * This file is part of Tatter Workflows.
+ *
+ * (c) 2021 Tatter Software
+ *
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ */
+
+namespace Tatter\Workflows;
+
+use RuntimeException;
 use Tatter\Handlers\Handlers;
 use Tatter\Workflows\Models\ActionModel;
-use RuntimeException;
 
 /**
  * Class to register Actions in the database.
  */
 class Registrar
 {
-	/**
-	 * Scans all namespaces for new Actions to load into the database
-	 *
-	 * @return int Number of new Actions registered
-	 */
-	public static function actions(): int
-	{
-		$model    = model(ActionModel::class);
-		$handlers = new Handlers('Actions');
+    /**
+     * Scans all namespaces for new Actions to load into the database.
+     *
+     * @return int Number of new Actions registered
+     */
+    public static function actions(): int
+    {
+        $model    = model(ActionModel::class);
+        $handlers = new Handlers('Actions');
 
-		$count = 0;
-		foreach ($handlers->all() as $class)
-		{
-			$instance = new $class();
+        $count = 0;
+        foreach ($handlers->all() as $class) {
+            $instance = new $class();
 
-			// Validate the method
-			if (! is_callable([$instance, 'register']))
-			{
-				throw new RuntimeException("Missing 'register' method for {$class}");
-			}
+            // Validate the method
+            if (! is_callable([$instance, 'register'])) {
+                throw new RuntimeException("Missing 'register' method for {$class}");
+            }
 
-			// Register it
-			$result = $instance->register();
+            // Register it
+            $result = $instance->register();
 
-			$count++;
-		}
+            $count++;
+        }
 
-		return $count;
-	}
+        return $count;
+    }
 }

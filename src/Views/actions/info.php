@@ -26,7 +26,7 @@
 
 	<form name="update-job" action="<?= site_url("{$config->routeBase}/info/{$job->id}") ?>" method="post">
 		<input class="btn btn-primary float-right" type="submit" value="Submit">
-		
+
 		<div class="row mt-4">
 			<div class="col-sm-8">
 				<div class="form-group">

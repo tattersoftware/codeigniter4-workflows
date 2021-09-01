@@ -14,9 +14,9 @@ $menu = $menu ?? '';
 
 	<!-- Assets from Manifests -->
 	<?= service('assets')->tag('vendor/jquery/jquery.min.js') ?>
-	
+
 	<?= service('assets')->tag('vendor/bootstrap/bootstrap.min.css') ?>
-	
+
 	<?= service('assets')->tag('vendor/font-awesome/css/all.min.css') ?>
 
 	<?= $this->renderSection('headerAssets') ?>
@@ -32,16 +32,16 @@ $menu = $menu ?? '';
 
 	<div class="collapse navbar-collapse" id="navbarsExampleDefault">
 		<ul class="navbar-nav mr-auto">
-			<li class="nav-item <?= $menu == 'workflows' ? 'active' : '' ?>">
-				<a class="nav-link" href="<?= site_url('workflows') ?>">Workflows <?= $menu == 'workflows' ? '<span class="sr-only">(current)</span>' : '' ?></a>
+			<li class="nav-item <?= $menu === 'workflows' ? 'active' : '' ?>">
+				<a class="nav-link" href="<?= site_url('workflows') ?>">Workflows <?= $menu === 'workflows' ? '<span class="sr-only">(current)</span>' : '' ?></a>
 			</li>
-			<li class="nav-item <?= $menu == 'actions' ? 'active' : '' ?>">
-				<a class="nav-link" href="<?= site_url('actions') ?>">Actions <?= $menu == 'actions' ? '<span class="sr-only">(current)</span>' : '' ?></a>
+			<li class="nav-item <?= $menu === 'actions' ? 'active' : '' ?>">
+				<a class="nav-link" href="<?= site_url('actions') ?>">Actions <?= $menu === 'actions' ? '<span class="sr-only">(current)</span>' : '' ?></a>
 			</li>
 		</ul>
 	</div>
 </nav>
-	
+
 <?= service('alerts')->display() ?>
 
 <main role="main" class="container my-5">

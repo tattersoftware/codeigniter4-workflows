@@ -1,50 +1,60 @@
-<?php namespace Tatter\Workflows\Entities;
+<?php
+
+/**
+ * This file is part of Tatter Workflows.
+ *
+ * (c) 2021 Tatter Software
+ *
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ */
+
+namespace Tatter\Workflows\Entities;
 
 use CodeIgniter\Entity;
-use Tatter\Workflows\Entities\Action;
 use Tatter\Workflows\Models\ActionModel;
 
 class Stage extends Entity
 {
-	protected $dates = [
-		'created_at',
-		'updated_at',
-	];
-	protected $casts = [
-		'action_id'   => 'int',
-		'workflow_id' => 'int',
-		'required'    => 'bool',
-	];
+    protected $dates = [
+        'created_at',
+        'updated_at',
+    ];
 
-	/**
-	 * Cached entity for the associated Action.
-	 *
-	 * @var Action
-	 */
-	private $action;
+    protected $casts = [
+        'action_id'   => 'int',
+        'workflow_id' => 'int',
+        'required'    => 'bool',
+    ];
 
-	/**
-	 * Passes through name requests to the Action
-	 *
-	 * @return string
-	 */
-	public function getName(): string
-	{
-		return $this->getAction()->name ?? '';
-	}
+    /**
+     * Cached entity for the associated Action.
+     *
+     * @var Action
+     */
+    private $action;
 
-	/**
-	 * Gets the associated Action
-	 *
-	 * @return Action
-	 */
-	public function getAction(): Action
-	{
-		if ($this->action === null)
-		{
-			$this->action = model(ActionModel::class)->find($this->attributes['action_id']);
-		}
+    /**
+     * Passes through name requests to the Action.
+     *
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->getAction()->name ?? '';
+    }
 
-		return $this->action;
-	}
+    /**
+     * Gets the associated Action.
+     *
+     * @return Action
+     */
+    public function getAction(): Action
+    {
+        if ($this->action === null) {
+            $this->action = model(ActionModel::class)->find($this->attributes['action_id']);
+        }
+
+        return $this->action;
+    }
 }

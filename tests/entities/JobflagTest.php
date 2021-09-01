@@ -1,135 +1,149 @@
-<?php namespace Tatter\Workflows\Entities;
+<?php
+
+/**
+ * This file is part of Tatter Workflows.
+ *
+ * (c) 2021 Tatter Software
+ *
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ */
+
+namespace Tatter\Workflows\Entities;
 
 use CodeIgniter\Database\BaseBuilder;
 use CodeIgniter\I18n\Time;
 use Tatter\Workflows\Models\JobModel;
 use Tests\Support\DatabaseTestCase;
 
-class JobflagTest extends DatabaseTestCase
+/**
+ * @internal
+ */
+final class JobflagTest extends DatabaseTestCase
 {
-	/**
-	 * Common timestamp to use during testing
-	 *
-	 * @var string
-	 */
-	protected $now;
+    /**
+     * Common timestamp to use during testing.
+     *
+     * @var string
+     */
+    protected $now;
 
-	/**
-	 * A random Job to test with
-	 *
-	 * @var Job
-	 */
-	protected $job;
+    /**
+     * A random Job to test with.
+     *
+     * @var Job
+     */
+    protected $job;
 
-	/**
-	 * Builder for `jobflags`
-	 *
-	 * @var BaseBuilder
-	 */
-	protected $builder;
+    /**
+     * Builder for `jobflags`.
+     *
+     * @var BaseBuilder
+     */
+    protected $builder;
 
-	protected function setUp(): void
-	{
-		parent::setUp();
+    protected function setUp(): void
+    {
+        parent::setUp();
 
-		$this->now     = date('Y-m-d H:i:s');
-		$this->job     = fake(JobModel::class);
-		$this->builder = $this->db->table('jobflags');
-	}
+        $this->now     = date('Y-m-d H:i:s');
+        $this->job     = fake(JobModel::class);
+        $this->builder = $this->db->table('jobflags');
+    }
 
-	/**
-	 * Create a flag with $name on $this->job
-	 *
-	 * @param string $name
-	 *
-	 * @return array Result from the database
-	 */
-	protected function createFlag(string $name = 'foobar'): array
-	{
-		$this->builder->insert([
-			'job_id'     => $this->job->id,
-			'name'       => 'foobar',
-			'created_at' => $this->now,
-		]);
+    //--------------------------------------------------------------------
 
-		return $this->builder->getWhere(['id' => $this->db->insertID()])->getRowArray();
-	}
+    public function testGetFlagsReturnsEmptyArray()
+    {
+        $result = $this->job->getFlags();
 
-	//--------------------------------------------------------------------
+        $this->assertSame($result, []);
+    }
 
-	public function testGetFlagsReturnsEmptyArray()
-	{
-		$result = $this->job->getFlags();
+    public function testGetFlagsReturnsFlagsArray()
+    {
+        $flag = $this->createFlag();
 
-		$this->assertEquals($result, []);
-	}
+        $result = $this->job->getFlags();
 
-	public function testGetFlagsReturnsFlagsArray()
-	{
-		$flag = $this->createFlag();
+        $this->assertCount(1, $result);
+        $this->assertSame($this->now, $result['foobar']->toDateTimeString());
+    }
 
-		$result = $this->job->getFlags();
+    public function testGetFlagReturnsNull()
+    {
+        $result = $this->job->getFlag('foobar');
 
-		$this->assertCount(1, $result);
-		$this->assertEquals($this->now, $result['foobar']);
-	}
+        $this->assertNull($result);
+    }
 
-	public function testGetFlagReturnsNull()
-	{
-		$result = $this->job->getFlag('foobar');
+    public function testGetFlagReturnsTime()
+    {
+        $flag = $this->createFlag();
 
-		$this->assertNull($result);
-	}
+        $result = $this->job->getFlag('foobar');
 
-	public function testGetFlagReturnsTime()
-	{
-		$flag = $this->createFlag();
+        $this->assertInstanceOf(Time::class, $result);
+        $this->assertSame($this->now, $result->toDateTimeString());
+    }
 
-		$result = $this->job->getFlag('foobar');
+    public function testGetFlagStoresValues()
+    {
+        $flag = $this->createFlag();
+        $this->job->getFlags();
+        $this->builder->truncate();
 
-		$this->assertInstanceOf(Time::class, $result);
-		$this->assertEquals($this->now, $result->toDateTimeString());
-	}
+        $result = $this->job->getFlag('foobar');
 
-	public function testGetFlagStoresValues()
-	{
-		$flag = $this->createFlag();
-		$this->job->getFlags();
-		$this->builder->truncate();
+        $this->assertInstanceOf(Time::class, $result);
+    }
 
-		$result = $this->job->getFlag('foobar');
+    public function testSetFlagCreates()
+    {
+        $this->job->setFlag('barbam');
 
-		$this->assertInstanceOf(Time::class, $result);
-	}
+        $this->seeInDatabase('jobflags', ['job_id' => $this->job->id]);
+    }
 
-	public function testSetFlagCreates()
-	{
-		$this->job->setFlag('barbam');
+    public function testClearFlagDeletes()
+    {
+        $flag = $this->createFlag();
+        $this->job->clearFlag('foobar');
 
-		$this->seeInDatabase('jobflags', ['job_id' => $this->job->id]);
-	}
+        $result = $this->job->getFlag('foobar');
 
-	public function testClearFlagDeletes()
-	{
-		$flag = $this->createFlag();
-		$this->job->clearFlag('foobar');
+        $this->assertNull($result);
+    }
 
-		$result = $this->job->getFlag('foobar');
+    public function testClearFlagsDeletesAll()
+    {
+        $this->createFlag();
+        $this->createFlag('barbam');
+        $this->createFlag('bambaz');
 
-		$this->assertNull($result);
-	}
+        $this->job->clearFlags();
 
-	public function testClearFlagsDeletesAll()
-	{
-		$this->createFlag();
-		$this->createFlag('barbam');
-		$this->createFlag('bambaz');
+        $result = $this->job->getFlags();
 
-		$this->job->clearFlags();
+        $this->assertSame([], $result);
+        $this->dontSeeInDatabase('jobflags', ['job_id' => $this->job->id]);
+    }
 
-		$result = $this->job->getFlags();
+    /**
+     * Create a flag with $name on $this->job.
+     *
+     * @param string $name
+     *
+     * @return array Result from the database
+     */
+    protected function createFlag(string $name = 'foobar'): array
+    {
+        $this->builder->insert([
+            'job_id'     => $this->job->id,
+            'name'       => 'foobar',
+            'created_at' => $this->now,
+        ]);
 
-		$this->assertEquals([], $result);
-		$this->dontSeeInDatabase('jobflags', ['job_id' => $this->job->id]);
-	}
+        return $this->builder->getWhere(['id' => $this->db->insertID()])->getRowArray();
+    }
 }
