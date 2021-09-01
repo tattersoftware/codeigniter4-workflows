@@ -1,7 +1,6 @@
 <?php
 
 use CodeIgniter\Test\Fabricator;
-use Tatter\Workflows\Entities\Workflow;
 use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\StageModel;
@@ -9,7 +8,10 @@ use Tatter\Workflows\Models\WorkflowModel;
 use Tatter\Workflows\Test\Simulator;
 use Tests\Support\DatabaseTestCase;
 
-class SimulatorTest extends DatabaseTestCase
+/**
+ * @internal
+ */
+final class SimulatorTest extends DatabaseTestCase
 {
 	public function testFakeStageUsesCounts()
 	{
@@ -20,7 +22,7 @@ class SimulatorTest extends DatabaseTestCase
 		for ($i = 0; $i < 3; $i++)
 		{
 			$stage = fake(StageModel::class);
-			$sum  += $stage->workflow_id;
+			$sum += $stage->workflow_id;
 		}
 
 		$this->assertGreaterThan(12, $sum);
@@ -42,6 +44,6 @@ class SimulatorTest extends DatabaseTestCase
 
 		$result = model(ActionModel::class)->first();
 
-		$this->assertEquals('info', $result->uid);
+		$this->assertSame('info', $result->uid);
 	}
 }

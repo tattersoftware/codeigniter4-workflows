@@ -1,9 +1,10 @@
-<?php namespace Tatter\Workflows;
+<?php
 
-use CodeIgniter\CLI\CLI;
+namespace Tatter\Workflows;
+
+use RuntimeException;
 use Tatter\Handlers\Handlers;
 use Tatter\Workflows\Models\ActionModel;
-use RuntimeException;
 
 /**
  * Class to register Actions in the database.
@@ -11,7 +12,7 @@ use RuntimeException;
 class Registrar
 {
 	/**
-	 * Scans all namespaces for new Actions to load into the database
+	 * Scans all namespaces for new Actions to load into the database.
 	 *
 	 * @return int Number of new Actions registered
 	 */

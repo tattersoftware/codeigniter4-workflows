@@ -23,7 +23,7 @@
 	<form name="create-workflow" action="<?= site_url('workflows') ?>" method="post" onsubmit="this.actions.value = sortable.toArray();">
 		<input class="btn btn-primary float-right" type="submit" value="Submit">
 		<input name="actions" type="hidden" value="" />
-		
+
 		<div class="row mt-4">
 			<div class="col-sm-4">
 				<h3>Details</h3>
@@ -58,7 +58,7 @@
 					<small id="descriptionHelp" class="form-text text-muted">A full description or instructions for using this workflow.</small>
 				</div>
 			</div>
-		
+
 			<div class="col-sm-8">
 				<h3>Actions</h3>
 				<div id="actionsSelect" class="mb-4">
@@ -74,12 +74,12 @@
 					<?php endforeach; ?>
 
 				</div>
-			
+
 				<div id="actionsList" class="list-group">
-				
+
 				<?php foreach (explode(',', old('actions')) as $actionId): ?>
 				<?php foreach ($actions as $action): ?>
-				<?php if ($action->id == $actionId): ?>
+				<?php if ($action->id === $actionId): ?>
 
 					<div class="list-group-item" data-id="<?= $action->id ?>">
 						<span class="remove-icon float-right" onclick="this.parentNode.remove();"><i class="fas fa-minus-circle"></i></span>
@@ -113,7 +113,7 @@ $(document).ready(function() {
 
 function addAction(actionId) {
 	action = actions[actionId];
-	
+
 	html  = '<div class="list-group-item" data-id="' + action['id'] + '" onclick="this.remove();"> ';
 	html += '<span class="remove-icon float-right" onclick="this.parentNode.remove();"><i class="fas fa-minus-circle"></i></span>';
 	html += '<span class="sort-handle" aria-hidden="true"><i class="fas fa-arrows-alt-v"></i></span> '
@@ -121,7 +121,7 @@ function addAction(actionId) {
 	html += '<span class="font-weight-bold mr-3">' + action['name'] +'</span> ';
 	html += '<small class="text-muted">' + action['summary'] + '</small> ';
 	html += '</div>';
-	
+
 	$('#actionsList').append(html);
 }
 

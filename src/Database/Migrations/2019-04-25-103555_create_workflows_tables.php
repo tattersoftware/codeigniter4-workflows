@@ -1,4 +1,6 @@
-<?php namespace Tatter\Workflows\Database\Migrations;
+<?php
+
+namespace Tatter\Workflows\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
@@ -17,7 +19,7 @@ class CreateWorkflowsTables extends Migration
 			'updated_at'  => ['type' => 'datetime', 'null' => true],
 			'deleted_at'  => ['type' => 'datetime', 'null' => true],
 		];
-		
+
 		$this->forge->addField('id');
 		$this->forge->addField($fields);
 
@@ -25,7 +27,7 @@ class CreateWorkflowsTables extends Migration
 		$this->forge->addKey(['category', 'name']);
 		$this->forge->addKey(['deleted_at', 'id']);
 		$this->forge->addKey('created_at');
-		
+
 		$this->forge->createTable('workflows');
 
 		// Actions
@@ -43,7 +45,7 @@ class CreateWorkflowsTables extends Migration
 			'updated_at'  => ['type' => 'datetime', 'null' => true],
 			'deleted_at'  => ['type' => 'datetime', 'null' => true],
 		];
-		
+
 		$this->forge->addField('id');
 		$this->forge->addField($fields);
 
@@ -52,7 +54,7 @@ class CreateWorkflowsTables extends Migration
 		$this->forge->addKey(['category', 'name']);
 		$this->forge->addKey(['deleted_at', 'id']);
 		$this->forge->addKey('created_at');
-		
+
 		$this->forge->createTable('actions');
 
 		// Stages
@@ -64,13 +66,13 @@ class CreateWorkflowsTables extends Migration
 			'created_at'  => ['type' => 'datetime', 'null' => true],
 			'updated_at'  => ['type' => 'datetime', 'null' => true],
 		];
-		
+
 		$this->forge->addField('id');
 		$this->forge->addField($fields);
 
 		$this->forge->addKey(['action_id', 'workflow_id']);
 		$this->forge->addKey(['workflow_id', 'action_id']);
-		
+
 		$this->forge->createTable('stages');
 
 		// Jobs
@@ -83,7 +85,7 @@ class CreateWorkflowsTables extends Migration
 			'updated_at'  => ['type' => 'datetime', 'null' => true],
 			'deleted_at'  => ['type' => 'datetime', 'null' => true],
 		];
-		
+
 		$this->forge->addField('id');
 		$this->forge->addField($fields);
 
@@ -91,7 +93,7 @@ class CreateWorkflowsTables extends Migration
 		$this->forge->addKey('stage_id');
 
 		$this->forge->createTable('jobs');
-	
+
 		// Job change log
 		$fields = [
 			'job_id'     => ['type' => 'int', 'unsigned' => true],
@@ -100,13 +102,13 @@ class CreateWorkflowsTables extends Migration
 			'user_id'    => ['type' => 'int', 'unsigned' => true, 'null' => true],
 			'created_at' => ['type' => 'datetime', 'null' => true],
 		];
-		
+
 		$this->forge->addField('id');
 		$this->forge->addField($fields);
 
 		$this->forge->addKey(['job_id', 'stage_from', 'stage_to']);
 		$this->forge->addKey(['job_id', 'stage_to']);
-		
+
 		$this->forge->createTable('joblogs');
 	}
 

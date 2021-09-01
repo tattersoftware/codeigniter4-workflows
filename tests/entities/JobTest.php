@@ -6,13 +6,16 @@ use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\WorkflowModel;
-use Tatter\Workflows\Test\Simulator;
 use Tests\Support\DatabaseTestCase;
 
-class JobTest extends DatabaseTestCase
+/**
+ * @internal
+ */
+final class JobTest extends DatabaseTestCase
 {
 	protected $migrateOnce = true;
-	protected $seedOnce    = true;
+
+	protected $seedOnce = true;
 
 	public function testTravelCheck()
 	{
@@ -74,7 +77,7 @@ class JobTest extends DatabaseTestCase
 		$job->travel($stageOptional->action_id, false);
 
 		$result = model(JobModel::class)->find($job->id);
-		$this->assertEquals($stageRequired->id, $result->stage_id);
-		$this->assertEquals($stageRequired->id, $job->stage_id);
+		$this->assertSame($stageRequired->id, $result->stage_id);
+		$this->assertSame($stageRequired->id, $job->stage_id);
 	}
 }

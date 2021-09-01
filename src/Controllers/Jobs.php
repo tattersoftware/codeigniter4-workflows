@@ -1,4 +1,6 @@
-<?php namespace Tatter\Workflows\Controllers;
+<?php
+
+namespace Tatter\Workflows\Controllers;
 
 use CodeIgniter\Controller;
 use CodeIgniter\Exceptions\PageNotFoundException;
@@ -6,13 +8,12 @@ use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
 use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Exceptions\WorkflowsException;
-use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\JoblogModel;
-use Tatter\Workflows\Models\StageModel;
+use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\WorkflowModel;
 
 /**
- * Job Controller
+ * Job Controller.
  *
  * Handles basic REST for Jobs.
  * Shares baseRoute with the Runner.
@@ -27,7 +28,9 @@ class Jobs extends Controller
 	protected $config;
 
 	/**
-	 * @var JobModel Module version or extension thereof
+	 * The Job Model from this module, or an extension of it.
+	 *
+	 * @var JobModel
 	 */
 	protected $jobs;
 
@@ -45,9 +48,9 @@ class Jobs extends Controller
 	 *
 	 * @param string $jobId ID of the job (int)
 	 *
-	 * @return ResponseInterface
-	 *
 	 * @throws WorkflowsException
+	 *
+	 * @return ResponseInterface
 	 */
 	public function show(string $jobId = null): ResponseInterface
 	{
@@ -69,16 +72,16 @@ class Jobs extends Controller
 	/**
 	 * Start a new Job in the given Workflow.
 	 *
-	 * @param string|int|null $workflowId ID of the Workflow to use for the new Job (int)
-	 *
-	 * @return RedirectResponse|ResponseInterface
+	 * @param int|string|null $workflowId ID of the Workflow to use for the new Job (int)
 	 *
 	 * @throws WorkflowsException
+	 *
+	 * @return RedirectResponse|ResponseInterface
 	 */
 	public function new($workflowId = null): ResponseInterface
 	{
 		// If no Workflow was specified then load available
-		if (! isset($workflowId))
+		if ($workflowId === null)
 		{
 			// Find available Workflows
 			$workflows = [];
@@ -146,9 +149,9 @@ class Jobs extends Controller
 	 *
 	 * @param string $jobId ID of the job to remove (int)
 	 *
-	 * @return ResponseInterface A view notifying the user that the job was removed.
-	 *
 	 * @throws PageNotFoundException
+	 *
+	 * @return ResponseInterface a view notifying the user that the job was removed
 	 */
 	public function delete(string $jobId): ResponseInterface
 	{

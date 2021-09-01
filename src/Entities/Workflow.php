@@ -1,12 +1,12 @@
-<?php namespace Tatter\Workflows\Entities;
+<?php
+
+namespace Tatter\Workflows\Entities;
 
 use CodeIgniter\Entity;
 use Config\Services;
 use Tatter\Users\Interfaces\HasPermission;
-use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\ExplicitModel;
 use Tatter\Workflows\Models\StageModel;
-use RuntimeException;
 
 class Workflow extends Entity
 {
@@ -17,7 +17,7 @@ class Workflow extends Entity
 	];
 
 	/**
-	 * Default set of attributes
+	 * Default set of attributes.
 	 */
 	protected $attributes = [
 		'role' => '',
@@ -30,9 +30,9 @@ class Workflow extends Entity
 		$stages = [];
 
 		foreach (model(StageModel::class)
-			->where('workflow_id', $this->attributes['id'])
-			->orderBy('id', 'asc')
-			->findAll() as $stage)
+		    ->where('workflow_id', $this->attributes['id'])
+		    ->orderBy('id', 'asc')
+		    ->findAll() as $stage)
 		{
 			$stages[$stage->id] = $stage;
 		}
@@ -44,7 +44,7 @@ class Workflow extends Entity
 	 * Checks if role filter is enabled and if a user
 	 * (defaults to current) may access this Workflow.
 	 *
-	 * @param HasPermission|null $user
+	 * @param HasPermission|null   $user
 	 * @param array<int,bool>|null $explicits An array of explicit associations from
 	 *                                        users_workflows. Mostly injected so when
 	 *                                        checking many Workflows at once to prevent
@@ -65,9 +65,9 @@ class Workflow extends Entity
 		if (is_null($explicits))
 		{
 			if ($user && $explicit = model(ExplicitModel::class)
-				->where('user_id', $user->getId())
-				->where('workflow_id', $this->attributes['id'])
-				->first())
+			    ->where('user_id', $user->getId())
+			    ->where('workflow_id', $this->attributes['id'])
+			    ->first())
 			{
 				return (bool) $explicit->permitted;
 			}

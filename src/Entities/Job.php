@@ -1,17 +1,15 @@
-<?php namespace Tatter\Workflows\Entities;
+<?php
+
+namespace Tatter\Workflows\Entities;
 
 use CodeIgniter\Entity;
 use CodeIgniter\I18n\Time;
-use Tatter\Workflows\Entities\Action;
-use Tatter\Workflows\Entities\Stage;
-use Tatter\Workflows\Entities\Workflow;
+use RuntimeException;
 use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\Models\JobflagModel;
 use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\StageModel;
-use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\WorkflowModel;
-use RuntimeException;
 
 class Job extends Entity
 {
@@ -36,7 +34,7 @@ class Job extends Entity
 	/**
 	 * Indicates whether the Stage has been loaded.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $stageFlag = false;
 
@@ -54,28 +52,10 @@ class Job extends Entity
 	 */
 	protected $flags;
 
-	/**
-	 * Verifies the primary key to prevent operations on
-	 * un-created database entries.
-	 *
-	 * @return $this
-	 *
-	 * @throws RuntimeException
-	 */
-	protected function ensureCreated(): self
-	{
-		if (empty($this->attributes['id']))
-		{
-			throw new RuntimeException('Job must be created first.');
-		}
-
-		return $this;
-	}
-
 	//--------------------------------------------------------------------
 
 	/**
-	 * Fetches, stores, and returns all this job's flags (from `jobflags`)
+	 * Fetches, stores, and returns all this job's flags (from `jobflags`).
 	 *
 	 * @return array<string,Time>
 	 */
@@ -97,7 +77,9 @@ class Job extends Entity
 	}
 
 	/**
-	 * Gets a flag by its name
+	 * Gets a flag by its name.
+	 *
+	 * @param string $name
 	 *
 	 * @return Time|null
 	 */
@@ -107,7 +89,9 @@ class Job extends Entity
 	}
 
 	/**
-	 * Creates a flag for the given name
+	 * Creates a flag for the given name.
+	 *
+	 * @param string $name
 	 *
 	 * @return $this
 	 */
@@ -116,13 +100,12 @@ class Job extends Entity
 		if (isset($this->getFlags()[$name]))
 		{
 			model(JobflagModel::class)
-				->where('job_id', $this->attributes['id'])
-				->where('name', $name)
-				->update(null, ['created_at' => date('Y-m-d H:i:s'),
+			    ->where('job_id', $this->attributes['id'])
+			    ->where('name', $name)
+			    ->update(null, ['created_at' => date('Y-m-d H:i:s'),
 			]);
 		}
-		else
-		{
+		else {
 			$this->flags[$name] = new Time('now');
 
 			model(JobflagModel::class)->insert([
@@ -135,7 +118,9 @@ class Job extends Entity
 	}
 
 	/**
-	 * Removes a flag for the given name
+	 * Removes a flag for the given name.
+	 *
+	 * @param string $name
 	 *
 	 * @return $this
 	 */
@@ -144,9 +129,9 @@ class Job extends Entity
 		$this->ensureCreated();
 
 		model(JobflagModel::class)
-			->where('job_id', $this->attributes['id'])
-			->where('name', $name)
-			->delete();
+		    ->where('job_id', $this->attributes['id'])
+		    ->where('name', $name)
+		    ->delete();
 
 		if (is_array($this->flags) && isset($this->flags[$name]))
 		{
@@ -157,7 +142,7 @@ class Job extends Entity
 	}
 
 	/**
-	 * Removes all flags
+	 * Removes all flags.
 	 *
 	 * @return $this
 	 */
@@ -166,8 +151,8 @@ class Job extends Entity
 		$this->ensureCreated();
 
 		model(JobflagModel::class)
-			->where('job_id', $this->attributes['id'])
-			->delete();
+		    ->where('job_id', $this->attributes['id'])
+		    ->delete();
 
 		$this->flags = [];
 
@@ -177,7 +162,7 @@ class Job extends Entity
 	//--------------------------------------------------------------------
 
 	/**
-	 * Gets the current Stage
+	 * Gets the current Stage.
 	 *
 	 * @return Stage|null
 	 */
@@ -196,7 +181,7 @@ class Job extends Entity
 	}
 
 	/**
-	 * Gets the Workflow
+	 * Gets the Workflow.
 	 *
 	 * @return Workflow
 	 */
@@ -211,7 +196,7 @@ class Job extends Entity
 	}
 
 	/**
-	 * Gets all Stages from the Workflow
+	 * Gets all Stages from the Workflow.
 	 *
 	 * @return array<Stage>
 	 */
@@ -223,7 +208,7 @@ class Job extends Entity
 	//--------------------------------------------------------------------
 
 	/**
-	 * Returns the next Stage
+	 * Returns the next Stage.
 	 *
 	 * @return Stage|null
 	 */
@@ -233,7 +218,7 @@ class Job extends Entity
 	}
 
 	/**
-	 * Returns the previous Stage
+	 * Returns the previous Stage.
 	 *
 	 * @return Stage|null
 	 */
@@ -243,47 +228,17 @@ class Job extends Entity
 		return $this->_next(array_reverse($this->getStages()));
 	}
 
-	/**
-	 * Returns the next Stage from an array of Stages
-	 *
-	 * @param array<Stage> $stages
-	 *
-	 * @return Stage|null
-	 */
-	protected function _next($stages): ?Stage
-	{
-		// look through the stages
-		$stage = current($stages);
-
-		do
-		{
-			// Check if this is the current stage
-			if ($stage->id === $this->attributes['stage_id'])
-			{
-				// Look for the next Stage
-				if (! $stage = next($stages))
-				{
-					return null;
-				}
-
-				return $stage;
-			}
-		}
-		while ($stage = next($stages));
-
-		return null;
-	}
-
 	//--------------------------------------------------------------------
 
 	/**
 	 * Moves through the Workflow, skipping non-required Stages but running their Action functions.
 	 *
-	 * @param integer $actionId ID of the target Action
+	 * @param int  $actionId      ID of the target Action
 	 * @param bool $checkRequired Whether to check for required stages while traveling
 	 *
-	 * @return array  Array of boolean results from each Action's up/down method
 	 * @throws WorkflowsException
+	 *
+	 * @return array Array of boolean results from each Action's up/down method
 	 */
 	public function travel(int $actionId, bool $checkRequired = true): array
 	{
@@ -291,9 +246,9 @@ class Job extends Entity
 
 		// Make sure the target Stage exists
 		if (! $target = model(StageModel::class)
-			->where('action_id', $actionId)
-			->where('workflow_id', $this->attributes['workflow_id'])
-			->first())
+		    ->where('action_id', $actionId)
+		    ->where('workflow_id', $this->attributes['workflow_id'])
+		    ->first())
 		{
 			throw WorkflowsException::forStageNotFound();
 		}
@@ -310,11 +265,11 @@ class Job extends Entity
 			{
 				// Make sure this won't skip any required stages
 				$test = model(StageModel::class)
-					->where('id >=', $current->id)
-					->where('id <', $target->id)
-					->where('workflow_id', $this->attributes['workflow_id'])
-					->where('required', 1)
-					->first();
+				    ->where('id >=', $current->id)
+				    ->where('id <', $target->id)
+				    ->where('workflow_id', $this->attributes['workflow_id'])
+				    ->where('required', 1)
+				    ->first();
 
 				if (! empty($test))
 				{
@@ -330,8 +285,7 @@ class Job extends Entity
 			arsort($stages);
 		}
 		// Already there!
-		else
-		{
+		else {
 			return [];
 		}
 
@@ -340,11 +294,11 @@ class Job extends Entity
 		foreach ($stages as $stage)
 		{
 			// Check if we need to run this action
-			if (($method === 'up'   && $stage->id > $current->id) ||
-				($method === 'down' && $stage->id <= $current->id)
+			if (($method === 'up' && $stage->id > $current->id)
+				|| ($method === 'down' && $stage->id <= $current->id)
 			)
 			{
-				$results[$stage->id] = $stage->action->setJob($this)->$method();
+				$results[$stage->id] = $stage->action->setJob($this)->{$method}();
 			}
 
 			// If the target was reached then we're done
@@ -362,5 +316,53 @@ class Job extends Entity
 		$this->stageFlag              = false;
 
 		return $results;
+	}
+
+	/**
+	 * Verifies the primary key to prevent operations on
+	 * un-created database entries.
+	 *
+	 * @throws RuntimeException
+	 *
+	 * @return $this
+	 */
+	protected function ensureCreated(): self
+	{
+		if (empty($this->attributes['id']))
+		{
+			throw new RuntimeException('Job must be created first.');
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Returns the next Stage from an array of Stages.
+	 *
+	 * @param array<Stage> $stages
+	 *
+	 * @return Stage|null
+	 */
+	protected function _next($stages): ?Stage
+	{
+		// look through the stages
+		$stage = current($stages);
+
+		do {
+			// Check if this is the current stage
+			if ($stage->id === $this->attributes['stage_id'])
+			{
+				// Look for the next Stage
+				if (! $stage = next($stages))
+				{
+					return null;
+				}
+
+				return $stage;
+			}
+		}
+		while ($stage = next($stages));
+
+		return null;
 	}
 }

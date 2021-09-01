@@ -4,10 +4,14 @@ use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\WorkflowModel;
 use Tests\Support\DatabaseTestCase;
 
-class WorkflowModelTest extends DatabaseTestCase
+/**
+ * @internal
+ */
+final class WorkflowModelTest extends DatabaseTestCase
 {
 	protected $migrateOnce = true;
-	protected $seedOnce    = true;
+
+	protected $seedOnce = true;
 
 	public function testUpdateCreatesJoblog()
 	{
@@ -19,6 +23,6 @@ class WorkflowModelTest extends DatabaseTestCase
 		$expected = [$stage1, $stage2];
 		$result   = model(WorkflowModel::class)->fetchStages([$workflow]);
 
-		$this->assertEquals([$workflow->id => $expected], $result);
+		$this->assertSame([$workflow->id => $expected], $result);
 	}
 }

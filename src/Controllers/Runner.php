@@ -1,4 +1,6 @@
-<?php namespace Tatter\Workflows\Controllers;
+<?php
+
+namespace Tatter\Workflows\Controllers;
 
 use CodeIgniter\Controller;
 use CodeIgniter\Exceptions\PageNotFoundException;
@@ -9,14 +11,13 @@ use Tatter\Workflows\Entities\Action;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Exceptions\WorkflowsException;
-use Tatter\Workflows\Models\JobModel;
-use Tatter\Workflows\Models\JoblogModel;
-use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\ActionModel;
+use Tatter\Workflows\Models\JobModel;
+use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\WorkflowModel;
 
 /**
- * Class Runner
+ * Class Runner.
  *
  * Functions as a super-controller, routing jobs to their specific actions
  * and action functions with included metadata.
@@ -47,9 +48,9 @@ class Runner extends Controller
 	/**
 	 * Resume a Job at its current Stage.
 	 *
-	 * @param string|int $jobId ID of the job to resume
+	 * @param int|string $jobId ID of the job to resume
 	 *
-	 * @return ResponseInterface|RedirectResponse  A view to display or a RedirectResponse
+	 * @return RedirectResponse|ResponseInterface A view to display or a RedirectResponse
 	 */
 	public function resume($jobId): ResponseInterface
 	{
@@ -90,9 +91,9 @@ class Runner extends Controller
 	 *
 	 * @param string ...$params Parameters coming from the router (so all strings)
 	 *
-	 * @return ResponseInterface
-	 *
 	 * @throws PageNotFoundException
+	 *
+	 * @return ResponseInterface
 	 */
 	public function run(string ...$params): ResponseInterface
 	{
@@ -102,10 +103,9 @@ class Runner extends Controller
 		}
 
 		// Parse the route parameters
-		try
-		{
+		try {
 			// Extract parsed variables
-			list($action, $job, $stage) = $this->parseRoute($params);
+			[$action, $job, $stage] = $this->parseRoute($params);
 		}
 		catch (WorkflowsException $e)
 		{
@@ -121,8 +121,7 @@ class Runner extends Controller
 		// If the requested Action differs from the Job's current Action then travel the Workflow
 		if ($action->id !== $stage->action_id)
 		{
-			try
-			{
+			try {
 				$job->travel($action->id);
 			}
 			catch (WorkflowsException $e)
@@ -145,9 +144,8 @@ class Runner extends Controller
 		// Determine the request method and run the corresponding Action method
 		$method = $this->request->getMethod();
 
-		try
-		{
-			$result = $action->setJob($job)->$method();
+		try {
+			$result = $action->setJob($job)->{$method}();
 		}
 		catch (WorkflowsException $e)
 		{
@@ -174,9 +172,9 @@ class Runner extends Controller
 	 *
 	 * @param array $params Parameters coming from the router (so all strings)
 	 *
-	 * @return array Array of parsed data
-	 *
 	 * @throws WorkflowsException
+	 *
+	 * @return array Array of parsed data
 	 */
 	protected function parseRoute(array $params)
 	{

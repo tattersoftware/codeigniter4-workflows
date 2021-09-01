@@ -1,4 +1,6 @@
-<?php namespace Tatter\Workflows\Models;
+<?php
+
+namespace Tatter\Workflows\Models;
 
 use CodeIgniter\Model;
 use CodeIgniter\Test\Fabricator;
@@ -10,11 +12,15 @@ class JobModel extends Model
 {
 	use JobsTrait;
 
-	protected $table          = 'jobs';
-	protected $returnType     = Job::class;
+	protected $table = 'jobs';
+
+	protected $returnType = Job::class;
+
 	protected $useSoftDeletes = true;
-	protected $useTimestamps  = true;
-	protected $allowedFields  = [
+
+	protected $useTimestamps = true;
+
+	protected $allowedFields = [
 		'name', 'summary', 'workflow_id', 'stage_id',
 	];
 
@@ -24,12 +30,30 @@ class JobModel extends Model
 		'workflow_id' => 'required|is_natural_no_zero',
 		'stage_id'    => 'permit_empty|is_natural_no_zero',
 	];
-	
-	protected $afterInsert  = ['logInsert'];
+
+	protected $afterInsert = ['logInsert'];
+
 	protected $beforeUpdate = ['logUpdate'];
 
 	/**
-	 * Logs successful insertions
+	 * Faked data for Fabricator.
+	 *
+	 * @param Generator $faker
+	 *
+	 * @return Job
+	 */
+	public function fake(Generator &$faker): Job
+	{
+		return new Job([
+			'name'        => $faker->catchPhrase,
+			'summary'     => $faker->sentence,
+			'workflow_id' => mt_rand(1, Fabricator::getCount('workflows') ?: 4),
+			'stage_id'    => mt_rand(1, Fabricator::getCount('stages') ?: 99),
+		]);
+	}
+
+	/**
+	 * Logs successful insertions.
 	 *
 	 * @param array $eventData
 	 */
@@ -68,7 +92,7 @@ class JobModel extends Model
 			}
 
 			// Ignore when the stage will not be not touched
-			if (! in_array('stage_id', array_keys($data['data'])))
+			if (! in_array('stage_id', array_keys($data['data']), true))
 			{
 				continue;
 			}
@@ -93,22 +117,5 @@ class JobModel extends Model
 		}
 
 		return $data;
-	}
-
-	/**
-	 * Faked data for Fabricator.
-	 *
-	 * @param Generator $faker
-	 *
-	 * @return Job
-	 */
-	public function fake(Generator &$faker): Job
-	{
-		return new Job([
-			'name'        => $faker->catchPhrase,
-			'summary'     => $faker->sentence,
-			'workflow_id' => rand(1, Fabricator::getCount('workflows') ?: 4),
-			'stage_id'    => rand(1, Fabricator::getCount('stages') ?: 99),
-		]);
 	}
 }

@@ -1,18 +1,23 @@
-<?php namespace Tests\Support;
+<?php
+
+namespace Tests\Support;
 
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\DatabaseTestTrait;
 use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Test\Simulator;
 
-class DatabaseTestCase extends CIUnitTestCase
+/**
+ * @internal
+ */
+final class DatabaseTestCase extends CIUnitTestCase
 {
 	use DatabaseTestTrait;
 
 	/**
 	 * Should the database be refreshed before each test?
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	protected $refresh = true;
 
@@ -20,11 +25,11 @@ class DatabaseTestCase extends CIUnitTestCase
 	 * The namespace(s) to help us find the migration classes.
 	 * Empty is equivalent to running `spark migrate -all`.
 	 * Note that running "all" runs migrations in date order,
-	 * but specifying namespaces runs them in namespace order (then date)
+	 * but specifying namespaces runs them in namespace order (then date).
 	 *
-	 * @var string|array|null
+	 * @var array|string|null
 	 */
-	protected $namespace = null;
+	protected $namespace;
 
 	/**
 	 * Preconfigured config instance.
@@ -32,7 +37,7 @@ class DatabaseTestCase extends CIUnitTestCase
 	protected $config;
 
 	/**
-	 * Loads the auth helper
+	 * Loads the auth helper.
 	 */
 	public static function setUpBeforeClass(): void
 	{
@@ -42,7 +47,7 @@ class DatabaseTestCase extends CIUnitTestCase
 	}
 
 	/**
-	 * Makes sure all errors throw exceptions
+	 * Makes sure all errors throw exceptions.
 	 */
 	protected function setUp(): void
 	{
@@ -53,7 +58,7 @@ class DatabaseTestCase extends CIUnitTestCase
 	}
 
 	/**
-	 * Resets the Simulator
+	 * Resets the Simulator.
 	 */
 	protected function tearDown(): void
 	{

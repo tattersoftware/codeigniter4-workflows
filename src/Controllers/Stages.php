@@ -1,4 +1,6 @@
-<?php namespace Tatter\Workflows\Controllers;
+<?php
+
+namespace Tatter\Workflows\Controllers;
 
 use CodeIgniter\Controller;
 use Tatter\Workflows\Models\StageModel;
@@ -6,7 +8,9 @@ use Tatter\Workflows\Models\StageModel;
 class Stages extends Controller
 {
 	/**
-	 * Update a Stage (AJAX)
+	 * Update a Stage (AJAX).
+	 *
+	 * @param mixed $stageId
 	 *
 	 * @return string
 	 */

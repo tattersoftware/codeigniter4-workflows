@@ -1,7 +1,8 @@
-<?php namespace Tatter\Workflows\Entities;
+<?php
+
+namespace Tatter\Workflows\Entities;
 
 use CodeIgniter\Entity;
-use Tatter\Workflows\Entities\Action;
 use Tatter\Workflows\Models\ActionModel;
 
 class Stage extends Entity
@@ -10,6 +11,7 @@ class Stage extends Entity
 		'created_at',
 		'updated_at',
 	];
+
 	protected $casts = [
 		'action_id'   => 'int',
 		'workflow_id' => 'int',
@@ -24,7 +26,7 @@ class Stage extends Entity
 	private $action;
 
 	/**
-	 * Passes through name requests to the Action
+	 * Passes through name requests to the Action.
 	 *
 	 * @return string
 	 */
@@ -34,7 +36,7 @@ class Stage extends Entity
 	}
 
 	/**
-	 * Gets the associated Action
+	 * Gets the associated Action.
 	 *
 	 * @return Action
 	 */

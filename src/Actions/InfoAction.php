@@ -1,4 +1,6 @@
-<?php namespace Tatter\Workflows\Actions;
+<?php
+
+namespace Tatter\Workflows\Actions;
 
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;

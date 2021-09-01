@@ -1,4 +1,6 @@
-<?php namespace Tatter\Workflows\Controllers;
+<?php
+
+namespace Tatter\Workflows\Controllers;
 
 use CodeIgniter\Controller;
 use Tatter\Workflows\Models\ActionModel;

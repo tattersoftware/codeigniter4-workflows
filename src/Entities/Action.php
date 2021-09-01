@@ -1,10 +1,12 @@
-<?php namespace Tatter\Workflows\Entities;
+<?php
+
+namespace Tatter\Workflows\Entities;
 
 use CodeIgniter\Entity;
 use Config\Services;
 use Tatter\Users\Interfaces\HasPermission;
-use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\BaseAction;
+use Tatter\Workflows\Exceptions\WorkflowsException;
 
 class Action extends Entity
 {
@@ -15,7 +17,7 @@ class Action extends Entity
 	];
 
 	/**
-	 * Default set of attributes
+	 * Default set of attributes.
 	 */
 	protected $attributes = [
 		'role' => '',
@@ -29,7 +31,29 @@ class Action extends Entity
 	private $instance;
 
 	/**
-	 * Gets the associated Action instance
+	 * Validates and runs the specified method from the instance.
+	 *
+	 * @param string $name
+	 * @param array  $params
+	 *
+	 * @throws WorkflowsException
+	 *
+	 * @return mixed Result of the instance method
+	 */
+	public function __call(string $name, array $params)
+	{
+		// Make sure the instance supports the requested method
+		$instance = $this->getInstance();
+		if (! is_callable([$instance, $name]))
+		{
+			throw WorkflowsException::forUnsupportedActionMethod($this->attributes['name'], $name);
+		}
+
+		return $instance->{$name}(...$params);
+	}
+
+	/**
+	 * Gets the associated Action instance.
 	 *
 	 * @return BaseAction
 	 */
@@ -45,9 +69,9 @@ class Action extends Entity
 
 	/**
 	 * Formulate the current route for this Action, with optional job
-	 * E.g.: return redirect()->to(site_url($action->route));
+	 * E.g.: return redirect()->to(site_url($action->route));.
 	 *
-	 * @param string|integer|null $jobId
+	 * @param int|string|null $jobId
 	 *
 	 * @return string
 	 */
@@ -93,27 +117,5 @@ class Action extends Entity
 		}
 
 		return $user->hasPermission($this->attributes['role']);
-	}
-
-	/**
-	 * Validates and runs the specified method from the instance.
-	 *
-	 * @param string $name
-	 * @param array  $params
-	 *
-	 * @return mixed Result of the instance method
-	 *
-	 * @throws WorkflowsException
-	 */
-	public function __call(string $name, array $params)
-	{
-		// Make sure the instance supports the requested method
-		$instance = $this->getInstance();
-		if (! is_callable([$instance, $name]))
-		{
-			throw WorkflowsException::forUnsupportedActionMethod($this->attributes['name'], $name);
-		}
-
-		return $instance->$name(...$params);
 	}
 }

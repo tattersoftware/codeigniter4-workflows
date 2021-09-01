@@ -1,14 +1,16 @@
-<?php namespace Tatter\Workflows;
+<?php
+
+namespace Tatter\Workflows;
 
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
+use RuntimeException;
 use Tatter\Handlers\BaseHandler;
 use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\JobModel;
-use RuntimeException;
 
 /**
  * Class reference and common method for
@@ -17,31 +19,10 @@ use RuntimeException;
  * which should behav as follows:
  *  - User interactions: ResponseInterface
  *  - Action complete: null
- *  - Failure: throws WorkflowsException
+ *  - Failure: throws WorkflowsException.
  */
 abstract class BaseAction extends BaseHandler
 {
-	/**
-	 * Attributes to Tatter\Handlers, implemented by child class
-	 *
-	 * @var array<string>|null
-	 */
-	protected $attributes = [];
-
-	/**
-	 * Default set of attributes and their types.
-	 *
-	 * @var array<string>|null
-	 */
-	protected $defaults = [
-		'category' => '',
-		'name'     => '',
-		'uid'      => '',
-		'role'     => 'user',
-		'icon'     => 'fas fa-tasks',
-		'summary'  => '',
-	];
-
 	/**
 	 * @var Job|null
 	 */
@@ -68,11 +49,32 @@ abstract class BaseAction extends BaseHandler
 	public $jobs;
 
 	/**
+	 * Attributes to Tatter\Handlers, implemented by child class.
+	 *
+	 * @var array<string>|null
+	 */
+	protected $attributes = [];
+
+	/**
+	 * Default set of attributes and their types.
+	 *
+	 * @var array<string>|null
+	 */
+	protected $defaults = [
+		'category' => '',
+		'name'     => '',
+		'uid'      => '',
+		'role'     => 'user',
+		'icon'     => 'fas fa-tasks',
+		'summary'  => '',
+	];
+
+	/**
 	 * Sets up common resources for Actions.
 	 *
-	 * @param Job|null $job
-	 * @param WorkflowsConfig|null $config
-	 * @param RequestInterface|null $request
+	 * @param Job|null               $job
+	 * @param WorkflowsConfig|null   $config
+	 * @param RequestInterface|null  $request
 	 * @param ResponseInterface|null $response
 	 */
 	public function __construct(Job $job = null, WorkflowsConfig $config = null, RequestInterface $request = null, ResponseInterface $response = null)
@@ -89,22 +91,14 @@ abstract class BaseAction extends BaseHandler
         $this->initialize();
     }
 
-    /**
-     * Initializes the instance with any additional steps.
-     * Optionally implemented by child classes.
-     */
-    protected function initialize()
-    {
-    }
-
 	//--------------------------------------------------------------------
 
 	/**
 	 * Creates the database record for this class based on its definition.
 	 *
-	 * @return int The ID of the new/exsiting class
-	 *
 	 * @throws RuntimeException for insert failures
+	 *
+	 * @return int The ID of the new/exsiting class
 	 */
 	public function register(): int
 	{
@@ -117,7 +111,7 @@ abstract class BaseAction extends BaseHandler
 		}
 
 		$row          = $this->toArray();
-		$row['class'] = get_class($this);
+		$row['class'] = static::class;
 
 		return (int) $actions->insert($row);
 	}
@@ -157,7 +151,7 @@ abstract class BaseAction extends BaseHandler
 	 */
 	public function up()
 	{
-		/* Optionally implemented by child class */
+		// Optionally implemented by child class
 	}
 
 	/**
@@ -167,13 +161,13 @@ abstract class BaseAction extends BaseHandler
 	 */
 	public function down()
 	{
-		/* Optionally implemented by child class */
+		// Optionally implemented by child class
 	}
 
 	//--------------------------------------------------------------------
 
 	/**
-	 * HTTP Request Methods
+	 * HTTP Request Methods.
 	 *
 	 * These baseline defaults specify the expected
 	 * return types and exception behavior for the
@@ -185,9 +179,9 @@ abstract class BaseAction extends BaseHandler
 	 */
 
 	/**
-	 * @return ResponseInterface|null
-	 *
 	 * @throws WorkflowsException
+	 *
+	 * @return ResponseInterface|null
 	 */
 	public function get(): ?ResponseInterface
 	{
@@ -195,9 +189,9 @@ abstract class BaseAction extends BaseHandler
 	}
 
 	/**
-	 * @return ResponseInterface|null
-	 *
 	 * @throws WorkflowsException
+	 *
+	 * @return ResponseInterface|null
 	 */
 	public function head(): ?ResponseInterface
 	{
@@ -205,9 +199,9 @@ abstract class BaseAction extends BaseHandler
 	}
 
 	/**
-	 * @return ResponseInterface|null
-	 *
 	 * @throws WorkflowsException
+	 *
+	 * @return ResponseInterface|null
 	 */
 	public function post(): ?ResponseInterface
 	{
@@ -215,9 +209,9 @@ abstract class BaseAction extends BaseHandler
 	}
 
 	/**
-	 * @return ResponseInterface|null
-	 *
 	 * @throws WorkflowsException
+	 *
+	 * @return ResponseInterface|null
 	 */
 	public function put(): ?ResponseInterface
 	{
@@ -225,9 +219,9 @@ abstract class BaseAction extends BaseHandler
 	}
 
 	/**
-	 * @return ResponseInterface|null
-	 *
 	 * @throws WorkflowsException
+	 *
+	 * @return ResponseInterface|null
 	 */
 	public function delete(): ?ResponseInterface
 	{
@@ -235,9 +229,9 @@ abstract class BaseAction extends BaseHandler
 	}
 
 	/**
-	 * @return ResponseInterface|null
-	 *
 	 * @throws WorkflowsException
+	 *
+	 * @return ResponseInterface|null
 	 */
 	public function connect(): ?ResponseInterface
 	{
@@ -245,9 +239,9 @@ abstract class BaseAction extends BaseHandler
 	}
 
 	/**
-	 * @return ResponseInterface|null
-	 *
 	 * @throws WorkflowsException
+	 *
+	 * @return ResponseInterface|null
 	 */
 	public function options(): ?ResponseInterface
 	{
@@ -255,9 +249,9 @@ abstract class BaseAction extends BaseHandler
 	}
 
 	/**
-	 * @return ResponseInterface|null
-	 *
 	 * @throws WorkflowsException
+	 *
+	 * @return ResponseInterface|null
 	 */
 	public function trace(): ?ResponseInterface
 	{
@@ -265,12 +259,20 @@ abstract class BaseAction extends BaseHandler
 	}
 
 	/**
-	 * @return ResponseInterface|null
-	 *
 	 * @throws WorkflowsException
+	 *
+	 * @return ResponseInterface|null
 	 */
 	public function patch(): ?ResponseInterface
 	{
 		throw new WorkflowsException('Not implemented.');
 	}
+
+    /**
+     * Initializes the instance with any additional steps.
+     * Optionally implemented by child classes.
+     */
+    protected function initialize()
+    {
+    }
 }

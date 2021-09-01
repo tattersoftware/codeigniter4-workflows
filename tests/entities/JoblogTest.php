@@ -5,10 +5,13 @@ use Tatter\Users\UserEntity;
 use Tatter\Workflows\Entities\Joblog;
 use Tests\Support\DatabaseTestCase;
 
-class JoblogTest extends DatabaseTestCase
+/**
+ * @internal
+ */
+final class JoblogTest extends DatabaseTestCase
 {
 	/**
-	 * A Joblog to test with
+	 * A Joblog to test with.
 	 *
 	 * @var Joblog
 	 */
@@ -35,6 +38,6 @@ class JoblogTest extends DatabaseTestCase
 		$result = $this->joblog->getUser();
 
 		$this->assertInstanceOf(UserEntity::class, $result);
-		$this->assertEquals($user->id, $result->getId());
+		$this->assertSame($user->id, $result->getId());
 	}
 }

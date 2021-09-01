@@ -45,19 +45,19 @@
 				</form>
 			</div>
 		</div>
-		
+
 		<div class="col-xl-8" id="response">
 			<p><?= $workflow->description ?></p>
 		</div>
 	</div>
-	
+
 	<h3 class="mt-3">Actions</h3>
 	<div class="row">
 
 		<?php if (empty($stages)): ?>
-		
+
 		<p>This workflow has no associated actions!</p>
-		
+
 		<?php else: ?>
 
 		<table class="table">
@@ -76,8 +76,8 @@
 				<?php $i = 1; ?>
 				<?php foreach ($stages as $stage): ?>
 				<?php foreach ($actions as $action): ?>
-				<?php if ($action->id == $stage->action_id): ?>
-						
+				<?php if ($action->id === $stage->action_id): ?>
+
 				<tr>
 					<td><?= $i++ ?>.</td>
 					<td><i class="<?= $action->icon ?>"></i> <?= $action->name ?></td>
@@ -85,20 +85,24 @@
 					<td>
 
 					<?php switch ($action->input): case 'workflow': ?>
-							
+
 						<select class="custom-select small" onchange="return setStageInput(<?= $stage->id ?>, this.value);" required>
 							<option></option>
 
 							<?php foreach ($workflows as $workflowOpt): ?>
-								<?php if ($workflowOpt->id == $workflow->id): continue; endif; ?>
+								<?php if ($workflowOpt->id === $workflow->id): continue; endif; ?>
 
-							<option value="<?= $workflowOpt->id ?>" <?= ($workflowOpt->id == $stage->input) ? 'selected' : '' ?>><?= $workflowOpt->name ?></option>
+							<option value="<?= $workflowOpt->id ?>" <?= ($workflowOpt->id === $stage->input) ? 'selected' : '' ?>><?= $workflowOpt->name ?></option>
 
 							<?php endforeach; ?>
 
 						</select>
 
-						<?php break; case '': break; default: ?>
+						<?php break;
+
+case '': break;
+
+default: ?>
 
 						<input name="input" type="<?= $action->input ?>" class="form-control" value="<?= $stage->input ?>" onchange="return setStageInput(<?= $stage->id ?>, this.value);" required>
 
@@ -129,7 +133,7 @@
 
 <script>
 	var baseUrl = '<?= base_url() ?>';
-	
+
 	function setStageRequired(stageId, checked) {
 		checked = checked ? 1 : 0;
 		return updateStage(stageId, { required: checked });
@@ -142,12 +146,12 @@
 	function updateStage(stageId, data) {
 		// set the method spoof
 		data._method = "PUT";
-		
+
 		$.ajax({
 			type: "POST",
 			url: baseUrl + "stages/" + stageId,
 			data: data,
-			datatype: "text"		
+			datatype: "text"
 		}).done(function( data ) {
 			if (data) {
 				alert(data);

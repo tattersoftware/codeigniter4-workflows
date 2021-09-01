@@ -1,13 +1,16 @@
 <?php
 
-use Tatter\Workflows\Entities\Joblog;
 use Tatter\Workflows\Models\JobModel;
 use Tests\Support\DatabaseTestCase;
 
-class JobModelTest extends DatabaseTestCase
+/**
+ * @internal
+ */
+final class JobModelTest extends DatabaseTestCase
 {
 	protected $migrateOnce = true;
-	protected $seedOnce    = true;
+
+	protected $seedOnce = true;
 
 	public function testInsertCreatesJoblog()
 	{

@@ -1,4 +1,6 @@
-<?php namespace Tatter\Workflows\Traits;
+<?php
+
+namespace Tatter\Workflows\Traits;
 
 /**
  * @mixin \Tatter\Workflows\Model\JobModel
@@ -57,7 +59,7 @@ trait JobsTrait
 			}
 
 			// Ignore when the stage will not be not touched
-			if (! in_array('stage_id', array_keys($data['data'])))
+			if (! in_array('stage_id', array_keys($data['data']), true))
 			{
 				continue;
 			}

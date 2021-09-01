@@ -6,7 +6,7 @@
 	<div class="alert alert-info">
 		Your job "<?= $job->name ?>" has been removed.
 	</div>
-	
+
 	<p><?= anchor('', 'Home') ?></p>
 
 <?= $this->endSection() ?>

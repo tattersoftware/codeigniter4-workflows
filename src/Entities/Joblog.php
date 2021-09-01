@@ -1,14 +1,16 @@
-<?php namespace Tatter\Workflows\Entities;
+<?php
+
+namespace Tatter\Workflows\Entities;
 
 use CodeIgniter\Entity;
 use Config\Services;
 use Tatter\Users\UserEntity;
-use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Models\StageModel;
 
 class Joblog extends Entity
 {
 	protected $dates = ['created_at'];
+
 	protected $casts = [
 		'job_id'     => 'int',
 		'user_id'    => '?int',
@@ -17,21 +19,21 @@ class Joblog extends Entity
 	];
 
 	/**
-	 * Cached entity for the "from" Stage
+	 * Cached entity for the "from" Stage.
 	 *
 	 * @var Stage
 	 */
 	private $from;
 
 	/**
-	 * Cached entity for the "to" Stage
+	 * Cached entity for the "to" Stage.
 	 *
 	 * @var Stage
 	 */
 	private $to;
 
 	/**
-	 * Cached result for user lookup
+	 * Cached result for user lookup.
 	 *
 	 * @var array|object|null
 	 */
@@ -40,7 +42,7 @@ class Joblog extends Entity
 	/**
 	 * Loads (if necessary) and returns the stage this logs the job changing from.
 	 *
-	 * @return Stage|null  Stage the job moved from
+	 * @return Stage|null Stage the job moved from
 	 */
 	public function getFrom(): ?Stage
 	{
@@ -53,7 +55,7 @@ class Joblog extends Entity
 	}
 
 	/**
-	 * Sets the "from" stage - mostly used by the model to seed entities
+	 * Sets the "from" stage - mostly used by the model to seed entities.
 	 *
 	 * @param Stage|null $stage Stage the job moved to
 	 */
@@ -78,7 +80,7 @@ class Joblog extends Entity
 	}
 
 	/**
-	 * Sets the "to" stage - mostly used by the model to seed entities
+	 * Sets the "to" stage - mostly used by the model to seed entities.
 	 *
 	 * @param Stage|null $stage Stage the job moved from
 	 */

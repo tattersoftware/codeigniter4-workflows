@@ -1,4 +1,6 @@
-<?php namespace Tatter\Workflows\Config;
+<?php
+
+namespace Tatter\Workflows\Config;
 
 use CodeIgniter\Config\BaseConfig;
 

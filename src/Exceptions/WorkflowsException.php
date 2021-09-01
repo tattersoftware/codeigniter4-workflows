@@ -1,9 +1,11 @@
-<?php namespace Tatter\Workflows\Exceptions;
+<?php
+
+namespace Tatter\Workflows\Exceptions;
 
 use CodeIgniter\Exceptions\ExceptionInterface;
-use CodeIgniter\Exceptions\FrameworkException;
+use RuntimeException;
 
-class WorkflowsException extends \RuntimeException implements ExceptionInterface
+class WorkflowsException extends RuntimeException implements ExceptionInterface
 {
 	public static function forNoWorkflowAvailable()
 	{

@@ -1,4 +1,6 @@
-<?php namespace Tatter\Workflows\Models;
+<?php
+
+namespace Tatter\Workflows\Models;
 
 use CodeIgniter\Model;
 use Faker\Generator;
@@ -6,11 +8,15 @@ use Tatter\Workflows\Entities\Action;
 
 class ActionModel extends Model
 {
-	protected $table          = 'actions';
-	protected $returnType     = Action::class;
+	protected $table = 'actions';
+
+	protected $returnType = Action::class;
+
 	protected $useSoftDeletes = true;
-	protected $useTimestamps  = true;
-	protected $allowedFields  = [
+
+	protected $useTimestamps = true;
+
+	protected $allowedFields = [
 		'category', 'name', 'uid', 'class', 'input',
 		'role', 'icon', 'summary', 'description',
 	];
@@ -42,7 +48,7 @@ class ActionModel extends Model
 			'name'        => ucfirst($name),
 			'uid'         => strtolower($name),
 			'class'       => implode('\\', array_map('ucfirst', $faker->words)),
-			'role'        => rand(0, 2) ? '' : 'admin',
+			'role'        => mt_rand(0, 2) ? '' : 'admin',
 			'icon'        => $faker->safeColorName,
 			'summary'     => $faker->sentence,
 			'description' => $faker->paragraph,

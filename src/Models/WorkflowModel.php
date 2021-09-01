@@ -1,36 +1,43 @@
-<?php namespace Tatter\Workflows\Models;
+<?php
+
+namespace Tatter\Workflows\Models;
 
 use CodeIgniter\Model;
 use Faker\Generator;
 use Tatter\Users\Interfaces\HasPermission;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Entities\Workflow;
-use Tatter\Workflows\Models\StageModel;
 
 class WorkflowModel extends Model
 {
 	use \Tatter\Audits\Traits\AuditsTrait;
-	
-	protected $table          = 'workflows';
-	protected $returnType     = Workflow::class;
+
+	protected $table = 'workflows';
+
+	protected $returnType = Workflow::class;
+
 	protected $useSoftDeletes = true;
-	protected $useTimestamps  = true;
-	protected $allowedFields  = [
+
+	protected $useTimestamps = true;
+
+	protected $allowedFields = [
 		'name', 'category', 'role', 'icon', 'summary', 'description',
 	];
 
-	protected $validationRules    = [
+	protected $validationRules = [
 		'name'     => 'required|max_length[63]',
 		'category' => 'permit_empty|max_length[63]',
 		'icon'     => 'permit_empty|max_length[63]',
 		'summary'  => 'required|max_length[255]',
 	];
 
-	/*** Tatter\Audits ***/
+	// Tatter\Audits
 	protected $afterInsert = ['auditInsert'];
+
 	protected $afterUpdate = ['auditUpdate'];
+
 	protected $afterDelete = ['auditDelete'];
-	
+
 	/**
 	 * Batch load related Stages for the
 	 * supplied workflows.
@@ -50,9 +57,9 @@ class WorkflowModel extends Model
 		}
 
 		foreach (model(StageModel::class)
-			->whereIn('workflow_id', $workflowIds)
-			->orderBy('id', 'asc')
-			->findAll() as $stage)
+		    ->whereIn('workflow_id', $workflowIds)
+		    ->orderBy('id', 'asc')
+		    ->findAll() as $stage)
 		{
 			/** @var Stage $stage */
 			if (! isset($result[$stage->workflow_id]))
@@ -65,7 +72,7 @@ class WorkflowModel extends Model
 
 		return $result;
 	}
-	
+
 	/**
 	 * Get Workflows allowed for a user.
 	 *

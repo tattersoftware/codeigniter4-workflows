@@ -1,31 +1,40 @@
-<?php namespace Tatter\Workflows\Models;
+<?php
+
+namespace Tatter\Workflows\Models;
 
 use CodeIgniter\Model;
-use Faker\Generator;
 use CodeIgniter\Test\Fabricator;
+use Faker\Generator;
 
 class ExplicitModel extends Model
 {
 	use \Tatter\Audits\Traits\AuditsTrait;
-	
-	protected $table          = 'users_workflows';
-	protected $returnType     = 'object';
+
+	protected $table = 'users_workflows';
+
+	protected $returnType = 'object';
+
 	protected $useSoftDeletes = false;
-	protected $useTimestamps  = true;
-	protected $updatedField   = '';
-	protected $allowedFields  = [
+
+	protected $useTimestamps = true;
+
+	protected $updatedField = '';
+
+	protected $allowedFields = [
 		'user_id', 'workflow_id', 'permitted',
 	];
 
-	protected $validationRules    = [
+	protected $validationRules = [
 		'user_id'     => 'required|is_natural_no_zero',
 		'workflow_id' => 'required|is_natural_no_zero',
 		'permitted'   => 'required',
 	];
 
-	/*** Tatter\Audits ***/
+	// Tatter\Audits
 	protected $afterInsert = ['auditInsert'];
+
 	protected $afterUpdate = ['auditUpdate'];
+
 	protected $afterDelete = ['auditDelete'];
 
 	/**
@@ -38,9 +47,9 @@ class ExplicitModel extends Model
 	public function fake(Generator &$faker): object
 	{
 		return (object) [
-			'user_id'     => rand(1, Fabricator::getCount('users') ?: 10),
-			'workflow_id' => rand(1, Fabricator::getCount('workflows') ?: 4),
-			'permitted'   => (bool) rand(0,4),
+			'user_id'     => mt_rand(1, Fabricator::getCount('users') ?: 10),
+			'workflow_id' => mt_rand(1, Fabricator::getCount('workflows') ?: 4),
+			'permitted'   => (bool) mt_rand(0, 4),
 		];
 	}
 }
