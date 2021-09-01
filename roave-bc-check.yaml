@@ -1,3 +1,5 @@
 parameters:
     ignoreErrors:
         - '#\[BC\] SKIPPED: .+ could not be found in the located source#'
+        - '#\[BC\] CHANGED: Type documentation for property Tatter\\Workflows\\BaseAction\#\$job.+#'
+        - '#\[BC\] CHANGED: Property Tatter\\Workflows\\BaseAction\#\$attributes.+#'
