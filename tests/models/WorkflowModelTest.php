@@ -9,20 +9,20 @@ use Tests\Support\DatabaseTestCase;
  */
 final class WorkflowModelTest extends DatabaseTestCase
 {
-	protected $migrateOnce = true;
+    protected $migrateOnce = true;
 
-	protected $seedOnce = true;
+    protected $seedOnce = true;
 
-	public function testUpdateCreatesJoblog()
-	{
-		// Create a new Workflow with some Stages
-		$workflow = fake(WorkflowModel::class);
-		$stage1   = fake(StageModel::class, ['workflow_id' => $workflow->id]);
-		$stage2   = fake(StageModel::class, ['workflow_id' => $workflow->id]);
+    public function testUpdateCreatesJoblog()
+    {
+        // Create a new Workflow with some Stages
+        $workflow = fake(WorkflowModel::class);
+        $stage1   = fake(StageModel::class, ['workflow_id' => $workflow->id]);
+        $stage2   = fake(StageModel::class, ['workflow_id' => $workflow->id]);
 
-		$expected = [$stage1, $stage2];
-		$result   = model(WorkflowModel::class)->fetchStages([$workflow]);
+        $expected = [$stage1, $stage2];
+        $result   = model(WorkflowModel::class)->fetchStages([$workflow]);
 
-		$this->assertSame([$workflow->id => $expected], $result);
-	}
+        $this->assertSame([$workflow->id => $expected], $result);
+    }
 }

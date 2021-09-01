@@ -7,20 +7,19 @@ use Tatter\Workflows\Models\StageModel;
 
 class Stages extends Controller
 {
-	/**
-	 * Update a Stage (AJAX).
-	 *
-	 * @param mixed $stageId
-	 *
-	 * @return string
-	 */
-	public function update($stageId)
-	{
-		if (! model(StageModel::class)->update($stageId, $this->request->getPost()))
-		{
-			echo 'Error: unable to update';
-		}
+    /**
+     * Update a Stage (AJAX).
+     *
+     * @param mixed $stageId
+     *
+     * @return string
+     */
+    public function update($stageId)
+    {
+        if (! model(StageModel::class)->update($stageId, $this->request->getPost())) {
+            echo 'Error: unable to update';
+        }
 
-		return '';
-	}
+        return '';
+    }
 }

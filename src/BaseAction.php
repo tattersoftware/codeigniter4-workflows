@@ -23,250 +23,249 @@ use Tatter\Workflows\Models\JobModel;
  */
 abstract class BaseAction extends BaseHandler
 {
-	/**
-	 * @var Job|null
-	 */
-	public $job;
+    /**
+     * @var Job|null
+     */
+    public $job;
 
-	/**
-	 * @var WorkflowsConfig
-	 */
-	public $config;
+    /**
+     * @var WorkflowsConfig
+     */
+    public $config;
 
-	/**
-	 * @var RequestInterface
-	 */
-	public $request;
+    /**
+     * @var RequestInterface
+     */
+    public $request;
 
-	/**
-	 * @var ResponseInterface
-	 */
-	public $response;
+    /**
+     * @var ResponseInterface
+     */
+    public $response;
 
-	/**
-	 * @var JobModel
-	 */
-	public $jobs;
+    /**
+     * @var JobModel
+     */
+    public $jobs;
 
-	/**
-	 * Attributes to Tatter\Handlers, implemented by child class.
-	 *
-	 * @var array<string>|null
-	 */
-	protected $attributes = [];
+    /**
+     * Attributes to Tatter\Handlers, implemented by child class.
+     *
+     * @var array<string>|null
+     */
+    protected $attributes = [];
 
-	/**
-	 * Default set of attributes and their types.
-	 *
-	 * @var array<string>|null
-	 */
-	protected $defaults = [
-		'category' => '',
-		'name'     => '',
-		'uid'      => '',
-		'role'     => 'user',
-		'icon'     => 'fas fa-tasks',
-		'summary'  => '',
-	];
+    /**
+     * Default set of attributes and their types.
+     *
+     * @var array<string>|null
+     */
+    protected $defaults = [
+        'category' => '',
+        'name'     => '',
+        'uid'      => '',
+        'role'     => 'user',
+        'icon'     => 'fas fa-tasks',
+        'summary'  => '',
+    ];
 
-	/**
-	 * Sets up common resources for Actions.
-	 *
-	 * @param Job|null               $job
-	 * @param WorkflowsConfig|null   $config
-	 * @param RequestInterface|null  $request
-	 * @param ResponseInterface|null $response
-	 */
-	public function __construct(Job $job = null, WorkflowsConfig $config = null, RequestInterface $request = null, ResponseInterface $response = null)
-	{
-		parent::__construct();
+    /**
+     * Sets up common resources for Actions.
+     *
+     * @param Job|null               $job
+     * @param WorkflowsConfig|null   $config
+     * @param RequestInterface|null  $request
+     * @param ResponseInterface|null $response
+     */
+    public function __construct(Job $job = null, WorkflowsConfig $config = null, RequestInterface $request = null, ResponseInterface $response = null)
+    {
+        parent::__construct();
 
-		$this->job      = $job;
-		$this->config   = $config ?? config('Workflows');
-		$this->request  = $request ?? service('request');
-		$this->response = $response ?? service('response');
+        $this->job      = $job;
+        $this->config   = $config ?? config('Workflows');
+        $this->request  = $request ?? service('request');
+        $this->response = $response ?? service('response');
 
-		$this->jobs = model($this->config->jobModel);
+        $this->jobs = model($this->config->jobModel);
 
         $this->initialize();
     }
 
-	//--------------------------------------------------------------------
+    //--------------------------------------------------------------------
 
-	/**
-	 * Creates the database record for this class based on its definition.
-	 *
-	 * @throws RuntimeException for insert failures
-	 *
-	 * @return int The ID of the new/exsiting class
-	 */
-	public function register(): int
-	{
-		$actions = model(ActionModel::class);
+    /**
+     * Creates the database record for this class based on its definition.
+     *
+     * @throws RuntimeException for insert failures
+     *
+     * @return int The ID of the new/exsiting class
+     */
+    public function register(): int
+    {
+        $actions = model(ActionModel::class);
 
-		// Check for an existing entry
-		if ($action = $actions->where('uid', $this->attributes['uid'])->first())
-		{
-			return $action->id;
-		}
+        // Check for an existing entry
+        if ($action = $actions->where('uid', $this->attributes['uid'])->first()) {
+            return $action->id;
+        }
 
-		$row          = $this->toArray();
-		$row['class'] = static::class;
+        $row          = $this->toArray();
+        $row['class'] = static::class;
 
-		return (int) $actions->insert($row);
-	}
+        return (int) $actions->insert($row);
+    }
 
-	/**
-	 * Deletes this action from the database (soft).
-	 *
-	 * @return bool Result from the model
-	 */
-	public function remove(): bool
-	{
-		return model(ActionModel::class)->where('uid', $this->attributes['uid'])->delete();
-	}
+    /**
+     * Deletes this action from the database (soft).
+     *
+     * @return bool Result from the model
+     */
+    public function remove(): bool
+    {
+        return model(ActionModel::class)->where('uid', $this->attributes['uid'])->delete();
+    }
 
-	/**
-	 * Sets the Job for this Action to run against.
-	 * Used because Handlers needs to instantiate this
-	 * class without parameters.
-	 *
-	 * @param Job $job
-	 *
-	 * @return $this
-	 */
-	public function setJob(Job $job): self
-	{
-		$this->job = $job;
+    /**
+     * Sets the Job for this Action to run against.
+     * Used because Handlers needs to instantiate this
+     * class without parameters.
+     *
+     * @param Job $job
+     *
+     * @return $this
+     */
+    public function setJob(Job $job): self
+    {
+        $this->job = $job;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	//--------------------------------------------------------------------
+    //--------------------------------------------------------------------
 
-	/**
-	 * Runs when a job progresses forward through the workflow.
-	 *
-	 * @return mixed
-	 */
-	public function up()
-	{
-		// Optionally implemented by child class
-	}
+    /**
+     * Runs when a job progresses forward through the workflow.
+     *
+     * @return mixed
+     */
+    public function up()
+    {
+        // Optionally implemented by child class
+    }
 
-	/**
-	 * Runs when job regresses back through the workflow.
-	 *
-	 * @return mixed
-	 */
-	public function down()
-	{
-		// Optionally implemented by child class
-	}
+    /**
+     * Runs when job regresses back through the workflow.
+     *
+     * @return mixed
+     */
+    public function down()
+    {
+        // Optionally implemented by child class
+    }
 
-	//--------------------------------------------------------------------
+    //--------------------------------------------------------------------
 
-	/**
-	 * HTTP Request Methods.
-	 *
-	 * These baseline defaults specify the expected
-	 * return types and exception behavior for the
-	 * supported HTTP methods. Child classes should
-	 * override these methods but follow the correct
-	 * method definition.
-	 *
-	 * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
-	 */
+    /**
+     * HTTP Request Methods.
+     *
+     * These baseline defaults specify the expected
+     * return types and exception behavior for the
+     * supported HTTP methods. Child classes should
+     * override these methods but follow the correct
+     * method definition.
+     *
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
+     */
 
-	/**
-	 * @throws WorkflowsException
-	 *
-	 * @return ResponseInterface|null
-	 */
-	public function get(): ?ResponseInterface
-	{
-		throw new WorkflowsException('Not implemented.');
-	}
+    /**
+     * @throws WorkflowsException
+     *
+     * @return ResponseInterface|null
+     */
+    public function get(): ?ResponseInterface
+    {
+        throw new WorkflowsException('Not implemented.');
+    }
 
-	/**
-	 * @throws WorkflowsException
-	 *
-	 * @return ResponseInterface|null
-	 */
-	public function head(): ?ResponseInterface
-	{
-		throw new WorkflowsException('Not implemented.');
-	}
+    /**
+     * @throws WorkflowsException
+     *
+     * @return ResponseInterface|null
+     */
+    public function head(): ?ResponseInterface
+    {
+        throw new WorkflowsException('Not implemented.');
+    }
 
-	/**
-	 * @throws WorkflowsException
-	 *
-	 * @return ResponseInterface|null
-	 */
-	public function post(): ?ResponseInterface
-	{
-		throw new WorkflowsException('Not implemented.');
-	}
+    /**
+     * @throws WorkflowsException
+     *
+     * @return ResponseInterface|null
+     */
+    public function post(): ?ResponseInterface
+    {
+        throw new WorkflowsException('Not implemented.');
+    }
 
-	/**
-	 * @throws WorkflowsException
-	 *
-	 * @return ResponseInterface|null
-	 */
-	public function put(): ?ResponseInterface
-	{
-		throw new WorkflowsException('Not implemented.');
-	}
+    /**
+     * @throws WorkflowsException
+     *
+     * @return ResponseInterface|null
+     */
+    public function put(): ?ResponseInterface
+    {
+        throw new WorkflowsException('Not implemented.');
+    }
 
-	/**
-	 * @throws WorkflowsException
-	 *
-	 * @return ResponseInterface|null
-	 */
-	public function delete(): ?ResponseInterface
-	{
-		throw new WorkflowsException('Not implemented.');
-	}
+    /**
+     * @throws WorkflowsException
+     *
+     * @return ResponseInterface|null
+     */
+    public function delete(): ?ResponseInterface
+    {
+        throw new WorkflowsException('Not implemented.');
+    }
 
-	/**
-	 * @throws WorkflowsException
-	 *
-	 * @return ResponseInterface|null
-	 */
-	public function connect(): ?ResponseInterface
-	{
-		throw new WorkflowsException('Not implemented.');
-	}
+    /**
+     * @throws WorkflowsException
+     *
+     * @return ResponseInterface|null
+     */
+    public function connect(): ?ResponseInterface
+    {
+        throw new WorkflowsException('Not implemented.');
+    }
 
-	/**
-	 * @throws WorkflowsException
-	 *
-	 * @return ResponseInterface|null
-	 */
-	public function options(): ?ResponseInterface
-	{
-		throw new WorkflowsException('Not implemented.');
-	}
+    /**
+     * @throws WorkflowsException
+     *
+     * @return ResponseInterface|null
+     */
+    public function options(): ?ResponseInterface
+    {
+        throw new WorkflowsException('Not implemented.');
+    }
 
-	/**
-	 * @throws WorkflowsException
-	 *
-	 * @return ResponseInterface|null
-	 */
-	public function trace(): ?ResponseInterface
-	{
-		throw new WorkflowsException('Not implemented.');
-	}
+    /**
+     * @throws WorkflowsException
+     *
+     * @return ResponseInterface|null
+     */
+    public function trace(): ?ResponseInterface
+    {
+        throw new WorkflowsException('Not implemented.');
+    }
 
-	/**
-	 * @throws WorkflowsException
-	 *
-	 * @return ResponseInterface|null
-	 */
-	public function patch(): ?ResponseInterface
-	{
-		throw new WorkflowsException('Not implemented.');
-	}
+    /**
+     * @throws WorkflowsException
+     *
+     * @return ResponseInterface|null
+     */
+    public function patch(): ?ResponseInterface
+    {
+        throw new WorkflowsException('Not implemented.');
+    }
 
     /**
      * Initializes the instance with any additional steps.

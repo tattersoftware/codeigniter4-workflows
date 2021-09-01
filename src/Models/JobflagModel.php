@@ -15,22 +15,22 @@ use CodeIgniter\Model;
  */
 class JobflagModel extends Model
 {
-	protected $table = 'jobflags';
+    protected $table = 'jobflags';
 
-	protected $primaryKey = 'id';
+    protected $primaryKey = 'id';
 
-	protected $returnType = 'object';
+    protected $returnType = 'object';
 
-	protected $useTimestamps = true;
+    protected $useTimestamps = true;
 
-	protected $updatedField = '';
+    protected $updatedField = '';
 
-	protected $useSoftDeletes = false;
+    protected $useSoftDeletes = false;
 
-	protected $allowedFields = ['job_id', 'name', 'created_at'];
+    protected $allowedFields = ['job_id', 'name', 'created_at'];
 
-	protected $validationRules = [
-		'job_id' => 'required|is_natural_no_zero',
-		'name'   => 'required',
-	];
+    protected $validationRules = [
+        'job_id' => 'required|is_natural_no_zero',
+        'name'   => 'required',
+    ];
 }

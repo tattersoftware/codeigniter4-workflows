@@ -17,27 +17,26 @@ use Tatter\Workflows\Exceptions\WorkflowsException;
  */
 trait ErrorTrait
 {
-	/**
-	 * Handles errors based on Config settings.
-	 *
-	 * @param WorkflowsException $exception
-	 *
-	 * @throws WorkflowsException
-	 *
-	 * @return ResponseInterface The error view, if silent mode
-	 */
-	protected function handleError(WorkflowsException $exception): ResponseInterface
-	{
-		if (! $this->config->silent)
-		{
-			throw $exception;
-		}
+    /**
+     * Handles errors based on Config settings.
+     *
+     * @param WorkflowsException $exception
+     *
+     * @throws WorkflowsException
+     *
+     * @return ResponseInterface The error view, if silent mode
+     */
+    protected function handleError(WorkflowsException $exception): ResponseInterface
+    {
+        if (! $this->config->silent) {
+            throw $exception;
+        }
 
-		$this->response->setBody(view($this->config->views['messages'], [
-			'layout' => $this->config->layouts['public'],
-			'error'  => $exception->getMessage(),
-		]));
+        $this->response->setBody(view($this->config->views['messages'], [
+            'layout' => $this->config->layouts['public'],
+            'error'  => $exception->getMessage(),
+        ]));
 
-		return $this->response;
-	}
+        return $this->response;
+    }
 }

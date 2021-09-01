@@ -13,71 +13,71 @@ use Tests\Support\DatabaseTestCase;
  */
 final class JobTest extends DatabaseTestCase
 {
-	protected $migrateOnce = true;
+    protected $migrateOnce = true;
 
-	protected $seedOnce = true;
+    protected $seedOnce = true;
 
-	public function testTravelCheck()
-	{
-		// Create the requirements
-		$workflow = fake(WorkflowModel::class);
-		$action1  = fake(ActionModel::class);
-		$action2  = fake(ActionModel::class);
+    public function testTravelCheck()
+    {
+        // Create the requirements
+        $workflow = fake(WorkflowModel::class);
+        $action1  = fake(ActionModel::class);
+        $action2  = fake(ActionModel::class);
 
-		// Create one required stage and one optional
-		$stageRequired = fake(StageModel::class, [
-			'action_id'   => $action1->id,
-			'workflow_id' => $workflow->id,
-			'required'    => 1,
-		]);
-		$stageOptional = fake(StageModel::class, [
-			'action_id'   => $action2->id,
-			'workflow_id' => $workflow->id,
-			'required'    => 0,
-		]);
+        // Create one required stage and one optional
+        $stageRequired = fake(StageModel::class, [
+            'action_id'   => $action1->id,
+            'workflow_id' => $workflow->id,
+            'required'    => 1,
+        ]);
+        $stageOptional = fake(StageModel::class, [
+            'action_id'   => $action2->id,
+            'workflow_id' => $workflow->id,
+            'required'    => 0,
+        ]);
 
-		// Create a Job at the required Stage
-		/** @var Job $job */
-		$job = fake(JobModel::class, [
-			'workflow_id' => $workflow->id,
-			'stage_id'    => $stageRequired->id,
-		]);
+        // Create a Job at the required Stage
+        /** @var Job $job */
+        $job = fake(JobModel::class, [
+            'workflow_id' => $workflow->id,
+            'stage_id'    => $stageRequired->id,
+        ]);
 
-		$this->expectException(WorkflowsException::class);
-		$this->expectExceptionMessage('Cannot skip the required "' . $action1->name . '" action');
+        $this->expectException(WorkflowsException::class);
+        $this->expectExceptionMessage('Cannot skip the required "' . $action1->name . '" action');
 
-		$job->travel($stageOptional->action_id, true);
-	}
+        $job->travel($stageOptional->action_id, true);
+    }
 
-	public function testTravelNotCheck()
-	{
-		// Create the requirements
-		$workflow = fake(WorkflowModel::class);
-		$action   = fake(ActionModel::class);
+    public function testTravelNotCheck()
+    {
+        // Create the requirements
+        $workflow = fake(WorkflowModel::class);
+        $action   = fake(ActionModel::class);
 
-		// Create one required stage and one optional
-		$stageRequired = fake(StageModel::class, [
-			'action_id'   => $action->id,
-			'workflow_id' => $workflow->id,
-			'required'    => 1,
-		]);
-		$stageOptional = fake(StageModel::class, [
-			'action_id'   => $action->id,
-			'workflow_id' => $workflow->id,
-			'required'    => 0,
-		]);
+        // Create one required stage and one optional
+        $stageRequired = fake(StageModel::class, [
+            'action_id'   => $action->id,
+            'workflow_id' => $workflow->id,
+            'required'    => 1,
+        ]);
+        $stageOptional = fake(StageModel::class, [
+            'action_id'   => $action->id,
+            'workflow_id' => $workflow->id,
+            'required'    => 0,
+        ]);
 
-		// Create a Job at the required Stage
-		/** @var Job $job */
-		$job = fake(JobModel::class, [
-			'workflow_id' => $workflow->id,
-			'stage_id'    => $stageRequired->id,
-		]);
+        // Create a Job at the required Stage
+        /** @var Job $job */
+        $job = fake(JobModel::class, [
+            'workflow_id' => $workflow->id,
+            'stage_id'    => $stageRequired->id,
+        ]);
 
-		$job->travel($stageOptional->action_id, false);
+        $job->travel($stageOptional->action_id, false);
 
-		$result = model(JobModel::class)->find($job->id);
-		$this->assertSame($stageRequired->id, $result->stage_id);
-		$this->assertSame($stageRequired->id, $job->stage_id);
-	}
+        $result = model(JobModel::class)->find($job->id);
+        $this->assertSame($stageRequired->id, $result->stage_id);
+        $this->assertSame($stageRequired->id, $job->stage_id);
+    }
 }

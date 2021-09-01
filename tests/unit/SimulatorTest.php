@@ -13,37 +13,36 @@ use Tests\Support\DatabaseTestCase;
  */
 final class SimulatorTest extends DatabaseTestCase
 {
-	public function testFakeStageUsesCounts()
-	{
-		Fabricator::setCount('workflows', 10000);
+    public function testFakeStageUsesCounts()
+    {
+        Fabricator::setCount('workflows', 10000);
 
-		$sum = 0;
+        $sum = 0;
 
-		for ($i = 0; $i < 3; $i++)
-		{
-			$stage = fake(StageModel::class);
-			$sum += $stage->workflow_id;
-		}
+        for ($i = 0; $i < 3; $i++) {
+            $stage = fake(StageModel::class);
+            $sum += $stage->workflow_id;
+        }
 
-		$this->assertGreaterThan(12, $sum);
-	}
+        $this->assertGreaterThan(12, $sum);
+    }
 
-	public function testInitializeCreatesMinimumObjects()
-	{
-		Simulator::initialize();
+    public function testInitializeCreatesMinimumObjects()
+    {
+        Simulator::initialize();
 
-		$this->assertGreaterThanOrEqual(10, model(ActionModel::class)->countAllResults());
-		$this->assertGreaterThanOrEqual(2, model(WorkflowModel::class)->countAllResults());
-		$this->assertGreaterThanOrEqual(8, model(StageModel::class)->countAllResults());
-		$this->assertGreaterThanOrEqual(40, model(JobModel::class)->countAllResults());
-	}
+        $this->assertGreaterThanOrEqual(10, model(ActionModel::class)->countAllResults());
+        $this->assertGreaterThanOrEqual(2, model(WorkflowModel::class)->countAllResults());
+        $this->assertGreaterThanOrEqual(8, model(StageModel::class)->countAllResults());
+        $this->assertGreaterThanOrEqual(40, model(JobModel::class)->countAllResults());
+    }
 
-	public function testInitializeRegistersActions()
-	{
-		Simulator::initialize();
+    public function testInitializeRegistersActions()
+    {
+        Simulator::initialize();
 
-		$result = model(ActionModel::class)->first();
+        $result = model(ActionModel::class)->first();
 
-		$this->assertSame('info', $result->uid);
-	}
+        $this->assertSame('info', $result->uid);
+    }
 }
