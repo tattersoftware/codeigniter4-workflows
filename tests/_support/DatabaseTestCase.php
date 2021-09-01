@@ -16,10 +16,7 @@ use CodeIgniter\Test\DatabaseTestTrait;
 use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Test\Simulator;
 
-/**
- * @internal
- */
-final class DatabaseTestCase extends CIUnitTestCase
+abstract class DatabaseTestCase extends CIUnitTestCase
 {
     use DatabaseTestTrait;
 

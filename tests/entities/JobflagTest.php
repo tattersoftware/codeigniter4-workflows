@@ -67,7 +67,7 @@ final class JobflagTest extends DatabaseTestCase
         $result = $this->job->getFlags();
 
         $this->assertCount(1, $result);
-        $this->assertSame($this->now, $result['foobar']);
+        $this->assertSame($this->now, $result['foobar']->toDateTimeString());
     }
 
     public function testGetFlagReturnsNull()
