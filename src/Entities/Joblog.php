@@ -11,7 +11,7 @@
 
 namespace Tatter\Workflows\Entities;
 
-use CodeIgniter\Entity;
+use CodeIgniter\Entity\Entity;
 use Config\Services;
 use Tatter\Users\UserEntity;
 use Tatter\Workflows\Models\StageModel;

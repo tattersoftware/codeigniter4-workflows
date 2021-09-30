@@ -139,7 +139,7 @@ class Runner extends Controller
         }
 
         // Determine the request method and run the corresponding Action method
-        $method = $this->request->getMethod();
+        $method = $this->request->getMethod(); // @phpstan-ignore-line
 
         try {
             $result = $action->setJob($job)->{$method}();

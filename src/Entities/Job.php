@@ -11,7 +11,7 @@
 
 namespace Tatter\Workflows\Entities;
 
-use CodeIgniter\Entity;
+use CodeIgniter\Entity\Entity;
 use CodeIgniter\I18n\Time;
 use RuntimeException;
 use Tatter\Workflows\Exceptions\WorkflowsException;
