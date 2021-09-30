@@ -29,8 +29,6 @@ trait ErrorTrait
     /**
      * Handles errors based on Config settings.
      *
-     * @param WorkflowsException $exception
-     *
      * @throws WorkflowsException
      *
      * @return ResponseInterface The error view, if silent mode

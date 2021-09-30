@@ -21,8 +21,6 @@ class Workflows extends Controller
 {
     /**
      * Displays a list of available Workflows.
-     *
-     * @return string
      */
     public function index(): string
     {
@@ -39,10 +37,6 @@ class Workflows extends Controller
 
     /**
      * Shows details for one Workflow.
-     *
-     * @param string $workflowId
-     *
-     * @return string
      */
     public function show(string $workflowId): string
     {
@@ -62,8 +56,6 @@ class Workflows extends Controller
 
     /**
      * Displays the form for a new Workflow.
-     *
-     * @return string
      */
     public function new(): string
     {
@@ -74,6 +66,7 @@ class Workflows extends Controller
 
         // Prepare action data to be JSON encoded for JSSortable
         $json = [];
+
         foreach ($data['actions'] as $action) {
             $json[$action->id] = $action->toArray();
         }
@@ -85,8 +78,6 @@ class Workflows extends Controller
 
     /**
      * Creates a Workflow from the new form data.
-     *
-     * @return RedirectResponse
      */
     public function create(): RedirectResponse
     {
@@ -122,10 +113,6 @@ class Workflows extends Controller
 
     /**
      * Update workflow details.
-     *
-     * @param string $workflowId
-     *
-     * @return RedirectResponse
      */
     public function update(string $workflowId): RedirectResponse
     {
@@ -149,10 +136,6 @@ class Workflows extends Controller
 
     /**
      * Delete the workflow (soft).
-     *
-     * @param string $workflowId
-     *
-     * @return RedirectResponse
      */
     public function delete(string $workflowId): RedirectResponse
     {

@@ -45,6 +45,7 @@ class Simulator
 
             // Create actions up to N
             $count = mt_rand(10, 20);
+
             while (Fabricator::getCount('actions') < $count) {
                 fake(ActionModel::class);
             }
@@ -53,6 +54,7 @@ class Simulator
         // Create workflows up to N
         if (in_array('workflows', $targets, true)) {
             $count = mt_rand(2, 7);
+
             while (Fabricator::getCount('workflows') < $count) {
                 fake(WorkflowModel::class);
             }
@@ -61,6 +63,7 @@ class Simulator
         // Create stages up to N
         if (in_array('stages', $targets, true)) {
             $count = Fabricator::getCount('workflows') * mt_rand(4, 8);
+
             while (Fabricator::getCount('stages') < $count) {
                 fake(StageModel::class);
             }
@@ -69,6 +72,7 @@ class Simulator
         // Create jobs up to N
         if (in_array('jobs', $targets, true)) {
             $count = mt_rand(40, 200);
+
             while (Fabricator::getCount('jobs') < $count) {
                 fake(JobModel::class);
             }

@@ -67,7 +67,7 @@ class Joblog extends Entity
      *
      * @param Stage|null $stage Stage the job moved to
      */
-    public function setFrom(Stage $stage = null)
+    public function setFrom(?Stage $stage = null)
     {
         $this->from = $stage;
     }
@@ -91,15 +91,13 @@ class Joblog extends Entity
      *
      * @param Stage|null $stage Stage the job moved from
      */
-    public function setTo(Stage $stage = null)
+    public function setTo(?Stage $stage = null)
     {
         $this->to = $stage;
     }
 
     /**
      * Returns the UserEntity corresponding to user_id.
-     *
-     * @return UserEntity|null
      */
     public function getUser(): ?UserEntity
     {
@@ -107,7 +105,7 @@ class Joblog extends Entity
             return null;
         }
 
-        if (is_null($this->user)) {
+        if (null === $this->user) {
             $this->user = Services::users()->findById($this->attributes['user_id']);
         }
 

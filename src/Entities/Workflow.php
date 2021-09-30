@@ -52,24 +52,21 @@ class Workflow extends Entity
      * Checks if role filter is enabled and if a user
      * (defaults to current) may access this Workflow.
      *
-     * @param HasPermission|null   $user
      * @param array<int,bool>|null $explicits An array of explicit associations from
      *                                        users_workflows. Mostly injected so when
      *                                        checking many Workflows at once to prevent
      *                                        duplicate database calls
-     *
-     * @return bool
      */
-    public function mayAccess(HasPermission $user = null, array $explicits = null): bool
+    public function mayAccess(?HasPermission $user = null, ?array $explicits = null): bool
     {
         // If no user was provided then try for the current user
-        if (is_null($user) && $userId = user_id()) {
+        if (null === $user && $userId = user_id()) {
             /** @var HasPermission|null $user */
             $user = Services::users()->findById($userId);
         }
 
         // Check explicits first
-        if (is_null($explicits)) {
+        if (null === $explicits) {
             if ($user && $explicit = model(ExplicitModel::class)
                 ->where('user_id', $user->getId())
                 ->where('workflow_id', $this->attributes['id'])
@@ -86,7 +83,7 @@ class Workflow extends Entity
         }
 
         // If still no user then deny
-        if (is_null($user)) {
+        if (null === $user) {
             return false;
         }
 

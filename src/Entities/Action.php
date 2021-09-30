@@ -42,9 +42,6 @@ class Action extends Entity
     /**
      * Validates and runs the specified method from the instance.
      *
-     * @param string $name
-     * @param array  $params
-     *
      * @throws WorkflowsException
      *
      * @return mixed Result of the instance method
@@ -62,8 +59,6 @@ class Action extends Entity
 
     /**
      * Gets the associated Action instance.
-     *
-     * @return BaseAction
      */
     public function getInstance(): BaseAction
     {
@@ -79,8 +74,6 @@ class Action extends Entity
      * E.g.: return redirect()->to(site_url($action->route));.
      *
      * @param int|string|null $jobId
-     *
-     * @return string
      */
     public function getRoute($jobId = null): string
     {
@@ -96,12 +89,8 @@ class Action extends Entity
     /**
      * Checks if role filter is enabled and if a user
      * (defaults to current) may access this Action.
-     *
-     * @param HasPermission|null $user
-     *
-     * @return bool
      */
-    public function mayAccess(HasPermission $user = null): bool
+    public function mayAccess(?HasPermission $user = null): bool
     {
         // Anyone can run user actions
         if ($this->attributes['role'] === '') {
@@ -109,13 +98,13 @@ class Action extends Entity
         }
 
         // If no user was provided then get the current user
-        if (is_null($user)) {
+        if (null === $user) {
             /** @var HasPermission|null $user */
             $user = Services::users()->findById(user_id());
         }
 
         // If still no user then deny
-        if (is_null($user)) {
+        if (null === $user) {
             return false;
         }
 

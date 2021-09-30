@@ -46,10 +46,6 @@ class JobModel extends Model
 
     /**
      * Faked data for Fabricator.
-     *
-     * @param Generator $faker
-     *
-     * @return Job
      */
     public function fake(Generator &$faker): Job
     {
@@ -63,8 +59,6 @@ class JobModel extends Model
 
     /**
      * Logs successful insertions.
-     *
-     * @param array $eventData
      */
     protected function logInsert(array $eventData)
     {

@@ -80,13 +80,8 @@ abstract class BaseAction extends BaseHandler
 
     /**
      * Sets up common resources for Actions.
-     *
-     * @param Job|null               $job
-     * @param WorkflowsConfig|null   $config
-     * @param RequestInterface|null  $request
-     * @param ResponseInterface|null $response
      */
-    public function __construct(Job $job = null, WorkflowsConfig $config = null, RequestInterface $request = null, ResponseInterface $response = null)
+    public function __construct(?Job $job = null, ?WorkflowsConfig $config = null, ?RequestInterface $request = null, ?ResponseInterface $response = null)
     {
         parent::__construct();
 
@@ -139,8 +134,6 @@ abstract class BaseAction extends BaseHandler
      * Used because Handlers needs to instantiate this
      * class without parameters.
      *
-     * @param Job $job
-     *
      * @return $this
      */
     public function setJob(Job $job): self
@@ -188,8 +181,6 @@ abstract class BaseAction extends BaseHandler
 
     /**
      * @throws WorkflowsException
-     *
-     * @return ResponseInterface|null
      */
     public function get(): ?ResponseInterface
     {
@@ -198,8 +189,6 @@ abstract class BaseAction extends BaseHandler
 
     /**
      * @throws WorkflowsException
-     *
-     * @return ResponseInterface|null
      */
     public function head(): ?ResponseInterface
     {
@@ -208,8 +197,6 @@ abstract class BaseAction extends BaseHandler
 
     /**
      * @throws WorkflowsException
-     *
-     * @return ResponseInterface|null
      */
     public function post(): ?ResponseInterface
     {
@@ -218,8 +205,6 @@ abstract class BaseAction extends BaseHandler
 
     /**
      * @throws WorkflowsException
-     *
-     * @return ResponseInterface|null
      */
     public function put(): ?ResponseInterface
     {
@@ -228,8 +213,6 @@ abstract class BaseAction extends BaseHandler
 
     /**
      * @throws WorkflowsException
-     *
-     * @return ResponseInterface|null
      */
     public function delete(): ?ResponseInterface
     {
@@ -238,8 +221,6 @@ abstract class BaseAction extends BaseHandler
 
     /**
      * @throws WorkflowsException
-     *
-     * @return ResponseInterface|null
      */
     public function connect(): ?ResponseInterface
     {
@@ -248,8 +229,6 @@ abstract class BaseAction extends BaseHandler
 
     /**
      * @throws WorkflowsException
-     *
-     * @return ResponseInterface|null
      */
     public function options(): ?ResponseInterface
     {
@@ -258,8 +237,6 @@ abstract class BaseAction extends BaseHandler
 
     /**
      * @throws WorkflowsException
-     *
-     * @return ResponseInterface|null
      */
     public function trace(): ?ResponseInterface
     {
@@ -268,8 +245,6 @@ abstract class BaseAction extends BaseHandler
 
     /**
      * @throws WorkflowsException
-     *
-     * @return ResponseInterface|null
      */
     public function patch(): ?ResponseInterface
     {

@@ -48,10 +48,6 @@ class ExplicitModel extends Model
 
     /**
      * Faked data for Fabricator.
-     *
-     * @param Generator $faker
-     *
-     * @return object
      */
     public function fake(Generator &$faker): object
     {

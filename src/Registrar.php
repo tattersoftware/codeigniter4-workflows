@@ -31,6 +31,7 @@ class Registrar
         $handlers = new Handlers('Actions');
 
         $count = 0;
+
         foreach ($handlers->findAll() as $class) {
             $instance = new $class();
 
