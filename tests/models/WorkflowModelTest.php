@@ -30,9 +30,16 @@ final class WorkflowModelTest extends DatabaseTestCase
         $stage2   = fake(StageModel::class, ['workflow_id' => $workflow->id]);
 
         $expected = [$stage1, $stage2];
-        $result   = model(WorkflowModel::class)->fetchStages([$workflow]);
 
-		// This cannot be assertSame()
-        $this->assertEquals([$workflow->id => $expected], $result);
+        $result = model(WorkflowModel::class)->fetchStages([$workflow]);
+        $this->assertCount(1, $result);
+        $this->assertArrayHasKey($workflow->id, $result);
+
+		$stages  = $result[$workflow->id];
+		$result1 = reset($stages);
+		$result2 = next($stages);
+
+        $this->assertSame($stage1->id, $result1->id);
+        $this->assertSame($stage2->id, $result2->id);
     }
 }

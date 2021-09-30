@@ -58,10 +58,8 @@ class Jobs extends Controller
      * @param string $jobId ID of the job (int)
      *
      * @throws WorkflowsException
-     *
-     * @return ResponseInterface
      */
-    public function show(string $jobId = null): ResponseInterface
+    public function show(?string $jobId = null): ResponseInterface
     {
         // Load the job
         if (! $job = $this->jobs->withDeleted()->find($jobId)) {
@@ -92,6 +90,7 @@ class Jobs extends Controller
         if ($workflowId === null) {
             // Find available Workflows
             $workflows = [];
+
             foreach (model(WorkflowModel::class)->findAll() as $workflow) {
                 if ($workflow->mayAccess()) {
                     $workflows[] = $workflow;

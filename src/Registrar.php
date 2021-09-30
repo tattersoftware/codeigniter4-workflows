@@ -31,7 +31,8 @@ class Registrar
         $handlers = new Handlers('Actions');
 
         $count = 0;
-        foreach ($handlers->all() as $class) {
+
+        foreach ($handlers->findAll() as $class) {
             $instance = new $class();
 
             // Validate the method

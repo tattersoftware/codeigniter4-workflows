@@ -132,8 +132,6 @@ final class JobflagTest extends DatabaseTestCase
     /**
      * Create a flag with $name on $this->job.
      *
-     * @param string $name
-     *
      * @return array Result from the database
      */
     protected function createFlag(string $name = 'foobar'): array

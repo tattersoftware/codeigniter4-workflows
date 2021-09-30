@@ -45,10 +45,6 @@ class StageModel extends Model
 
     /**
      * Faked data for Fabricator.
-     *
-     * @param Generator $faker
-     *
-     * @return Stage
      */
     public function fake(Generator &$faker): Stage
     {

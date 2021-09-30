@@ -23,7 +23,7 @@ final class BaseActionTest extends CIUnitTestCase
 {
     public function testUsesDefaultComponents()
     {
-        $action = new class() extends BaseAction {};
+        $action = new class () extends BaseAction {};
 
         $this->assertSame(config('Workflows'), $action->config);
         $this->assertSame(service('request'), $action->request);
@@ -36,14 +36,14 @@ final class BaseActionTest extends CIUnitTestCase
         $config->jobModel = FooModel::class;
         Factories::injectMock('config', 'Workflows', $config);
 
-        $action = new class() extends BaseAction {};
+        $action = new class () extends BaseAction {};
 
         $this->assertInstanceOf(FooModel::class, $action->jobs);
     }
 
     public function testInitialize()
     {
-        $action                 = new class() extends BaseAction {
+        $action                 = new class () extends BaseAction {
             public $initialized = false;
 
             protected function initialize()
@@ -57,7 +57,7 @@ final class BaseActionTest extends CIUnitTestCase
 
     public function testSetJob()
     {
-        $action = new class() extends BaseAction {};
+        $action = new class () extends BaseAction {};
         $job    = new Job();
 
         $action->setJob($job);
@@ -67,12 +67,10 @@ final class BaseActionTest extends CIUnitTestCase
 
     /**
      * @dataProvider methodsProvider
-     *
-     * @param string $method
      */
     public function testDefaultMethodsThrow(string $method)
     {
-        $action = new class() extends BaseAction {};
+        $action = new class () extends BaseAction {};
 
         $this->expectException(WorkflowsException::class);
         $this->expectExceptionMessage('Not implemented.');

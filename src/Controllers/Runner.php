@@ -97,8 +97,6 @@ class Runner extends Controller
      * @param string ...$params Parameters coming from the router (so all strings)
      *
      * @throws PageNotFoundException
-     *
-     * @return ResponseInterface
      */
     public function run(string ...$params): ResponseInterface
     {
@@ -139,7 +137,7 @@ class Runner extends Controller
         }
 
         // Determine the request method and run the corresponding Action method
-        $method = $this->request->getMethod();
+        $method = $this->request->getMethod(); // @phpstan-ignore-line
 
         try {
             $result = $action->setJob($job)->{$method}();
@@ -209,8 +207,6 @@ class Runner extends Controller
     /**
      * Progresses a Job after an Action indicates
      * that the current Stage is done.
-     *
-     * @param Job $job
      *
      * @return RedirectResponse|ResponseInterface
      */

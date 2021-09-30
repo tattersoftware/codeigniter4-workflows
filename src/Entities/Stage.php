@@ -11,7 +11,7 @@
 
 namespace Tatter\Workflows\Entities;
 
-use CodeIgniter\Entity;
+use CodeIgniter\Entity\Entity;
 use Tatter\Workflows\Models\ActionModel;
 
 class Stage extends Entity
@@ -36,8 +36,6 @@ class Stage extends Entity
 
     /**
      * Passes through name requests to the Action.
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -46,8 +44,6 @@ class Stage extends Entity
 
     /**
      * Gets the associated Action.
-     *
-     * @return Action
      */
     public function getAction(): Action
     {

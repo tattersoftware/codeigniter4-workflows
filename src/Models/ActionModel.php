@@ -43,10 +43,6 @@ class ActionModel extends Model
 
     /**
      * Faked data for Fabricator.
-     *
-     * @param Generator $faker
-     *
-     * @return Action
      */
     public function fake(Generator &$faker): Action
     {

@@ -82,20 +82,20 @@ class WorkflowModel extends Model
     /**
      * Get Workflows allowed for a user.
      *
-     * @param HasPermission $user
-     *
      * @return Workflow[]
      */
     public function getForUser(HasPermission $user)
     {
         // First load this user's explicit associations
         $explicits = [];
+
         foreach (model(ExplicitModel::class)->where('user_id', $user->getId())->findAll() as $explicit) {
             $explicits[$explicit->workflow_id] = (bool) $explicit->permitted;
         }
 
         // Cross check all Workflows
         $workflows = [];
+
         foreach ($this->findAll() as $workflow) {
             if ($workflow->mayAccess($user, $explicits)) {
                 $workflows[] = $workflow;
@@ -107,10 +107,6 @@ class WorkflowModel extends Model
 
     /**
      * Faked data for Fabricator.
-     *
-     * @param Generator $faker
-     *
-     * @return Workflow
      */
     public function fake(Generator &$faker): Workflow
     {

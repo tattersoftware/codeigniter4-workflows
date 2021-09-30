@@ -11,7 +11,7 @@
 
 namespace Tatter\Workflows\Entities;
 
-use CodeIgniter\Entity;
+use CodeIgniter\Entity\Entity;
 use CodeIgniter\I18n\Time;
 use RuntimeException;
 use Tatter\Workflows\Exceptions\WorkflowsException;
@@ -72,7 +72,7 @@ class Job extends Entity
     {
         $this->ensureCreated();
 
-        if (is_null($this->flags)) {
+        if (null === $this->flags) {
             $this->flags = [];
 
             foreach (model(JobflagModel::class)->where('job_id', $this->attributes['id'])->findAll() as $flag) {
@@ -85,10 +85,6 @@ class Job extends Entity
 
     /**
      * Gets a flag by its name.
-     *
-     * @param string $name
-     *
-     * @return Time|null
      */
     public function getFlag(string $name): ?Time
     {
@@ -97,8 +93,6 @@ class Job extends Entity
 
     /**
      * Creates a flag for the given name.
-     *
-     * @param string $name
      *
      * @return $this
      */
@@ -124,8 +118,6 @@ class Job extends Entity
 
     /**
      * Removes a flag for the given name.
-     *
-     * @param string $name
      *
      * @return $this
      */
@@ -167,8 +159,6 @@ class Job extends Entity
 
     /**
      * Gets the current Stage.
-     *
-     * @return Stage|null
      */
     public function getStage(): ?Stage
     {
@@ -185,8 +175,6 @@ class Job extends Entity
 
     /**
      * Gets the Workflow.
-     *
-     * @return Workflow
      */
     public function getWorkflow(): Workflow
     {
@@ -211,8 +199,6 @@ class Job extends Entity
 
     /**
      * Returns the next Stage.
-     *
-     * @return Stage|null
      */
     public function next(): ?Stage
     {
@@ -221,8 +207,6 @@ class Job extends Entity
 
     /**
      * Returns the previous Stage.
-     *
-     * @return Stage|null
      */
     public function previous(): ?Stage
     {
@@ -287,6 +271,7 @@ class Job extends Entity
 
         // Travel the Workflow running the appropriate method
         $results = [];
+
         foreach ($stages as $stage) {
             // Check if we need to run this action
             if (($method === 'up' && $stage->id > $current->id)
@@ -332,8 +317,6 @@ class Job extends Entity
      * Returns the next Stage from an array of Stages.
      *
      * @param array<Stage> $stages
-     *
-     * @return Stage|null
      */
     protected function _next($stages): ?Stage
     {

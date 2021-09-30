@@ -42,8 +42,6 @@ class JoblogModel extends Model
      * Returns all logs for a job seeded with their "from" and "to" stages.
      *
      * @param int $jobId Job ID
-     *
-     * @return array|null
      */
     public function findWithStages(int $jobId): ?array
     {
@@ -57,6 +55,7 @@ class JoblogModel extends Model
 
         // Get the stages and store them by their ID
         $stages = [];
+
         foreach ((new StageModel())->find($stageIds) as $stage) {
             $stages[$stage->id] = $stage;
         }
@@ -72,10 +71,6 @@ class JoblogModel extends Model
 
     /**
      * Faked data for Fabricator.
-     *
-     * @param Generator $faker
-     *
-     * @return Joblog
      */
     public function fake(Generator &$faker): Joblog
     {

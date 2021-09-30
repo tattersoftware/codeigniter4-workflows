@@ -155,10 +155,6 @@ final class WorkflowTest extends DatabaseTestCase
 
     /**
      * Create a fake explicit to test with.
-     *
-     * @param array $data
-     *
-     * @return object
      */
     private function createExplicit(array $data = []): object
     {
