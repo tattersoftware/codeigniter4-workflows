@@ -33,7 +33,9 @@ class InfoAction extends BaseAction
      */
     public function get(): ResponseInterface
     {
-        $this->response->setBody(view('Tatter\Workflows\Views\actions\info', [
+        $view = $this->config->views['info'] ?? 'Tatter\Workflows\Views\actions\info';
+
+        $this->response->setBody(view($view, [
             'layout' => $this->config->layouts['public'],
             'config' => $this->config,
             'job'    => $this->job,
