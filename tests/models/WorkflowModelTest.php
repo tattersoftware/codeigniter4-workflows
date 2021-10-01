@@ -35,9 +35,9 @@ final class WorkflowModelTest extends DatabaseTestCase
         $this->assertCount(1, $result);
         $this->assertArrayHasKey($workflow->id, $result);
 
-		$stages  = $result[$workflow->id];
-		$result1 = reset($stages);
-		$result2 = next($stages);
+        $stages  = $result[$workflow->id];
+        $result1 = reset($stages);
+        $result2 = next($stages);
 
         $this->assertSame($stage1->id, $result1->id);
         $this->assertSame($stage2->id, $result2->id);
