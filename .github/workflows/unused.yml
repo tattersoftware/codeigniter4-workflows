@@ -30,10 +30,8 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.0'
-          tools: phive
+          tools: composer-unused, phive
           extensions: intl, json, mbstring, xml
 
       - name: Detect unused packages
-        run: |
-            sudo phive --no-progress install --global --trust-gpg-keys F4D32E2C9343B2AE composer-unused 
-            composer-unused -vvv --profile --ansi --no-interaction --no-progress --excludePackage=php
+        run: composer-unused -vvv --profile --ansi --no-interaction --no-progress --excludePackage=php
