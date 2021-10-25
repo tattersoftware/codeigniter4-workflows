@@ -1,0 +1,39 @@
+# When a PR is opened or a push is made, check code
+# for unused packages with Composer Unused.
+name: Unused
+
+on:
+  pull_request:
+    branches:
+      - 'develop'
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/unused.yml'
+  push:
+    branches:
+      - 'develop'
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/unused.yml'
+
+jobs:
+  build:
+    name: Unused Package Detection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          tools: phive
+          extensions: intl, json, mbstring, xml
+
+      - name: Detect unused packages
+        run: |
+            sudo phive --no-progress install --global --trust-gpg-keys F4D32E2C9343B2AE composer-unused 
+            composer-unused -vvv --profile --ansi --no-interaction --no-progress --excludePackage=php
