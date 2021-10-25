@@ -34,4 +34,7 @@ jobs:
           extensions: intl, json, mbstring, xml
 
       - name: Detect unused packages
-        run: composer-unused -vvv --profile --ansi --no-interaction --no-progress --excludePackage=php
+        run: |
+          pwd
+          ls -la
+          composer-unused -vvv --profile --ansi --no-interaction --no-progress --excludePackage=php
