@@ -41,7 +41,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</form>
 
 	<?php endif; ?>
 </div>
