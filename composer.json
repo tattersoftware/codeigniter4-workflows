@@ -23,7 +23,7 @@
         "php": "^7.3 || ^8.0",
         "codeigniter4/authentication-implementation": "1.0",
         "components/jquery": "^3.3",
-        "fortawesome/font-awesome": "^5.8",
+        "fortawesome/font-awesome": "^5.8 || ^6.0",
         "npm-asset/sortablejs": "^1.10",
         "tatter/alerts": "^2.0",
         "tatter/assets": "^2.0",
