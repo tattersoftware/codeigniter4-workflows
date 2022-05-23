@@ -9,7 +9,7 @@
  * the LICENSE file that was distributed with this source code.
  */
 
-namespace App\Database\Migrations;
+namespace Tatter\Workflows\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 

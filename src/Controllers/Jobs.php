@@ -13,7 +13,6 @@ namespace Tatter\Workflows\Controllers;
 
 use CodeIgniter\Controller;
 use CodeIgniter\Exceptions\PageNotFoundException;
-use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
 use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Exceptions\WorkflowsException;
@@ -81,8 +80,6 @@ class Jobs extends Controller
      * @param int|string|null $workflowId ID of the Workflow to use for the new Job (int)
      *
      * @throws WorkflowsException
-     *
-     * @return RedirectResponse|ResponseInterface
      */
     public function new($workflowId = null): ResponseInterface
     {

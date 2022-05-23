@@ -45,8 +45,8 @@ class JobModel extends Model
         return new Job([
             'name'        => $faker->catchPhrase,
             'summary'     => $faker->sentence,
-            'workflow_id' => mt_rand(1, Fabricator::getCount('workflows') ?: 4),
-            'stage_id'    => mt_rand(1, Fabricator::getCount('stages') ?: 99),
+            'workflow_id' => random_int(1, Fabricator::getCount('workflows') ?: 4),
+            'stage_id'    => random_int(1, Fabricator::getCount('stages') ?: 99),
         ]);
     }
 

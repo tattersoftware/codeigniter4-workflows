@@ -14,11 +14,12 @@ namespace Tatter\Workflows\Models;
 use CodeIgniter\Model;
 use CodeIgniter\Test\Fabricator;
 use Faker\Generator;
+use Tatter\Audits\Traits\AuditsTrait;
 use Tatter\Workflows\Entities\Stage;
 
 class StageModel extends Model
 {
-    use \Tatter\Audits\Traits\AuditsTrait;
+    use AuditsTrait;
 
     protected $table         = 'stages';
     protected $returnType    = Stage::class;
@@ -43,9 +44,9 @@ class StageModel extends Model
     public function fake(Generator &$faker): Stage
     {
         return new Stage([
-            'action_id'   => mt_rand(1, Fabricator::getCount('actions') ?: 12),
-            'workflow_id' => mt_rand(1, Fabricator::getCount('workflows') ?: 4),
-            'required'    => mt_rand(0, 5) ? 1 : 0,
+            'action_id'   => random_int(1, Fabricator::getCount('actions') ?: 12),
+            'workflow_id' => random_int(1, Fabricator::getCount('workflows') ?: 4),
+            'required'    => random_int(0, 5) ? 1 : 0,
         ]);
     }
 }

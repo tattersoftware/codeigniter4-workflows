@@ -13,13 +13,14 @@ namespace Tatter\Workflows\Models;
 
 use CodeIgniter\Model;
 use Faker\Generator;
+use Tatter\Audits\Traits\AuditsTrait;
 use Tatter\Users\Interfaces\HasPermission;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Entities\Workflow;
 
 class WorkflowModel extends Model
 {
-    use \Tatter\Audits\Traits\AuditsTrait;
+    use AuditsTrait;
 
     protected $table          = 'workflows';
     protected $returnType     = Workflow::class;

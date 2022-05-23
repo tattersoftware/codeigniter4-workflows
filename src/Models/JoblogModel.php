@@ -68,9 +68,9 @@ class JoblogModel extends Model
     public function fake(Generator &$faker): Joblog
     {
         return new Joblog([
-            'job_id'     => mt_rand(1, Fabricator::getCount('jobs') ?: 5),
-            'stage_from' => mt_rand(1, Fabricator::getCount('stages') ?: 10),
-            'stage_to'   => mt_rand(1, Fabricator::getCount('stages') ?: 10),
+            'job_id'     => random_int(1, Fabricator::getCount('jobs') ?: 5),
+            'stage_from' => random_int(1, Fabricator::getCount('stages') ?: 10),
+            'stage_to'   => random_int(1, Fabricator::getCount('stages') ?: 10),
         ]);
     }
 }

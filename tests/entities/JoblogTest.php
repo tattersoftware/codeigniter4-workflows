@@ -21,10 +21,8 @@ final class JoblogTest extends DatabaseTestCase
 {
     /**
      * A Joblog to test with.
-     *
-     * @var Joblog
      */
-    private $joblog;
+    private Joblog $joblog;
 
     protected function setUp(): void
     {

@@ -48,7 +48,7 @@ class ActionModel extends Model
             'name'        => ucfirst($name),
             'uid'         => strtolower($name),
             'class'       => implode('\\', array_map('ucfirst', $faker->words)),
-            'role'        => mt_rand(0, 2) ? '' : 'admin',
+            'role'        => random_int(0, 2) ? '' : 'admin',
             'icon'        => $faker->safeColorName,
             'summary'     => $faker->sentence,
             'description' => $faker->paragraph,

@@ -23,24 +23,18 @@ final class JobflagTest extends DatabaseTestCase
 {
     /**
      * Common timestamp to use during testing.
-     *
-     * @var string
      */
-    protected $now;
+    protected string $now;
 
     /**
      * A random Job to test with.
-     *
-     * @var Job
      */
-    protected $job;
+    protected Job $job;
 
     /**
      * Builder for `jobflags`.
-     *
-     * @var BaseBuilder
      */
-    protected $builder;
+    protected BaseBuilder $builder;
 
     protected function setUp(): void
     {
@@ -62,7 +56,7 @@ final class JobflagTest extends DatabaseTestCase
 
     public function testGetFlagsReturnsFlagsArray()
     {
-        $flag = $this->createFlag();
+        $this->createFlag();
 
         $result = $this->job->getFlags();
 
@@ -79,7 +73,7 @@ final class JobflagTest extends DatabaseTestCase
 
     public function testGetFlagReturnsTime()
     {
-        $flag = $this->createFlag();
+        $this->createFlag();
 
         $result = $this->job->getFlag('foobar');
 
@@ -89,7 +83,7 @@ final class JobflagTest extends DatabaseTestCase
 
     public function testGetFlagStoresValues()
     {
-        $flag = $this->createFlag();
+        $this->createFlag();
         $this->job->getFlags();
         $this->builder->truncate();
 
@@ -107,7 +101,7 @@ final class JobflagTest extends DatabaseTestCase
 
     public function testClearFlagDeletes()
     {
-        $flag = $this->createFlag();
+        $this->createFlag();
         $this->job->clearFlag('foobar');
 
         $result = $this->job->getFlag('foobar');

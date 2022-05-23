@@ -14,10 +14,11 @@ namespace Tatter\Workflows\Models;
 use CodeIgniter\Model;
 use CodeIgniter\Test\Fabricator;
 use Faker\Generator;
+use Tatter\Audits\Traits\AuditsTrait;
 
 class ExplicitModel extends Model
 {
-    use \Tatter\Audits\Traits\AuditsTrait;
+    use AuditsTrait;
 
     protected $table          = 'users_workflows';
     protected $returnType     = 'object';
@@ -44,9 +45,9 @@ class ExplicitModel extends Model
     public function fake(Generator &$faker): object
     {
         return (object) [
-            'user_id'     => mt_rand(1, Fabricator::getCount('users') ?: 10),
-            'workflow_id' => mt_rand(1, Fabricator::getCount('workflows') ?: 4),
-            'permitted'   => (bool) mt_rand(0, 4),
+            'user_id'     => random_int(1, Fabricator::getCount('users') ?: 10),
+            'workflow_id' => random_int(1, Fabricator::getCount('workflows') ?: 4),
+            'permitted'   => (bool) random_int(0, 4),
         ];
     }
 }

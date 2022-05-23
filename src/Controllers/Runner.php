@@ -207,8 +207,6 @@ class Runner extends Controller
     /**
      * Progresses a Job after an Action indicates
      * that the current Stage is done.
-     *
-     * @return RedirectResponse|ResponseInterface
      */
     protected function progress(Job $job): ResponseInterface
     {

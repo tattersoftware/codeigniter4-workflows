@@ -27,7 +27,7 @@ class Registrar
      */
     public static function actions(): int
     {
-        $model    = model(ActionModel::class);
+        model(ActionModel::class);
         $handlers = new Handlers('Actions');
 
         $count = 0;
@@ -41,7 +41,7 @@ class Registrar
             }
 
             // Register it
-            $result = $instance->register();
+            $instance->register();
 
             $count++;
         }
