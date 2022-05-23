@@ -51,7 +51,7 @@ class Runner extends Controller
     public function __construct()
     {
         $this->config = config('Workflows');
-        $this->jobs   = model($this->config->jobModel);
+        $this->jobs   = model($this->config->jobModel); // @phpstan-ignore-line
     }
 
     /**

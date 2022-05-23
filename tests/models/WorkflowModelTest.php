@@ -31,7 +31,7 @@ final class WorkflowModelTest extends DatabaseTestCase
 
         $expected = [$stage1, $stage2];
 
-        $result = model(WorkflowModel::class)->fetchStages([$workflow]);
+        $result = (new WorkflowModel())->fetchStages([$workflow]);
         $this->assertCount(1, $result);
         $this->assertArrayHasKey($workflow->id, $result);
 

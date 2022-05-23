@@ -49,7 +49,7 @@ class Jobs extends Controller
     public function __construct()
     {
         $this->config = config('Workflows');
-        $this->jobs   = model($this->config->jobModel);
+        $this->jobs   = model($this->config->jobModel); // @phpstan-ignore-line
     }
 
     /**
@@ -68,7 +68,7 @@ class Jobs extends Controller
 
         $this->response->setBody(view($this->config->views['job'], [
             'job'    => $job,
-            'logs'   => model(JoblogModel::class)->findWithStages($job->id),
+            'logs'   => model(JoblogModel::class)->findWithStages($job->id), // @phpstan-ignore-line
             'layout' => $this->config->layouts['public'],
         ]));
 
