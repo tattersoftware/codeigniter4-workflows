@@ -23,8 +23,7 @@ use Tests\Support\DatabaseTestCase;
 final class JobTest extends DatabaseTestCase
 {
     protected $migrateOnce = true;
-
-    protected $seedOnce = true;
+    protected $seedOnce    = true;
 
     public function testTravelCheck()
     {

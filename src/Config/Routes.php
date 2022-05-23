@@ -8,8 +8,7 @@
  * For the full copyright and license information, please view
  * the LICENSE file that was distributed with this source code.
  */
-
-$routes = $routes ?? service('routes');
+$routes ??= service('routes');
 $config = config('Workflows');
 
 // Jobs routes

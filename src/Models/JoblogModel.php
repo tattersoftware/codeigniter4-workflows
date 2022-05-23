@@ -18,20 +18,13 @@ use Tatter\Workflows\Entities\Joblog;
 
 class JoblogModel extends Model
 {
-    protected $table = 'joblogs';
-
-    protected $primaryKey = 'id';
-
-    protected $returnType = Joblog::class;
-
-    protected $useTimestamps = true;
-
-    protected $updatedField = '';
-
-    protected $useSoftDeletes = false;
-
-    protected $allowedFields = ['job_id', 'stage_from', 'stage_to', 'user_id'];
-
+    protected $table           = 'joblogs';
+    protected $primaryKey      = 'id';
+    protected $returnType      = Joblog::class;
+    protected $useTimestamps   = true;
+    protected $updatedField    = '';
+    protected $useSoftDeletes  = false;
+    protected $allowedFields   = ['job_id', 'stage_from', 'stage_to', 'user_id'];
     protected $validationRules = [
         'job_id'     => 'required|is_natural_no_zero',
         'stage_from' => 'permit_empty|is_natural_no_zero',

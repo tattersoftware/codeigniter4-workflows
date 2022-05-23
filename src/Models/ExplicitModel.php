@@ -19,20 +19,14 @@ class ExplicitModel extends Model
 {
     use \Tatter\Audits\Traits\AuditsTrait;
 
-    protected $table = 'users_workflows';
-
-    protected $returnType = 'object';
-
+    protected $table          = 'users_workflows';
+    protected $returnType     = 'object';
     protected $useSoftDeletes = false;
-
-    protected $useTimestamps = true;
-
-    protected $updatedField = '';
-
-    protected $allowedFields = [
+    protected $useTimestamps  = true;
+    protected $updatedField   = '';
+    protected $allowedFields  = [
         'user_id', 'workflow_id', 'permitted',
     ];
-
     protected $validationRules = [
         'user_id'     => 'required|is_natural_no_zero',
         'workflow_id' => 'required|is_natural_no_zero',
@@ -41,9 +35,7 @@ class ExplicitModel extends Model
 
     // Tatter\Audits
     protected $afterInsert = ['auditInsert'];
-
     protected $afterUpdate = ['auditUpdate'];
-
     protected $afterDelete = ['auditDelete'];
 
     /**

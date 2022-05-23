@@ -27,7 +27,6 @@ class Job extends Entity
         'updated_at',
         'deleted_at',
     ];
-
     protected $casts = [
         'workflow_id' => 'int',
         'stage_id'    => '?int',

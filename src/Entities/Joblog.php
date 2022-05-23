@@ -19,7 +19,6 @@ use Tatter\Workflows\Models\StageModel;
 class Joblog extends Entity
 {
     protected $dates = ['created_at'];
-
     protected $casts = [
         'job_id'     => 'int',
         'user_id'    => '?int',
