@@ -1,5 +1,5 @@
 <?php
-$menu = $menu ?? '';
+$menu ??= '';
 ?><!doctype html>
 <html lang="en">
 <head>

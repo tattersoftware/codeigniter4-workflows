@@ -24,13 +24,16 @@ class Workflows extends Controller
      */
     public function index(): string
     {
+        /** @var WorkflowModel $workflows */
+        $workflows = model(WorkflowModel::class);
+
         $data = [
             'layout'    => config('Workflows')->layouts['manage'],
-            'workflows' => model(WorkflowModel::class)->orderBy('name')->findAll(),
+            'workflows' => $workflows->orderBy('name')->findAll(),
         ];
 
         // Prefetch the stages
-        $data['stages'] = model(WorkflowModel::class)->fetchStages($data['workflows']);
+        $data['stages'] = $workflows->fetchStages($data['workflows']);
 
         return view('Tatter\Workflows\Views\workflows\index', $data);
     }

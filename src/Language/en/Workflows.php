@@ -1,5 +1,7 @@
 <?php
 
+namespace Tatter\Workflows\Language\en;
+
 /**
  * This file is part of Tatter Workflows.
  *
@@ -8,7 +10,6 @@
  * For the full copyright and license information, please view
  * the LICENSE file that was distributed with this source code.
  */
-
 return [
     'noWorkflowAvailable'    => 'There are no available workflows',
     'workflowNotFound'       => 'Could not find that workflow.',

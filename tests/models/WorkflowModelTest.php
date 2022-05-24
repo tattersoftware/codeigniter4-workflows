@@ -19,8 +19,7 @@ use Tests\Support\DatabaseTestCase;
 final class WorkflowModelTest extends DatabaseTestCase
 {
     protected $migrateOnce = true;
-
-    protected $seedOnce = true;
+    protected $seedOnce    = true;
 
     public function testUpdateCreatesJoblog()
     {
@@ -29,9 +28,7 @@ final class WorkflowModelTest extends DatabaseTestCase
         $stage1   = fake(StageModel::class, ['workflow_id' => $workflow->id]);
         $stage2   = fake(StageModel::class, ['workflow_id' => $workflow->id]);
 
-        $expected = [$stage1, $stage2];
-
-        $result = model(WorkflowModel::class)->fetchStages([$workflow]);
+        $result = (new WorkflowModel())->fetchStages([$workflow]);
         $this->assertCount(1, $result);
         $this->assertArrayHasKey($workflow->id, $result);
 

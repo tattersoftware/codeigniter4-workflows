@@ -20,7 +20,6 @@ class Stage extends Entity
         'created_at',
         'updated_at',
     ];
-
     protected $casts = [
         'action_id'   => 'int',
         'workflow_id' => 'int',

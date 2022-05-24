@@ -17,19 +17,14 @@ use Tatter\Workflows\Entities\Action;
 
 class ActionModel extends Model
 {
-    protected $table = 'actions';
-
-    protected $returnType = Action::class;
-
+    protected $table          = 'actions';
+    protected $returnType     = Action::class;
     protected $useSoftDeletes = true;
-
-    protected $useTimestamps = true;
-
-    protected $allowedFields = [
+    protected $useTimestamps  = true;
+    protected $allowedFields  = [
         'category', 'name', 'uid', 'class', 'input',
         'role', 'icon', 'summary', 'description',
     ];
-
     protected $validationRules = [
         'category' => 'required|max_length[63]',
         'name'     => 'required|max_length[63]',
@@ -53,7 +48,7 @@ class ActionModel extends Model
             'name'        => ucfirst($name),
             'uid'         => strtolower($name),
             'class'       => implode('\\', array_map('ucfirst', $faker->words)),
-            'role'        => mt_rand(0, 2) ? '' : 'admin',
+            'role'        => random_int(0, 2) ? '' : 'admin',
             'icon'        => $faker->safeColorName,
             'summary'     => $faker->sentence,
             'description' => $faker->paragraph,

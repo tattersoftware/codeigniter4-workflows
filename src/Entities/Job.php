@@ -27,7 +27,6 @@ class Job extends Entity
         'updated_at',
         'deleted_at',
     ];
-
     protected $casts = [
         'workflow_id' => 'int',
         'stage_id'    => '?int',
@@ -239,9 +238,9 @@ class Job extends Entity
         }
 
         // Get the Workflow, Stages, and current Stage
-        $workflow = $this->getWorkflow();
-        $stages   = $this->getStages();
-        $current  = $this->getStage();
+        $this->getWorkflow();
+        $stages  = $this->getStages();
+        $current = $this->getStage();
 
         // Determine direction of travel
         if ($current->id < $target->id) {

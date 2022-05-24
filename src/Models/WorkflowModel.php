@@ -13,26 +13,22 @@ namespace Tatter\Workflows\Models;
 
 use CodeIgniter\Model;
 use Faker\Generator;
+use Tatter\Audits\Traits\AuditsTrait;
 use Tatter\Users\Interfaces\HasPermission;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Entities\Workflow;
 
 class WorkflowModel extends Model
 {
-    use \Tatter\Audits\Traits\AuditsTrait;
+    use AuditsTrait;
 
-    protected $table = 'workflows';
-
-    protected $returnType = Workflow::class;
-
+    protected $table          = 'workflows';
+    protected $returnType     = Workflow::class;
     protected $useSoftDeletes = true;
-
-    protected $useTimestamps = true;
-
-    protected $allowedFields = [
+    protected $useTimestamps  = true;
+    protected $allowedFields  = [
         'name', 'category', 'role', 'icon', 'summary', 'description',
     ];
-
     protected $validationRules = [
         'name'     => 'required|max_length[63]',
         'category' => 'permit_empty|max_length[63]',
@@ -42,9 +38,7 @@ class WorkflowModel extends Model
 
     // Tatter\Audits
     protected $afterInsert = ['auditInsert'];
-
     protected $afterUpdate = ['auditUpdate'];
-
     protected $afterDelete = ['auditDelete'];
 
     /**

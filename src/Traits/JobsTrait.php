@@ -51,7 +51,7 @@ trait JobsTrait
      */
     protected function logUpdate(array $data)
     {
-        $db = db_connect();
+        db_connect();
 
         // Determine user source from config
         $userId = session(config('Workflows')->userSource);

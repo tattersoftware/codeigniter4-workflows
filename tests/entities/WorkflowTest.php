@@ -25,10 +25,8 @@ final class WorkflowTest extends DatabaseTestCase
 {
     /**
      * A fake Workflow to test with.
-     *
-     * @var Workflow
      */
-    private $workflow;
+    private Workflow $workflow;
 
     protected function setUp(): void
     {

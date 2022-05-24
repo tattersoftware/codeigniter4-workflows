@@ -74,7 +74,7 @@ class Workflow extends Entity
                 return (bool) $explicit->permitted;
             }
         } elseif (isset($explicits[$this->attributes['id']])) {
-            return (bool) $explicits[$this->attributes['id']];
+            return $explicits[$this->attributes['id']];
         }
 
         // Anyone else is allowed unrestricted Workflows

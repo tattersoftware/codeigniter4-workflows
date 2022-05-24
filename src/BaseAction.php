@@ -59,8 +59,6 @@ abstract class BaseAction extends BaseHandler
 
     /**
      * Attributes to Tatter\Handlers, implemented by child class.
-     *
-     * @var array<string>|null
      */
     protected $attributes = [];
 
@@ -90,7 +88,7 @@ abstract class BaseAction extends BaseHandler
         $this->request  = $request ?? service('request');
         $this->response = $response ?? service('response');
 
-        $this->jobs = model($this->config->jobModel);
+        $this->jobs = model($this->config->jobModel); // @phpstan-ignore-line
 
         $this->initialize();
     }

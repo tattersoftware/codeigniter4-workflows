@@ -17,15 +17,11 @@ use Tatter\Workflows\Models\ActionModel;
 
 class ActionsList extends BaseCommand
 {
-    protected $group = 'Workflows';
-
-    protected $name = 'actions:list';
-
+    protected $group       = 'Workflows';
+    protected $name        = 'actions:list';
     protected $description = 'List all registered actions';
-
-    protected $usage = 'actions:list';
-
-    protected $arguments = [];
+    protected $usage       = 'actions:list';
+    protected $arguments   = [];
 
     public function run(array $params = [])
     {

@@ -21,27 +21,20 @@ class JobModel extends Model
 {
     use JobsTrait;
 
-    protected $table = 'jobs';
-
-    protected $returnType = Job::class;
-
+    protected $table          = 'jobs';
+    protected $returnType     = Job::class;
     protected $useSoftDeletes = true;
-
-    protected $useTimestamps = true;
-
-    protected $allowedFields = [
+    protected $useTimestamps  = true;
+    protected $allowedFields  = [
         'name', 'summary', 'workflow_id', 'stage_id',
     ];
-
     protected $validationRules = [
         'name'        => 'required|max_length[255]',
         'summary'     => 'permit_empty|max_length[255]',
         'workflow_id' => 'required|is_natural_no_zero',
         'stage_id'    => 'permit_empty|is_natural_no_zero',
     ];
-
-    protected $afterInsert = ['logInsert'];
-
+    protected $afterInsert  = ['logInsert'];
     protected $beforeUpdate = ['logUpdate'];
 
     /**
@@ -52,8 +45,8 @@ class JobModel extends Model
         return new Job([
             'name'        => $faker->catchPhrase,
             'summary'     => $faker->sentence,
-            'workflow_id' => mt_rand(1, Fabricator::getCount('workflows') ?: 4),
-            'stage_id'    => mt_rand(1, Fabricator::getCount('stages') ?: 99),
+            'workflow_id' => random_int(1, Fabricator::getCount('workflows') ?: 4),
+            'stage_id'    => random_int(1, Fabricator::getCount('stages') ?: 99),
         ]);
     }
 

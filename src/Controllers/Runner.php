@@ -51,7 +51,7 @@ class Runner extends Controller
     public function __construct()
     {
         $this->config = config('Workflows');
-        $this->jobs   = model($this->config->jobModel);
+        $this->jobs   = model($this->config->jobModel); // @phpstan-ignore-line
     }
 
     /**
@@ -207,8 +207,6 @@ class Runner extends Controller
     /**
      * Progresses a Job after an Action indicates
      * that the current Stage is done.
-     *
-     * @return RedirectResponse|ResponseInterface
      */
     protected function progress(Job $job): ResponseInterface
     {
