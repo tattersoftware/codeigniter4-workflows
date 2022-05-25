@@ -19,7 +19,7 @@ parameters:
 		- Faker\Generator
 	scanDirectories:
 		- vendor/codeigniter4/framework/system/Helpers
-		- vendor/myth/auth/src/Helpers
+		- vendor/tatter/imposter/src/Helpers
 	dynamicConstantNames:
 		- APP_NAMESPACE
 		- CI_DEBUG

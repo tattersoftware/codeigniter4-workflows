@@ -9,8 +9,7 @@
  * the LICENSE file that was distributed with this source code.
  */
 
-use Myth\Auth\Test\Fakers\UserFaker;
-use Tatter\Users\Factories\MythFactory;
+use Tatter\Imposter\Factories\ImposterFactory;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Entities\Workflow;
 use Tatter\Workflows\Models\ExplicitModel;
@@ -23,6 +22,8 @@ use Tests\Support\DatabaseTestCase;
  */
 final class WorkflowTest extends DatabaseTestCase
 {
+    protected $refresh = true;
+
     /**
      * A fake Workflow to test with.
      */
@@ -73,7 +74,7 @@ final class WorkflowTest extends DatabaseTestCase
         $explicit = $this->createExplicit();
 
         // Get the UserEntity with HasPermission
-        $user = (new MythFactory())->findById($explicit->user_id);
+        $user = (new ImposterFactory())->findById($explicit->user_id);
 
         $this->workflow->role = 'restricted';
 
@@ -94,7 +95,7 @@ final class WorkflowTest extends DatabaseTestCase
         $explicit = $this->createExplicit();
 
         // Get the UserEntity with HasPermission
-        $user = (new MythFactory())->findById($explicit->user_id);
+        $user = (new ImposterFactory())->findById($explicit->user_id);
 
         $this->workflow->role = 'restricted';
 
@@ -123,7 +124,7 @@ final class WorkflowTest extends DatabaseTestCase
         $explicit = $this->createExplicit(['permitted' => 0]);
 
         // Get the UserEntity with HasPermission
-        $user = (new MythFactory())->findById($explicit->user_id);
+        $user = (new ImposterFactory())->findById($explicit->user_id);
 
         $this->workflow->role = '';
 
@@ -144,7 +145,7 @@ final class WorkflowTest extends DatabaseTestCase
         $explicit = $this->createExplicit(['permitted' => 0]);
 
         // Get the UserEntity with HasPermission
-        $user = (new MythFactory())->findById($explicit->user_id);
+        $user = (new ImposterFactory())->findById($explicit->user_id);
 
         $this->workflow->role = '';
 
@@ -156,7 +157,7 @@ final class WorkflowTest extends DatabaseTestCase
      */
     private function createExplicit(array $data = []): object
     {
-        $user = fake(UserFaker::class);
+        $user = $this->fakeUser();
 
         $data = array_merge([
             'user_id'     => $user->id,

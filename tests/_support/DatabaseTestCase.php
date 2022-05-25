@@ -13,6 +13,9 @@ namespace Tests\Support;
 
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\DatabaseTestTrait;
+use Tatter\Imposter\Entities\User;
+use Tatter\Imposter\Factories\ImposterFactory;
+use Tatter\Users\UserProvider;
 use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Test\Simulator;
 
@@ -49,6 +52,8 @@ abstract class DatabaseTestCase extends CIUnitTestCase
     {
         parent::setUpBeforeClass();
 
+        UserProvider::addFactory(ImposterFactory::class, ImposterFactory::class);
+
         helper('auth');
     }
 
@@ -71,5 +76,14 @@ abstract class DatabaseTestCase extends CIUnitTestCase
         parent::tearDown();
 
         Simulator::reset();
+        ImposterFactory::reset();
+    }
+
+    protected function fakeUser(): User
+    {
+        $user     = ImposterFactory::fake();
+        $user->id = ImposterFactory::add($user);
+
+        return $user;
     }
 }
