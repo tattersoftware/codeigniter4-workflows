@@ -9,7 +9,6 @@
  * the LICENSE file that was distributed with this source code.
  */
 
-use Myth\Auth\Test\Fakers\UserFaker;
 use Tatter\Users\UserEntity;
 use Tatter\Workflows\Entities\Joblog;
 use Tests\Support\DatabaseTestCase;
@@ -38,7 +37,7 @@ final class JoblogTest extends DatabaseTestCase
 
     public function testGetUser()
     {
-        $user = fake(UserFaker::class);
+        $user = $this->fakeUser();
 
         $this->joblog->user_id = $user->id;
 

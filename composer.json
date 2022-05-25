@@ -34,18 +34,10 @@
     },
     "require-dev": {
         "codeigniter4/framework": "^4.1",
-        "myth/auth": "dev-develop",
+        "tatter/imposter": "^1.0",
         "tatter/tools": "^2.0"
     },
     "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/codeigniter4/CodeIgniter4"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/lonnieezell/myth-auth"
-        },
         {
             "type": "composer",
             "url": "https://asset-packagist.org"
