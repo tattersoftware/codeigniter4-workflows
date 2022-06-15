@@ -12,11 +12,11 @@
 namespace Tatter\Workflows\Test;
 
 use CodeIgniter\Test\Fabricator;
+use Tatter\Workflows\Factories\ActionFactory;
 use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\WorkflowModel;
-use Tatter\Workflows\Factories\ActionFactory;
 
 /**
  * Support class for simulating a complete workflow environment.
@@ -42,7 +42,7 @@ class Simulator
         // Register any Actions and update the count
         if (in_array('actions', $targets, true)) {
             ActionFactory::register();
-            $count = count(model(ActionModel::class)->findAll());
+            $count = is_countable(model(ActionModel::class)->findAll()) ? count(model(ActionModel::class)->findAll()) : 0;
             Fabricator::setCount('actions', $count);
 
             // Create actions up to N

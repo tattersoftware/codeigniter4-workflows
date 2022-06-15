@@ -13,11 +13,9 @@ namespace Tatter\Workflows;
 
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
-use RuntimeException;
 use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Exceptions\WorkflowsException;
-use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\JobModel;
 
 /**
@@ -92,7 +90,7 @@ abstract class BaseAction
 
         $attributes['uid']   = static::HANDLER_ID;
         $attributes['class'] = static::class;
-    
+
         return $attributes;
     }
 

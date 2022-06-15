@@ -27,7 +27,7 @@ class ActionsRegister extends BaseCommand
     public function run(array $params = [])
     {
         ActionFactory::register();
-        
+
         $actions = model(ActionModel::class);
 
         // get all actions

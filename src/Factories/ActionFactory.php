@@ -29,20 +29,20 @@ class ActionFactory extends BaseFactory
     public static function register(): void
     {
         $actions = model(ActionModel::class);
-        
+
         foreach (self::findAll() as $handler) {
             $data = $handler::getAttributes();
 
             // Check for an existing entry
             if ($action = $actions->where('uid', $data['uid'])->first()) {
                 $result = $actions->update($action->id, $data);
-            }
-            else {
+            } else {
                 $result = $actions->insert($data, false);
             }
 
             if ($result === false) {
                 $message = "Unable to register {$handler}: " . implode(' ', $actions->errors());
+
                 throw new RuntimeException($message);
             }
         }
