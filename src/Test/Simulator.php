@@ -42,7 +42,9 @@ class Simulator
         // Register any Actions and update the count
         if (in_array('actions', $targets, true)) {
             ActionFactory::register();
-            $count = is_countable(model(ActionModel::class)->findAll()) ? count(model(ActionModel::class)->findAll()) : 0;
+
+            $actions = model(ActionModel::class)->findAll();
+            $count   = count($actions);
             Fabricator::setCount('actions', $count);
 
             // Create actions up to N
