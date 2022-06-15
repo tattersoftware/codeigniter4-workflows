@@ -13,26 +13,42 @@ namespace Tatter\Workflows\Commands;
 
 use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
-use Tatter\Workflows\Registrar;
+use Tatter\Workflows\Models\ActionModel;
 
 class ActionsRegister extends BaseCommand
 {
     protected $group       = 'Workflows';
-    protected $name        = 'actions:register';
-    protected $description = 'Search for new actions and add them to the database';
+    protected $name        = 'actions:list';
+    protected $description = 'Locate, register, and display workflow actions';
     protected $usage       = 'actions:register';
     protected $arguments   = [];
 
     public function run(array $params = [])
     {
-        $count = Registrar::actions();
+        ActionFactory::register();
+        
+        $actions = model(ActionModel::class);
 
-        if ($count === 0) {
-            CLI::write('No Actions found in any namespace.', 'yellow');
+        // get all actions
+        $rows = $actions
+            ->builder()
+            ->select('id, name, category, uid, role, class, summary')
+            ->orderBy('name', 'asc')
+            ->get()->getResultArray();
 
-            return;
+        if (empty($rows)) {
+            CLI::write('There are no registered actions.', 'yellow');
+        } else {
+            $thead = [
+                'Action ID',
+                'Name',
+                'Category',
+                'UID',
+                'Role',
+                'Class',
+                'Summary',
+            ];
+            CLI::table($rows, $thead);
         }
-
-        $this->call('actions:list');
     }
 }
