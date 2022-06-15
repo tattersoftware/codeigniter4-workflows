@@ -22,15 +22,11 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "codeigniter4/authentication-implementation": "1.0",
-        "components/jquery": "^3.3",
-        "fortawesome/font-awesome": "^5.8",
         "npm-asset/sortablejs": "^1.10",
-        "tatter/alerts": "^2.0",
-        "tatter/assets": "^2.0",
         "tatter/audits": "^1.0",
+        "tatter/frontend": "^1.0",
         "tatter/handlers": "^3.0",
-        "tatter/users": "^1.0",
-        "twbs/bootstrap": "^4.3"
+        "tatter/users": "^1.0"
     },
     "require-dev": {
         "codeigniter4/framework": "^4.1",
