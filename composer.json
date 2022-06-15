@@ -28,7 +28,7 @@
         "tatter/alerts": "^2.0",
         "tatter/assets": "^2.0",
         "tatter/audits": "^1.0",
-        "tatter/handlers": "^2.0",
+        "tatter/handlers": "^3.0",
         "tatter/users": "^1.0",
         "twbs/bootstrap": "^4.3"
     },
@@ -64,7 +64,10 @@
         }
     },
     "scripts": {
-        "analyze": "phpstan analyze",
+        "analyze": [
+            "phpstan analyze",
+            "psalm"
+        ],
         "ci": [
             "Composer\\Config::disableProcessTimeout",
             "@deduplicate",
