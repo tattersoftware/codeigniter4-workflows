@@ -16,7 +16,7 @@ use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\WorkflowModel;
-use Tatter\Workflows\Registrar;
+use Tatter\Workflows\Factories\ActionFactory;
 
 /**
  * Support class for simulating a complete workflow environment.
@@ -41,7 +41,9 @@ class Simulator
 
         // Register any Actions and update the count
         if (in_array('actions', $targets, true)) {
-            Fabricator::setCount('actions', Registrar::actions());
+            ActionFactory::register();
+            $count = count(model(ActionModel::class)->findAll());
+            Fabricator::setCount('actions', $count);
 
             // Create actions up to N
             $count = random_int(10, 20);

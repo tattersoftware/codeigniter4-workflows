@@ -13,6 +13,7 @@ namespace Tatter\Workflows\Commands;
 
 use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
+use Tatter\Workflows\Factories\ActionFactory;
 use Tatter\Workflows\Models\ActionModel;
 
 class ActionsRegister extends BaseCommand
