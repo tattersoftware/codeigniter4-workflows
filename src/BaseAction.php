@@ -14,7 +14,6 @@ namespace Tatter\Workflows;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use RuntimeException;
-use Tatter\Handlers\BaseHandler;
 use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Exceptions\WorkflowsException;
@@ -25,13 +24,25 @@ use Tatter\Workflows\Models\JobModel;
  * Class reference and common method for
  * child Actions. Classes may implement any
  * HTTP verb as a method (e.g. get(), put())
- * which should behav as follows:
+ * which should behave as follows:
  *  - User interactions: ResponseInterface
  *  - Action complete: null
  *  - Failure: throws WorkflowsException.
  */
-abstract class BaseAction extends BaseHandler
+abstract class BaseAction
 {
+    public const HANDLER_ID = '';
+
+    /**
+     * Action attributes to register in the database.
+     * Set by child classes.
+     *
+     * @see getAttributes()
+     *
+     * @var array<string,string|null>
+     */
+    public const ATTRIBUTES = [];
+
     /**
      * @var Job|null
      */
@@ -58,31 +69,40 @@ abstract class BaseAction extends BaseHandler
     public $jobs;
 
     /**
-     * Attributes to Tatter\Handlers, implemented by child class.
-     */
-    protected $attributes = [];
-
-    /**
-     * Default set of attributes and their types.
+     * Default set of attributes.
      *
-     * @var array<string>|null
+     * @var array<string,string>
      */
-    protected $defaults = [
-        'category' => '',
+    protected static $defaults = [
         'name'     => '',
-        'uid'      => '',
         'role'     => 'user',
         'icon'     => 'fas fa-tasks',
+        'category' => '',
         'summary'  => '',
     ];
+
+    /**
+     * Returns this Action's attributes including defaults.
+     *
+     * @return array<string,string|null>
+     */
+    final public static function getAttributes(): array
+    {
+        $attributes = array_merge(static::$defaults, static::ATTRIBUTES);
+
+        $attributes['uid']   = static::HANDLER_ID;
+        $attributes['class'] = static::class;
+    
+        return $attributes;
+    }
+
+    //--------------------------------------------------------------------
 
     /**
      * Sets up common resources for Actions.
      */
     public function __construct(?Job $job = null, ?WorkflowsConfig $config = null, ?RequestInterface $request = null, ?ResponseInterface $response = null)
     {
-        parent::__construct();
-
         $this->job      = $job;
         $this->config   = $config ?? config('Workflows');
         $this->request  = $request ?? service('request');
@@ -91,40 +111,6 @@ abstract class BaseAction extends BaseHandler
         $this->jobs = model($this->config->jobModel); // @phpstan-ignore-line
 
         $this->initialize();
-    }
-
-    //--------------------------------------------------------------------
-
-    /**
-     * Creates the database record for this class based on its definition.
-     *
-     * @throws RuntimeException for insert failures
-     *
-     * @return int The ID of the new/exsiting class
-     */
-    public function register(): int
-    {
-        $actions = model(ActionModel::class);
-
-        // Check for an existing entry
-        if ($action = $actions->where('uid', $this->attributes['uid'])->first()) {
-            return $action->id;
-        }
-
-        $row          = $this->toArray();
-        $row['class'] = static::class;
-
-        return (int) $actions->insert($row);
-    }
-
-    /**
-     * Deletes this action from the database (soft).
-     *
-     * @return bool Result from the model
-     */
-    public function remove(): bool
-    {
-        return model(ActionModel::class)->where('uid', $this->attributes['uid'])->delete();
     }
 
     /**

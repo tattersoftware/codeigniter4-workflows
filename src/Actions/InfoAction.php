@@ -1,14 +1,5 @@
 <?php
 
-/**
- * This file is part of Tatter Workflows.
- *
- * (c) 2021 Tatter Software
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
- */
-
 namespace Tatter\Workflows\Actions;
 
 use CodeIgniter\HTTP\RedirectResponse;
@@ -17,10 +8,10 @@ use Tatter\Workflows\BaseAction;
 
 class InfoAction extends BaseAction
 {
-    public $attributes = [
+    public const HANDLER_ID = 'info';
+    public const ATTRIBUTES = [
         'category' => 'Core',
         'name'     => 'Info',
-        'uid'      => 'info',
         'role'     => '',
         'icon'     => 'fas fa-info-circle',
         'summary'  => 'Set basic details of a job',

@@ -8,6 +8,7 @@ parameters:
 		- vendor/codeigniter4/framework/system/Test/bootstrap.php
 	excludePaths:
 		- src/Config/Routes.php
+		- src/Config/Workflows.php
 		- src/Views/*
 	ignoreErrors:
 		- '#Call to an undefined method CodeIgniter\\Database\\BaseBuilder::[A-Za-z]+\(\)#'
