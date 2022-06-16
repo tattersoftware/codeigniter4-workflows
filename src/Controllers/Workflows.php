@@ -1,14 +1,5 @@
 <?php
 
-/**
- * This file is part of Tatter Workflows.
- *
- * (c) 2021 Tatter Software
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
- */
-
 namespace Tatter\Workflows\Controllers;
 
 use CodeIgniter\Controller;
@@ -28,7 +19,7 @@ class Workflows extends Controller
         $workflows = model(WorkflowModel::class);
 
         $data = [
-            'layout'    => config('Workflows')->layouts['manage'],
+            'layout'    => config('Layouts')->manage,
             'workflows' => $workflows->orderBy('name')->findAll(),
         ];
 
@@ -45,7 +36,7 @@ class Workflows extends Controller
     {
         $data = [
             'config'    => config('Workflows'),
-            'layout'    => config('Workflows')->layouts['manage'],
+            'layout'    => config('Layouts')->manage,
             'workflow'  => model(WorkflowModel::class)->find($workflowId),
             'workflows' => model(WorkflowModel::class)->orderBy('name', 'asc')->findAll(),
             'actions'   => model(ActionModel::class)->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
@@ -63,7 +54,7 @@ class Workflows extends Controller
     public function new(): string
     {
         $data = [
-            'layout'  => config('Workflows')->layouts['manage'],
+            'layout'  => config('Layouts')->manage,
             'actions' => model(ActionModel::class)->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
         ];
 

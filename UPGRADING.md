@@ -1,5 +1,12 @@
 # Upgrade Guide
 
+## Version 4 to 5
+***
+
+* `Workflows` is now officially a Tatter Module, so relies on the opinionated frontend tech provided by `Tatter\Frontend`
+* Related, all layouts are now routed through `Tatter\Layouts`: Actions and their views should be updated to use the same
+* `Tatter\Handlers` version 3 improves class discovery and attribute access - all Actions should be updated (compare to `InfoAction`)
+
 ## Version 3 to 4
 ***
 

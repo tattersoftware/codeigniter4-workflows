@@ -1,14 +1,5 @@
 <?php
 
-/**
- * This file is part of Tatter Workflows.
- *
- * (c) 2021 Tatter Software
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
- */
-
 namespace Tatter\Workflows\Controllers;
 
 use CodeIgniter\Controller;
@@ -68,7 +59,7 @@ class Jobs extends Controller
         $this->response->setBody(view($this->config->views['job'], [
             'job'    => $job,
             'logs'   => model(JoblogModel::class)->findWithStages($job->id), // @phpstan-ignore-line
-            'layout' => $this->config->layouts['public'],
+            'layout' => config('Layouts')->public,
         ]));
 
         return $this->response;
@@ -101,7 +92,7 @@ class Jobs extends Controller
             // If more than one Workflow was available then display a selection
             if (count($workflows) > 1) {
                 $this->response->setBody(view($this->config->views['workflow'], [
-                    'layout'    => $this->config->layouts['public'],
+                    'layout'    => config('Layouts')->public,
                     'workflows' => $workflows,
                 ]));
 
@@ -159,7 +150,7 @@ class Jobs extends Controller
         $this->jobs->delete($jobId);
 
         $this->response->setBody(view($this->config->views['deleted'], [
-            'layout' => $this->config->layouts['public'],
+            'layout' => config('Layouts')->public,
             'job'    => $job,
         ]));
 
