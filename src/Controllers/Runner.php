@@ -34,7 +34,7 @@ class Runner extends Controller
     /**
      * @var JobModel Module version or extension thereof
      */
-    protected $jobs;
+    protected JobModel $jobs;
 
     /**
      * Preload the config class and Model for jobs.

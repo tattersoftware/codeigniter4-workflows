@@ -28,10 +28,8 @@ class Jobs extends Controller
 
     /**
      * The Job Model from this module, or an extension of it.
-     *
-     * @var JobModel
      */
-    protected $jobs;
+    protected JobModel $jobs;
 
     /**
      * Preload the config class and Model for jobs.
