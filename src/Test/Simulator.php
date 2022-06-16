@@ -25,10 +25,8 @@ class Simulator
 {
     /**
      * Whether initialize() has been run.
-     *
-     * @var bool
      */
-    public static $initialized = false;
+    public static bool $initialized = false;
 
     /**
      * Initialize the simulation.

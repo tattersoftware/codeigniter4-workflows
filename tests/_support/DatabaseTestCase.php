@@ -43,7 +43,7 @@ abstract class DatabaseTestCase extends CIUnitTestCase
     /**
      * Preconfigured config instance.
      */
-    protected $config;
+    protected WorkflowsConfig $config;
 
     /**
      * Loads the auth helper.
@@ -64,8 +64,7 @@ abstract class DatabaseTestCase extends CIUnitTestCase
     {
         parent::setUp();
 
-        $this->config         = new WorkflowsConfig();
-        $this->config->silent = false;
+        $this->config = config('Workflows');
     }
 
     /**

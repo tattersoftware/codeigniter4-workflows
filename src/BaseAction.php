@@ -41,37 +41,18 @@ abstract class BaseAction
      */
     public const ATTRIBUTES = [];
 
-    /**
-     * @var Job|null
-     */
-    public $job;
-
-    /**
-     * @var WorkflowsConfig
-     */
-    public $config;
-
-    /**
-     * @var RequestInterface
-     */
-    public $request;
-
-    /**
-     * @var ResponseInterface
-     */
-    public $response;
-
-    /**
-     * @var JobModel
-     */
-    public $jobs;
+    public ?Job $job;
+    public WorkflowsConfig $config;
+    public RequestInterface $request;
+    public ResponseInterface $response;
+    public JobModel $jobs;
 
     /**
      * Default set of attributes.
      *
      * @var array<string,string>
      */
-    protected static $defaults = [
+    protected static array $defaults = [
         'name'     => '',
         'role'     => 'user',
         'icon'     => 'fas fa-tasks',

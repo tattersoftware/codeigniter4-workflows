@@ -3,36 +3,28 @@
 namespace Tatter\Workflows\Config;
 
 use CodeIgniter\Config\BaseConfig;
+use Tatter\Workflows\Models\JobModel;
 
 class Workflows extends BaseConfig
 {
     /**
-     * Whether to continue instead of throwing exceptions.
-     *
-     * @var bool
-     */
-    public $silent = ENVIRONMENT === 'production';
-
-    /**
      * Route base to use for Runner Controller.
-     *
-     * @var string
      */
-    public $routeBase = 'jobs';
+    public string $routeBase = 'jobs';
 
     /**
      * The model to use for jobs.
      *
-     * @var string
+     * @var class-string<JobModel>
      */
-    public $jobModel = 'Tatter\Workflows\Models\JobModel';
+    public string $jobModel = JobModel::class;
 
     /**
      * Views to display for various function.
      *
      * @var array<string,string>
      */
-    public $views = [
+    public array $views = [
         'job'      => 'Tatter\Workflows\Views\job',
         'workflow' => 'Tatter\Workflows\Views\workflow',
         'messages' => 'Tatter\Workflows\Views\messages',

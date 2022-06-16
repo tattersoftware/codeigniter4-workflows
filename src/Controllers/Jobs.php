@@ -5,10 +5,8 @@ namespace Tatter\Workflows\Controllers;
 use CodeIgniter\Controller;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\ResponseInterface;
-use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\Models\JoblogModel;
-use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\WorkflowModel;
 
 /**
@@ -17,31 +15,8 @@ use Tatter\Workflows\Models\WorkflowModel;
  * Handles basic REST for Jobs.
  * Shares baseRoute with the Runner.
  */
-class Jobs extends Controller
+class Jobs extends BaseController
 {
-    use ErrorTrait;
-
-    /**
-     * @var WorkflowsConfig
-     */
-    protected $config;
-
-    /**
-     * The Job Model from this module, or an extension of it.
-     *
-     * @var JobModel
-     */
-    protected $jobs;
-
-    /**
-     * Preload the config class and Model for jobs.
-     */
-    public function __construct()
-    {
-        $this->config = config('Workflows');
-        $this->jobs   = model($this->config->jobModel); // @phpstan-ignore-line
-    }
-
     /**
      * Display a job.
      *

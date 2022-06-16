@@ -120,6 +120,6 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig
         ->ruleWithConfiguration(TypedPropertyRector::class, [
             // Set to false if you use in libraries, or it does create breaking changes.
-            TypedPropertyRector::INLINE_PUBLIC => false,
+            TypedPropertyRector::INLINE_PUBLIC => true,
         ]);
 };

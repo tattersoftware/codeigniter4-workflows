@@ -1,14 +1,5 @@
 <?php
 
-/**
- * This file is part of Tatter Workflows.
- *
- * (c) 2021 Tatter Software
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
- */
-
 namespace Config;
 
 /*
@@ -20,51 +11,35 @@ namespace Config;
  *	3. Remove any lines to fallback to defaults
  *
  */
+ 
+use Tatter\Workflows\Config\Workflows as BaseWorkflows;
 
-class Workflows extends \Tatter\Workflows\Config\Workflows
+class Workflows extends BaseWorkflows
 {
     /**
-     * Whether to continue instead of throwing exceptions.
-     *
-     * @var bool
-     */
-    public $silent = ENVIRONMENT === 'production';
-
-    /**
      * Route base to use for Runner Controller.
-     *
-     * @var string
      */
-    public $routeBase = 'jobs';
+    public string $routeBase = 'jobs';
 
     /**
      * The model to use for jobs.
      *
-     * @var string
+     * @var class-string<JobModel>
      */
-    public $jobModel = JobModel::class;
-
-    /**
-     * View layouts to use for jobs and administration.
-     * Needs to have keys "public" and "manage".
-     *
-     * @var array<string,string>
-     */
-    public $layouts = [
-        'public' => 'Tatter\Workflows\Views\layout',
-        'manage' => 'Tatter\Workflows\Views\layout',
-    ];
+    public string $jobModel = JobModel::class;
 
     /**
      * Views to display for various function.
      *
      * @var array<string,string>
      */
-    public $views = [
+    public array $views = [
         'job'      => 'Tatter\Workflows\Views\job',
+        'workflow' => 'Tatter\Workflows\Views\workflow',
         'messages' => 'Tatter\Workflows\Views\messages',
         'complete' => 'Tatter\Workflows\Views\complete',
         'deleted'  => 'Tatter\Workflows\Views\deleted',
         'filter'   => 'Tatter\Workflows\Views\filter',
+        'info'     => 'Tatter\Workflows\Views\actions\info',
     ];
 }

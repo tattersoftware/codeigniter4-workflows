@@ -43,8 +43,8 @@ final class BaseActionTest extends CIUnitTestCase
 
     public function testInitialize()
     {
-        $action                 = new class () extends BaseAction {
-            public $initialized = false;
+        $action                      = new class () extends BaseAction {
+            public bool $initialized = false;
 
             protected function initialize()
             {
