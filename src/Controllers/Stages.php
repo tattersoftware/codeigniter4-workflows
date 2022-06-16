@@ -2,10 +2,9 @@
 
 namespace Tatter\Workflows\Controllers;
 
-use CodeIgniter\Controller;
 use Tatter\Workflows\Models\StageModel;
 
-class Stages extends Controller
+class Stages extends BaseController
 {
     /**
      * Update a Stage (AJAX).

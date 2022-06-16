@@ -6,13 +6,11 @@ use CodeIgniter\Controller;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
-use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Entities\Action;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\Models\ActionModel;
-use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\WorkflowModel;
 
@@ -22,29 +20,8 @@ use Tatter\Workflows\Models\WorkflowModel;
  * Functions as a super-controller, routing jobs to their specific actions
  * and action functions with included metadata.
  */
-class Runner extends Controller
+class Runner extends BaseController
 {
-    use ErrorTrait;
-
-    /**
-     * @var WorkflowsConfig
-     */
-    protected $config;
-
-    /**
-     * @var JobModel Module version or extension thereof
-     */
-    protected JobModel $jobs;
-
-    /**
-     * Preload the config class and Model for jobs.
-     */
-    public function __construct()
-    {
-        $this->config = config('Workflows');
-        $this->jobs   = model($this->config->jobModel); // @phpstan-ignore-line
-    }
-
     /**
      * Resume a Job at its current Stage.
      *

@@ -2,13 +2,12 @@
 
 namespace Tatter\Workflows\Controllers;
 
-use CodeIgniter\Controller;
 use CodeIgniter\HTTP\RedirectResponse;
 use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\WorkflowModel;
 
-class Workflows extends Controller
+class Workflows extends BaseController
 {
     /**
      * Displays a list of available Workflows.
