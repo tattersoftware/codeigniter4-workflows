@@ -26,10 +26,6 @@ trait ErrorTrait
      */
     protected function handleError(WorkflowsException $exception): ResponseInterface
     {
-        if (! $this->config->silent) {
-            throw $exception;
-        }
-
         $this->response->setBody(view($this->config->views['messages'], [
             'layout' => config('Layouts')->public,
             'error'  => $exception->getMessage(),

@@ -8,11 +8,6 @@ use Tatter\Workflows\Models\JobModel;
 class Workflows extends BaseConfig
 {
     /**
-     * Whether to continue instead of throwing exceptions.
-     */
-    public bool $silent = ENVIRONMENT === 'production';
-
-    /**
      * Route base to use for Runner Controller.
      */
     public string $routeBase = 'jobs';
