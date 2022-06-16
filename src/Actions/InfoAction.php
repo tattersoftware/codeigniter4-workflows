@@ -27,7 +27,7 @@ class InfoAction extends BaseAction
         $view = $this->config->views['info'] ?? 'Tatter\Workflows\Views\actions\info';
 
         $this->response->setBody(view($view, [
-            'layout' => $this->config->layouts['public'],
+            'layout' => config('Layouts')->public,
             'config' => $this->config,
             'job'    => $this->job,
         ]));

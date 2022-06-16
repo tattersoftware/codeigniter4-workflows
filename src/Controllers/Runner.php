@@ -1,14 +1,5 @@
 <?php
 
-/**
- * This file is part of Tatter Workflows.
- *
- * (c) 2021 Tatter Software
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
- */
-
 namespace Tatter\Workflows\Controllers;
 
 use CodeIgniter\Controller;
@@ -76,7 +67,7 @@ class Runner extends Controller
         // If the Job is completed then display a message and quit
         if (empty($job->stage_id)) {
             $this->response->setBody(view($this->config->views['messages'], [
-                'layout'  => $this->config->layouts['public'],
+                'layout'  => config('Layouts')->public,
                 'message' => lang('Workflows.jobAlreadyComplete'),
             ]));
 
@@ -129,7 +120,7 @@ class Runner extends Controller
         // Check the Action's role against a potential current user
         if (! $action->mayAccess()) {
             $this->response->setBody(view($this->config->views['filter'], [
-                'layout' => $this->config->layouts['public'],
+                'layout' => config('Layouts')->public,
                 'job'    => $job,
             ]));
 
@@ -143,7 +134,7 @@ class Runner extends Controller
             $result = $action->setJob($job)->{$method}();
         } catch (WorkflowsException $e) {
             $this->response->setBody(view($this->config->views['messages'], [
-                'layout' => $this->config->layouts['public'],
+                'layout' => config('Layouts')->public,
                 'error'  => $e->getMessage(),
             ]));
 
@@ -222,7 +213,7 @@ class Runner extends Controller
         $this->jobs->update($job->id, ['stage_id' => null]);
 
         $this->response->setBody(view($this->config->views['complete'], [
-            'layout' => $this->config->layouts['public'],
+            'layout' => config('Layouts')->public,
             'job'    => $job,
         ]));
 

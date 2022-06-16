@@ -1,14 +1,5 @@
 <?php
 
-/**
- * This file is part of Tatter Workflows.
- *
- * (c) 2021 Tatter Software
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
- */
-
 namespace Tatter\Workflows\Controllers;
 
 use CodeIgniter\Controller;
@@ -20,7 +11,7 @@ class Actions extends Controller
     public function index()
     {
         $data = [
-            'layout'  => config('Workflows')->layouts['manage'],
+            'layout'  => config('Layouts')->manage,
             'actions' => (new ActionModel())->orderBy('name')->findAll(),
         ];
 
