@@ -1,36 +1,18 @@
 <?= $this->extend($layout) ?>
 <?= $this->section('main') ?>
 
-	<h2>Information</h2>
+	<h2><?= $header ?></h2>
 
-	<?php if (! empty($message)): ?>
-
-	<div class="alert alert-success">
+	<div class="alert alert-<?= $class ?>">
 		<?= $message ?>
 	</div>
+	
+	<p>
+		<?= if ($job !== null): ?>
+		<a class="btn btn-primary" href="<?= $job->getUrl() ?>">View Job</a>
+		<?php endif; ?>
 
-	<?php endif; ?>
-	<?php if (! empty($error)): ?>
-
-	<div class="alert alert-danger">
-		<?= $error ?>
-	</div>
-
-	<?php endif; ?>
-	<?php if (! empty($errors)): ?>
-
-	<ul class="alert alert-danger">
-
-	<?php foreach ($errors as $error): ?>
-
-		<li><?= $error ?></li>
-
-	<?php endforeach; ?>
-
-	</ul>
-
-	<?php endif; ?>
-
-	<p><?= anchor('', 'Back to home') ?></p>
+		<a class="btn btn-link" href="<?= base_url() ?>">Home</a>
+	</p>
 
 <?= $this->endSection() ?>
