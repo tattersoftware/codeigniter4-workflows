@@ -11,23 +11,23 @@
 
 namespace Tatter\Workflows;
 
-use CodeIgniter\HTTP\RequestInterface;
-use CodeIgniter\HTTP\ResponseInterface;
-use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
+use Tatter\Workflows\Controllers\BaseController;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Exceptions\WorkflowsException;
-use Tatter\Workflows\Models\JobModel;
 
 /**
- * Class reference and common method for
- * child Actions. Classes may implement any
- * HTTP verb as a method (e.g. get(), put())
+ * Common properties and methods for Actions. Classes may
+ * implement any HTTP verb as a method (e.g. get(), put())
  * which should behave as follows:
  *  - User interactions: ResponseInterface
  *  - Action complete: null
  *  - Failure: throws WorkflowsException.
+ * Actions extend Controller so have access to all the
+ * usual tools like a typical controller.
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
  */
-abstract class BaseAction
+abstract class BaseAction extends BaseController
 {
     public const HANDLER_ID = '';
 
@@ -37,20 +37,14 @@ abstract class BaseAction
      *
      * @see getAttributes()
      *
-     * @var array<string,string|null>
+     * @var array<string,scalar|null>
      */
     public const ATTRIBUTES = [];
-
-    public ?Job $job;
-    public WorkflowsConfig $config;
-    public RequestInterface $request;
-    public ResponseInterface $response;
-    public JobModel $jobs;
 
     /**
      * Default set of attributes.
      *
-     * @var array<string,string>
+     * @var array<string,scalar|null>
      */
     protected static array $defaults = [
         'name'     => '',
@@ -61,9 +55,9 @@ abstract class BaseAction
     ];
 
     /**
-     * Returns this Action's attributes including defaults.
+     * Returns this Action's attributes (including defaults).
      *
-     * @return array<string,string|null>
+     * @return array<string,scalar|null>
      */
     final public static function getAttributes(): array
     {
@@ -79,139 +73,14 @@ abstract class BaseAction
 
     /**
      * Sets up common resources for Actions.
+     * For extension use initialize() instead.
      */
-    public function __construct(?Job $job = null, ?WorkflowsConfig $config = null, ?RequestInterface $request = null, ?ResponseInterface $response = null)
+    final public function __construct(Job $job)
     {
-        $this->job      = $job;
-        $this->config   = $config ?? config('Workflows');
-        $this->request  = $request ?? service('request');
-        $this->response = $response ?? service('response');
+        parent::__construct();
 
-        $this->jobs = model($this->config->jobModel); // @phpstan-ignore-line
-
+        $this->setJob($job);
         $this->initialize();
-    }
-
-    /**
-     * Sets the Job for this Action to run against.
-     * Used because Handlers needs to instantiate this
-     * class without parameters.
-     *
-     * @return $this
-     */
-    public function setJob(Job $job): self
-    {
-        $this->job = $job;
-
-        return $this;
-    }
-
-    //--------------------------------------------------------------------
-
-    /**
-     * Runs when a job progresses forward through the workflow.
-     *
-     * @return mixed
-     */
-    public function up()
-    {
-        // Optionally implemented by child class
-    }
-
-    /**
-     * Runs when job regresses back through the workflow.
-     *
-     * @return mixed
-     */
-    public function down()
-    {
-        // Optionally implemented by child class
-    }
-
-    //--------------------------------------------------------------------
-
-    /**
-     * HTTP Request Methods.
-     *
-     * These baseline defaults specify the expected
-     * return types and exception behavior for the
-     * supported HTTP methods. Child classes should
-     * override these methods but follow the correct
-     * method definition.
-     *
-     * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
-     */
-
-    /**
-     * @throws WorkflowsException
-     */
-    public function get(): ?ResponseInterface
-    {
-        throw new WorkflowsException('Not implemented.');
-    }
-
-    /**
-     * @throws WorkflowsException
-     */
-    public function head(): ?ResponseInterface
-    {
-        throw new WorkflowsException('Not implemented.');
-    }
-
-    /**
-     * @throws WorkflowsException
-     */
-    public function post(): ?ResponseInterface
-    {
-        throw new WorkflowsException('Not implemented.');
-    }
-
-    /**
-     * @throws WorkflowsException
-     */
-    public function put(): ?ResponseInterface
-    {
-        throw new WorkflowsException('Not implemented.');
-    }
-
-    /**
-     * @throws WorkflowsException
-     */
-    public function delete(): ?ResponseInterface
-    {
-        throw new WorkflowsException('Not implemented.');
-    }
-
-    /**
-     * @throws WorkflowsException
-     */
-    public function connect(): ?ResponseInterface
-    {
-        throw new WorkflowsException('Not implemented.');
-    }
-
-    /**
-     * @throws WorkflowsException
-     */
-    public function options(): ?ResponseInterface
-    {
-        throw new WorkflowsException('Not implemented.');
-    }
-
-    /**
-     * @throws WorkflowsException
-     */
-    public function trace(): ?ResponseInterface
-    {
-        throw new WorkflowsException('Not implemented.');
-    }
-
-    /**
-     * @throws WorkflowsException
-     */
-    public function patch(): ?ResponseInterface
-    {
-        throw new WorkflowsException('Not implemented.');
     }
 
     /**
@@ -219,6 +88,24 @@ abstract class BaseAction
      * Optionally implemented by child classes.
      */
     protected function initialize()
+    {
+    }
+
+    //--------------------------------------------------------------------
+
+    /**
+     * Runs when a job progresses forward through the workflow.
+     * Optionally implemented by child classes.
+     */
+    public function up(): void
+    {
+    }
+
+    /**
+     * Runs when job regresses back through the workflow.
+     * Optionally implemented by child classes.
+     */
+    public function down(): void
     {
     }
 }

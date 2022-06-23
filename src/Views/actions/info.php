@@ -1,20 +1,7 @@
-<?= $this->extend($layout, ['menu' => 'jobs']) ?>
-<?= $this->section('headerAssets') ?>
-
-<script>
-	var baseUrl = '<?= base_url() ?>';
-</script>
-
-<?= $this->endSection() ?>
+<?= $this->extend($layout) ?>
 <?= $this->section('main') ?>
 
 <div class="container">
-
-	<?php if (empty($job)): ?>
-
-	<p>Unable to locate that job!</p>
-
-	<?php else: ?>
 
 	<h2>Job info</h2>
 
@@ -42,8 +29,6 @@
 			</div>
 		</div>
 	</form>
-
-	<?php endif; ?>
 </div>
 
 <?= $this->endSection() ?>

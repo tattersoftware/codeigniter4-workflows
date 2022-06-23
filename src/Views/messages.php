@@ -6,9 +6,9 @@
 	<div class="alert alert-<?= $class ?>">
 		<?= $message ?>
 	</div>
-	
+
 	<p>
-		<?= if ($job !== null): ?>
+		<?php if ($job !== null): ?>
 		<a class="btn btn-primary" href="<?= $job->getUrl() ?>">View Job</a>
 		<?php endif; ?>
 

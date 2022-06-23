@@ -27,4 +27,7 @@ return [
     'actionMissingMethod'    => 'The "{0}" action does not support the "{1}" method.',
     'jobAlreadyComplete'     => 'That job is already complete.',
     'invalidActionReturn'    => 'Unable to interpret action return.',
+    'jobAwaitingInput'       => 'Your job "{0}" is currently waiting for staff input.',
+    'jobComplete'            => 'Your job "{0}" completed successfully.',
+    'jobDeleted'             => 'Your job "{0}" has been removed.',
 ];

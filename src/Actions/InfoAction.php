@@ -17,6 +17,12 @@ class InfoAction extends BaseAction
         'summary'  => 'Set basic details of a job',
     ];
 
+    protected string $view = 'Tatter\Workflows\Views\actions\info';
+    protected array $rules = [
+        'name'    => 'required|max_length[255]',
+        'summary' => 'max_length[255]',
+    ];
+
     /**
      * Display the edit form.
      *
@@ -24,15 +30,7 @@ class InfoAction extends BaseAction
      */
     public function get(): ResponseInterface
     {
-        $view = $this->config->views['info'] ?? 'Tatter\Workflows\Views\actions\info';
-
-        $this->response->setBody(view($view, [
-            'layout' => config('Layouts')->public,
-            'config' => $this->config,
-            'job'    => $this->job,
-        ]));
-
-        return $this->response;
+        return $this->render($this->view);
     }
 
     /**
@@ -43,13 +41,8 @@ class InfoAction extends BaseAction
     public function post(): ?ResponseInterface
     {
         // Validate
-        $validation = service('validation')->reset()->setRules([
-            'name'    => 'required|max_length[255]',
-            'summary' => 'max_length[255]',
-        ]);
-
-        if (! $validation->withRequest($this->request)->run()) {
-            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+        if (! $this->validate($this->rules)) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
         // Try to update the job
