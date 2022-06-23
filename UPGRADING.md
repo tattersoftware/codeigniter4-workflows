@@ -6,6 +6,8 @@
 * `Workflows` is now officially a Tatter Module, so relies on the opinionated frontend tech provided by `Tatter\Frontend`
 * Related, all layouts are now routed through `Tatter\Layouts`: Actions and their views should be updated to use the same
 * `Tatter\Handlers` version 3 improves class discovery and attribute access - all Actions should be updated (compare to `InfoAction`)
+* Actions are now proper Controllers; this shouldn't affect most implementations, but make sure there are not method collisions
+* A number of view files have been removed or consolidated; check `Config\Workflows::$views` to ensure the views you need still exist
 
 ## Version 3 to 4
 ***

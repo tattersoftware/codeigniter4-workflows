@@ -63,6 +63,16 @@ class Job extends Entity
     //--------------------------------------------------------------------
 
     /**
+     * Returns the URL to show this Job.
+     */
+    public function getUrl(): string
+    {
+        $base = rtrim(config('Workflows')->routeBase, '/ ') . '/';
+
+        return site_url($base . 'show/' . $this->attributes['id']);
+    }
+
+    /**
      * Fetches, stores, and returns all this job's flags (from `jobflags`).
      *
      * @return array<string,Time>

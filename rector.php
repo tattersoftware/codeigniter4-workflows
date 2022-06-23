@@ -68,6 +68,7 @@ return static function (RectorConfig $rectorConfig): void {
     // Are there files or rules you need to skip?
     $rectorConfig->skip([
         __DIR__ . '/src/Views',
+        __DIR__ . '/src/Actions/InfoAction.php',
 
         JsonThrowOnErrorRector::class,
         StringifyStrNeedlesRector::class,

@@ -2,7 +2,6 @@
 
 namespace Tatter\Workflows\Controllers;
 
-use CodeIgniter\Controller;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\ResponseInterface;
 use Tatter\Workflows\Exceptions\WorkflowsException;
@@ -28,7 +27,7 @@ class Jobs extends BaseController
     {
         // Load the job
         if (! $job = $this->jobs->withDeleted()->find($jobId)) {
-            return $this->handleError(WorkflowsException::forJobNotFound());
+            return $this->renderError(lang('Workflows.jobNotFound'));
         }
 
         $this->response->setBody(view($this->config->views['job'], [
@@ -61,32 +60,29 @@ class Jobs extends BaseController
             }
 
             if ($workflows === []) {
-                return $this->handleError(WorkflowsException::forNoWorkflowAvailable());
+                return $this->renderError(lang('Workflows.noWorkflowAvailable'));
             }
 
             // If more than one Workflow was available then display a selection
             if (count($workflows) > 1) {
-                $this->response->setBody(view($this->config->views['workflow'], [
-                    'layout'    => config('Layouts')->public,
+                return $this->render($this->config->views['workflow'], [
                     'workflows' => $workflows,
-                ]));
-
-                return $this->response;
+                ]);
             }
 
             $workflow = reset($workflows);
         } elseif (! $workflow = model(WorkflowModel::class)->find($workflowId)) {
-            return $this->handleError(WorkflowsException::forWorkflowNotFound());
+            return $this->renderError(lang('Workflows.workflowNotFound'));
         }
 
         // Verify access
         if (! $workflow->mayAccess()) {
-            return $this->handleError(WorkflowsException::forWorkflowNotPermitted());
+            return $this->renderError(lang('Workflows.workflowNotPermitted'));
         }
 
         // Determine the starting point
-        if (! $stages = $workflow->stages) {
-            return $this->handleError(WorkflowsException::forMissingStages());
+        if (! $stages = $workflow->getStages()) {
+            return $this->renderError(lang('Workflows.workflowNoStages'));
         }
 
         $stage = reset($stages);
@@ -117,18 +113,13 @@ class Jobs extends BaseController
     public function delete(string $jobId): ResponseInterface
     {
         // Verify the job
-        if (! $job = $this->jobs->find($jobId)) {
+        if (! $this->job = $this->jobs->find($jobId)) {
             throw PageNotFoundException::forPageNotFound();
         }
 
         // Delete the job (soft)
         $this->jobs->delete($jobId);
 
-        $this->response->setBody(view($this->config->views['deleted'], [
-            'layout' => config('Layouts')->public,
-            'job'    => $job,
-        ]));
-
-        return $this->response;
+        return $this->renderMessage(lang('Workflows.jobDeleted', $this->job->name));
     }
 }

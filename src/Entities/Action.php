@@ -24,6 +24,9 @@ class Action extends Entity
         'updated_at',
         'deleted_at',
     ];
+    protected $casts = [
+        'name' => 'string',
+    ];
 
     /**
      * Default set of attributes.

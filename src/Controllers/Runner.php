@@ -6,6 +6,7 @@ use CodeIgniter\Controller;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
+use RuntimeException;
 use Tatter\Workflows\Entities\Action;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Entities\Stage;
@@ -17,10 +18,10 @@ use Tatter\Workflows\Models\WorkflowModel;
 /**
  * Class Runner.
  *
- * Functions as a super-controller, routing jobs to their specific actions
- * and action functions with included metadata.
+ * Functions as a super-controller, routing to their specific
+ * Action controller and method with job data.
  */
-class Runner extends BaseController
+final class Runner extends BaseController
 {
     /**
      * Resume a Job at its current Stage.
@@ -29,34 +30,29 @@ class Runner extends BaseController
      *
      * @return RedirectResponse|ResponseInterface A view to display or a RedirectResponse
      */
-    public function resume($jobId): ResponseInterface
+    public function resume($jobId = ''): ResponseInterface
     {
         // Get the Job
         if ($jobId) {
-            /** @var Job $job */
-            $job = $this->jobs->find($jobId);
+            $this->job = $this->jobs->find($jobId);
         }
 
-        if (empty($job)) {
-            return $this->handleError(WorkflowsException::forJobNotFound());
+        if ($this->job === null) {
+            return $this->renderError(lang('Workflows.jobNotFound'));
         }
 
         // If the Job is completed then display a message and quit
-        if (empty($job->stage_id)) {
-            $this->response->setBody(view($this->config->views['messages'], [
-                'layout'  => config('Layouts')->public,
-                'message' => lang('Workflows.jobAlreadyComplete'),
-            ]));
-
-            return $this->response;
+        if ($this->job->stage_id === null) {
+            return $this->renderMessage(lang('Workflows.jobAlreadyComplete'));
         }
 
-        // Check for a current Stage
-        if (! $stage = model(StageModel::class)->find($job->stage_id)) {
-            return $this->handleError(new WorkflowsException(lang('Workflows.stageNotFound')));
+        // Get the current Stage
+        if (! $stage = model(StageModel::class)->find($this->job->stage_id)) {
+            throw new RuntimeException('Unknown stage ID: ' . $this->job->stage_id);
         }
 
-        return redirect()->to($stage->action->getRoute($job->id));
+        /** @var Stage $stage */
+        return redirect()->to($stage->getAction()->getRoute($this->job->id));
     }
 
     /**
@@ -77,8 +73,9 @@ class Runner extends BaseController
             // Extract parsed variables
             [$action, $job, $stage] = $this->parseRoute($params);
         } catch (WorkflowsException $e) {
-            return $this->handleError($e);
+            return $this->renderError($e->getMessage());
         }
+        $this->setJob($job);
 
         // Intercept Jobs that are already completed
         if (empty($stage)) {
@@ -90,23 +87,22 @@ class Runner extends BaseController
             try {
                 $job->travel($action->id);
             } catch (WorkflowsException $e) {
-                return $this->handleError($e);
+                return $this->renderError($e->getMessage());
             }
         }
 
         // Check the Action's role against a potential current user
         if (! $action->mayAccess()) {
-            $this->response->setBody(view($this->config->views['filter'], [
-                'layout' => config('Layouts')->public,
-                'job'    => $job,
-            ]));
-
-            return $this->response;
+            return $this->renderMessage(lang('Workflows.jobAwaitingInput', $this->job->name));
         }
 
-        // Determine the request method and run the corresponding Action method
+        // Determine the request method and verify the corresponding Action method exists
         $method = $this->request->getMethod(); // @phpstan-ignore-line
+        if (! method_exists($action, $method)) {
+            throw PageNotFoundException::forPageNotFound();
+        }
 
+        // Run the Action method
         try {
             $result = $action->setJob($job)->{$method}();
         } catch (WorkflowsException $e) {
@@ -178,22 +174,19 @@ class Runner extends BaseController
      */
     protected function progress(Job $job): ResponseInterface
     {
+        $this->setJob($job);
+
         // Get the next Stage
         if ($stage = $job->next()) {
             // Travel to the next Action
             $job->travel($stage->action_id, false);
 
-            return redirect()->to($stage->action->getRoute($job->id));
+            return redirect()->to($stage->getAction()->getRoute($job->id));
         }
 
         // Update the Job as complete
         $this->jobs->update($job->id, ['stage_id' => null]);
 
-        $this->response->setBody(view($this->config->views['complete'], [
-            'layout' => config('Layouts')->public,
-            'job'    => $job,
-        ]));
-
-        return $this->response;
+        return $this->renderMessage(lang('Workflows.jobAwaitingInput', $this->job->name));
     }
 }

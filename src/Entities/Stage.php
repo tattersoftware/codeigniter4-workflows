@@ -38,7 +38,7 @@ class Stage extends Entity
      */
     public function getName(): string
     {
-        return $this->getAction()->name ?? '';
+        return $this->getAction()->name;
     }
 
     /**
