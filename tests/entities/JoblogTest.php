@@ -35,7 +35,7 @@ final class JoblogTest extends DatabaseTestCase
         ]);
     }
 
-    public function testGetUser()
+    public function testGetUser(): void
     {
         $user = $this->fakeUser();
 

@@ -16,52 +16,88 @@ use RuntimeException;
 
 class WorkflowsException extends RuntimeException implements ExceptionInterface
 {
-    public static function forNoWorkflowAvailable()
+    /**
+     * @return static
+     */
+    public static function forNoWorkflowAvailable(): self
     {
         return new static(lang('Workflows.noWorkflowAvailable'), 404);
     }
 
-    public static function forWorkflowNotFound()
+    /**
+     * @return static
+     */
+    public static function forWorkflowNotFound(): self
     {
         return new static(lang('Workflows.workflowNotFound'), 404);
     }
 
-    public static function forWorkflowNotPermitted()
+    /**
+     * @return static
+     */
+    public static function forWorkflowNotPermitted(): self
     {
         return new static(lang('Workflows.workflowNotPermitted'), 403);
     }
 
-    public static function forActionNotFound()
+    /**
+     * @return static
+     */
+    public static function forActionNotFound(): self
     {
         return new static(lang('Workflows.actionNotFound'), 404);
     }
 
-    public static function forJobNotFound()
+    /**
+     * @return static
+     */
+    public static function forJobNotFound(): self
     {
         return new static(lang('Workflows.jobNotFound'), 404);
     }
 
-    public static function forStageNotFound()
+    /**
+     * @return static
+     */
+    public static function forStageNotFound(): self
     {
         return new static(lang('Workflows.stageNotFound'));
     }
 
-    public static function forMissingStages()
+    /**
+     * @return static
+     */
+    public static function forMissingStages(): self
     {
         return new static(lang('Workflows.workflowNoStages'));
     }
 
-    public static function forSkipRequiredStage($name)
+    /**
+     * @param mixed $name
+     *
+     * @return static
+     */
+    public static function forSkipRequiredStage($name): self
     {
         return new static(lang('Workflows.skipRequiredStage', [$name]));
     }
 
-    public static function forMissingJobId($route = '')
+    /**
+     * @param mixed $route
+     *
+     * @return static
+     */
+    public static function forMissingJobId($route = ''): self
     {
         return new static(lang('Workflows.routeMissingJobId', [$route]));
     }
 
-    public static function forUnsupportedActionMethod($action, $method)
+    /**
+     * @param mixed $action
+     *
+     * @return static
+     */
+    public static function forUnsupportedActionMethod($action, string $method): self
     {
         return new static(lang('Workflows.actionMissingMethod', [$action, $method]));
     }

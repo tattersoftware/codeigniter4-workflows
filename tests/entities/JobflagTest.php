@@ -47,14 +47,14 @@ final class JobflagTest extends DatabaseTestCase
 
     //--------------------------------------------------------------------
 
-    public function testGetFlagsReturnsEmptyArray()
+    public function testGetFlagsReturnsEmptyArray(): void
     {
         $result = $this->job->getFlags();
 
         $this->assertSame($result, []);
     }
 
-    public function testGetFlagsReturnsFlagsArray()
+    public function testGetFlagsReturnsFlagsArray(): void
     {
         $this->createFlag();
 
@@ -64,14 +64,14 @@ final class JobflagTest extends DatabaseTestCase
         $this->assertSame($this->now, $result['foobar']->toDateTimeString());
     }
 
-    public function testGetFlagReturnsNull()
+    public function testGetFlagReturnsNull(): void
     {
         $result = $this->job->getFlag('foobar');
 
         $this->assertNull($result);
     }
 
-    public function testGetFlagReturnsTime()
+    public function testGetFlagReturnsTime(): void
     {
         $this->createFlag();
 
@@ -81,7 +81,7 @@ final class JobflagTest extends DatabaseTestCase
         $this->assertSame($this->now, $result->toDateTimeString());
     }
 
-    public function testGetFlagStoresValues()
+    public function testGetFlagStoresValues(): void
     {
         $this->createFlag();
         $this->job->getFlags();
@@ -92,14 +92,14 @@ final class JobflagTest extends DatabaseTestCase
         $this->assertInstanceOf(Time::class, $result);
     }
 
-    public function testSetFlagCreates()
+    public function testSetFlagCreates(): void
     {
         $this->job->setFlag('barbam');
 
         $this->seeInDatabase('jobflags', ['job_id' => $this->job->id]);
     }
 
-    public function testClearFlagDeletes()
+    public function testClearFlagDeletes(): void
     {
         $this->createFlag();
         $this->job->clearFlag('foobar');
@@ -109,7 +109,7 @@ final class JobflagTest extends DatabaseTestCase
         $this->assertNull($result);
     }
 
-    public function testClearFlagsDeletesAll()
+    public function testClearFlagsDeletesAll(): void
     {
         $this->createFlag();
         $this->createFlag('barbam');

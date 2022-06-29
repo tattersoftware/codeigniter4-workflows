@@ -20,7 +20,7 @@ final class JobModelTest extends DatabaseTestCase
     protected $migrateOnce = true;
     protected $seedOnce    = true;
 
-    public function testInsertCreatesJoblog()
+    public function testInsertCreatesJoblog(): void
     {
         $jobId = model(JobModel::class)->insert([
             'name'        => 'Banana Job',
@@ -35,7 +35,7 @@ final class JobModelTest extends DatabaseTestCase
         ]);
     }
 
-    public function testUpdateCreatesJoblog()
+    public function testUpdateCreatesJoblog(): void
     {
         $job = fake(JobModel::class);
 

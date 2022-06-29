@@ -36,7 +36,7 @@ final class WorkflowTest extends DatabaseTestCase
         $this->workflow = fake(WorkflowModel::class);
     }
 
-    public function testGetStages()
+    public function testGetStages(): void
     {
         $stage = fake(StageModel::class, [
             'workflow_id' => $this->workflow->id,
@@ -52,14 +52,14 @@ final class WorkflowTest extends DatabaseTestCase
         $this->assertSame($stage->id, $result->id);
     }
 
-    public function testMayAccessEmpty()
+    public function testMayAccessEmpty(): void
     {
         $this->workflow->role = '';
 
         $this->assertTrue($this->workflow->mayAccess());
     }
 
-    public function testMayAccessExplicit()
+    public function testMayAccessExplicit(): void
     {
         $explicit              = $this->createExplicit();
         $_SESSION['logged_in'] = $explicit->user_id;
@@ -69,7 +69,7 @@ final class WorkflowTest extends DatabaseTestCase
         $this->assertTrue($this->workflow->mayAccess());
     }
 
-    public function testMayAccessExplicitWithUser()
+    public function testMayAccessExplicitWithUser(): void
     {
         $explicit = $this->createExplicit();
 
@@ -81,7 +81,7 @@ final class WorkflowTest extends DatabaseTestCase
         $this->assertTrue($this->workflow->mayAccess($user));
     }
 
-    public function testMayAccessExplicitWithExplicits()
+    public function testMayAccessExplicitWithExplicits(): void
     {
         $explicit = $this->createExplicit();
 
@@ -90,7 +90,7 @@ final class WorkflowTest extends DatabaseTestCase
         $this->assertTrue($this->workflow->mayAccess(null, [$explicit->id => $explicit->permitted]));
     }
 
-    public function testMayAccessExplicitWithBoth()
+    public function testMayAccessExplicitWithBoth(): void
     {
         $explicit = $this->createExplicit();
 
@@ -102,14 +102,14 @@ final class WorkflowTest extends DatabaseTestCase
         $this->assertTrue($this->workflow->mayAccess($user, [$explicit->id => $explicit->permitted]));
     }
 
-    public function testMayNotAccess()
+    public function testMayNotAccess(): void
     {
         $this->workflow->role = 'restricted';
 
         $this->assertFalse($this->workflow->mayAccess());
     }
 
-    public function testMayNotAccessExplicit()
+    public function testMayNotAccessExplicit(): void
     {
         $explicit              = $this->createExplicit(['permitted' => 0]);
         $_SESSION['logged_in'] = $explicit->user_id;
@@ -119,7 +119,7 @@ final class WorkflowTest extends DatabaseTestCase
         $this->assertFalse($this->workflow->mayAccess());
     }
 
-    public function testMayNotAccessExplicitWithUser()
+    public function testMayNotAccessExplicitWithUser(): void
     {
         $explicit = $this->createExplicit(['permitted' => 0]);
 
@@ -131,7 +131,7 @@ final class WorkflowTest extends DatabaseTestCase
         $this->assertFalse($this->workflow->mayAccess($user));
     }
 
-    public function testMayNotAccessExplicitWithExplicits()
+    public function testMayNotAccessExplicitWithExplicits(): void
     {
         $explicit = $this->createExplicit(['permitted' => 0]);
 
@@ -140,7 +140,7 @@ final class WorkflowTest extends DatabaseTestCase
         $this->assertFalse($this->workflow->mayAccess(null, [$explicit->id => $explicit->permitted]));
     }
 
-    public function testMayNotAccessExplicitWithBoth()
+    public function testMayNotAccessExplicitWithBoth(): void
     {
         $explicit = $this->createExplicit(['permitted' => 0]);
 
@@ -154,8 +154,10 @@ final class WorkflowTest extends DatabaseTestCase
 
     /**
      * Create a fake explicit to test with.
+     *
+     * @return array|object
      */
-    private function createExplicit(array $data = []): object
+    private function createExplicit(array $data = [])
     {
         $user = $this->fakeUser();
 

@@ -22,7 +22,7 @@ use Tests\Support\DatabaseTestCase;
  */
 final class SimulatorTest extends DatabaseTestCase
 {
-    public function testFakeStageUsesCounts()
+    public function testFakeStageUsesCounts(): void
     {
         Fabricator::setCount('workflows', 10000);
 
@@ -36,7 +36,7 @@ final class SimulatorTest extends DatabaseTestCase
         $this->assertGreaterThan(12, $sum);
     }
 
-    public function testInitializeCreatesMinimumObjects()
+    public function testInitializeCreatesMinimumObjects(): void
     {
         Simulator::initialize();
 
@@ -46,7 +46,7 @@ final class SimulatorTest extends DatabaseTestCase
         $this->assertGreaterThanOrEqual(40, model(JobModel::class)->countAllResults());
     }
 
-    public function testInitializeRegistersActions()
+    public function testInitializeRegistersActions(): void
     {
         Simulator::initialize();
 

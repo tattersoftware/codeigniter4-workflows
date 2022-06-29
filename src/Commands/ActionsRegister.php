@@ -24,7 +24,7 @@ class ActionsRegister extends BaseCommand
     protected $usage       = 'actions:register';
     protected $arguments   = [];
 
-    public function run(array $params = [])
+    public function run(array $params = []): void
     {
         ActionFactory::register();
 

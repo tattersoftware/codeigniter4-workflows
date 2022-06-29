@@ -21,7 +21,7 @@ final class WorkflowModelTest extends DatabaseTestCase
     protected $migrateOnce = true;
     protected $seedOnce    = true;
 
-    public function testUpdateCreatesJoblog()
+    public function testUpdateCreatesJoblog(): void
     {
         // Create a new Workflow with some Stages
         $workflow = fake(WorkflowModel::class);
