@@ -52,6 +52,10 @@ class JobModel extends Model
 
     /**
      * Logs successful insertions.
+     *
+     * @return array|false
+     *
+     * @psalm-return array{result: mixed}|false
      */
     protected function logInsert(array $eventData)
     {
@@ -74,7 +78,7 @@ class JobModel extends Model
     }
 
     // Log updates that result in a stage change
-    protected function logUpdate(array $data)
+    protected function logUpdate(array $data): array
     {
         // Process each updated entry
         foreach ($data['id'] as $id) {

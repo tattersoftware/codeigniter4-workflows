@@ -33,7 +33,7 @@ class Simulator
      *
      * @param array $targets Array of target items to create
      */
-    public static function initialize($targets = ['actions', 'jobs', 'stages', 'workflows'])
+    public static function initialize($targets = ['actions', 'jobs', 'stages', 'workflows']): void
     {
         self::reset();
 
@@ -86,7 +86,7 @@ class Simulator
     /**
      * Reset counts.
      */
-    public static function reset()
+    public static function reset(): void
     {
         // Reset counts on faked items
         Fabricator::resetCounts();

@@ -20,7 +20,7 @@ use Tests\Support\Models\FooModel;
  */
 final class BaseActionTest extends CIUnitTestCase
 {
-    public function testUsesConfigModel()
+    public function testUsesConfigModel(): void
     {
         $config           = config('Workflows');
         $config->jobModel = FooModel::class;
@@ -32,12 +32,12 @@ final class BaseActionTest extends CIUnitTestCase
         $this->assertInstanceOf(FooModel::class, $result);
     }
 
-    public function testInitialize()
+    public function testInitialize(): void
     {
         $action                      = new class (new Job()) extends BaseAction {
             public bool $initialized = false;
 
-            protected function initialize()
+            protected function initialize(): void
             {
                 $this->initialized = true;
             }

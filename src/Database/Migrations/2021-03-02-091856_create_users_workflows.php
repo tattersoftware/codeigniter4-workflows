@@ -15,7 +15,7 @@ use CodeIgniter\Database\Migration;
 
 class CreateUsersWorkflows extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $fields = [
             'user_id'     => ['type' => 'int', 'unsigned' => true],
@@ -38,7 +38,7 @@ class CreateUsersWorkflows extends Migration
         ]);
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('users_workflows');
         $this->forge->dropColumn('workflows', 'role');

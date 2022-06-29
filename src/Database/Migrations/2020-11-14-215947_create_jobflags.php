@@ -15,7 +15,7 @@ use CodeIgniter\Database\Migration;
 
 class CreateJobflags extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $fields = [
             'job_id'     => ['type' => 'int', 'unsigned' => true],
@@ -33,7 +33,7 @@ class CreateJobflags extends Migration
         $this->forge->createTable('jobflags');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('jobflags');
     }

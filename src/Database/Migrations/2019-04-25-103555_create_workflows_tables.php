@@ -15,7 +15,7 @@ use CodeIgniter\Database\Migration;
 
 class CreateWorkflowsTables extends Migration
 {
-    public function up()
+    public function up(): void
     {
         // Workflows
         $fields = [
@@ -121,7 +121,7 @@ class CreateWorkflowsTables extends Migration
         $this->forge->createTable('joblogs');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('joblogs');
         $this->forge->dropTable('jobs');

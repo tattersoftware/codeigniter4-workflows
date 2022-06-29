@@ -25,7 +25,7 @@ final class JobTest extends DatabaseTestCase
     protected $migrateOnce = true;
     protected $seedOnce    = true;
 
-    public function testTravelCheck()
+    public function testTravelCheck(): void
     {
         // Create the requirements
         $workflow = fake(WorkflowModel::class);
@@ -57,7 +57,7 @@ final class JobTest extends DatabaseTestCase
         $job->travel($stageOptional->action_id, true);
     }
 
-    public function testTravelNotCheck()
+    public function testTravelNotCheck(): void
     {
         // Create the requirements
         $workflow = fake(WorkflowModel::class);

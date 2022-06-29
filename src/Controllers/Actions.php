@@ -6,8 +6,10 @@ use Tatter\Workflows\Models\ActionModel;
 
 class Actions extends BaseController
 {
-    // Display a list of available actions
-    public function index()
+    /**
+     * Displays a list of available actions
+     */
+    public function index(): string
     {
         $data = [
             'layout'  => config('Layouts')->manage,

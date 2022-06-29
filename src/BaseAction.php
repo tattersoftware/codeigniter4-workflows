@@ -87,7 +87,7 @@ abstract class BaseAction extends BaseController
      * Initializes the instance with any additional steps.
      * Optionally implemented by child classes.
      */
-    protected function initialize()
+    protected function initialize(): void
     {
     }
 
