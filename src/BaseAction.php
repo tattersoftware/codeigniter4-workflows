@@ -47,11 +47,13 @@ abstract class BaseAction extends BaseController
      * @var array<string,scalar|null>
      */
     protected static array $defaults = [
+        'id'       => '',
         'name'     => '',
         'role'     => 'user',
         'icon'     => 'fas fa-tasks',
         'category' => '',
         'summary'  => '',
+        'class'    => '',
     ];
 
     /**
@@ -63,7 +65,7 @@ abstract class BaseAction extends BaseController
     {
         $attributes = array_merge(static::$defaults, static::ATTRIBUTES);
 
-        $attributes['uid']   = static::HANDLER_ID;
+        $attributes['id']    = static::HANDLER_ID;
         $attributes['class'] = static::class;
 
         return $attributes;
