@@ -1,14 +1,5 @@
 <?php
 
-/**
- * This file is part of Tatter Workflows.
- *
- * (c) 2021 Tatter Software
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
- */
-
 namespace Tatter\Workflows\Models;
 
 use CodeIgniter\Model;
@@ -25,11 +16,14 @@ class StageModel extends Model
     protected $returnType    = Stage::class;
     protected $useTimestamps = true;
     protected $allowedFields = [
-        'action_id', 'workflow_id', 'input', 'required',
+        'workflow_id',
+        'action_id',
+        'input',
+        'required',
     ];
     protected $validationRules = [
-        'action_id'   => 'required|is_natural_no_zero',
         'workflow_id' => 'required|is_natural_no_zero',
+        'action_id'   => 'required|string',
         'input'       => 'permit_empty|max_length[63]',
     ];
 
@@ -44,8 +38,8 @@ class StageModel extends Model
     public function fake(Generator &$faker): Stage
     {
         return new Stage([
-            'action_id'   => random_int(1, Fabricator::getCount('actions') ?: 12),
             'workflow_id' => random_int(1, Fabricator::getCount('workflows') ?: 4),
+            'action_id'   => 'info',
             'required'    => random_int(0, 5) ? 1 : 0,
         ]);
     }
