@@ -19,6 +19,16 @@ class Stage extends Entity
     ];
 
     /**
+     * Gets the associated Action.
+     *
+     * @return class-string<BaseAction>
+     */
+    public function getAction(): string
+    {
+        return ActionFactory::find($this->attributes['action_id']);
+    }
+
+    /**
      * Passes through name requests to the Action.
      */
     public function getName(): string
@@ -29,12 +39,11 @@ class Stage extends Entity
     }
 
     /**
-     * Gets the associated Action.
-     *
-     * @return class-string<BaseAction>
+     * Formulate the route for this Stage (without job ID).
+     * E.g.: $route = $stage->getRoute(); return redirect()->to("$route/1");
      */
-    public function getAction(): string
+    public function getRoute(): string
     {
-        return ActionFactory::find($this->attributes['action_id']);
+        return '/' . config('Workflows')->routeBase . '/' . $this->attributes['action_id'] . '/';
     }
 }

@@ -228,14 +228,14 @@ class Job extends Entity
     /**
      * Moves through the Workflow, skipping non-required Stages but running their Action functions.
      *
-     * @param int  $actionId      ID of the target Action
-     * @param bool $checkRequired Whether to check for required stages while traveling
+     * @param string $actionId      ID of the target Action
+     * @param bool   $checkRequired Whether to check for required stages while traveling
      *
      * @throws WorkflowsException
      *
      * @return array Array of boolean results from each Action's up/down method
      */
-    public function travel(int $actionId, bool $checkRequired = true): array
+    public function travel(string $actionId, bool $checkRequired = true): array
     {
         $this->ensureCreated();
 

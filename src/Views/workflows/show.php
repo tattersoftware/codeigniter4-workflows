@@ -65,7 +65,6 @@
 				<th scope="col"></th>
 				<th scope="col">Name</th>
 				<th scope="col">Summary</th>
-				<th scope="col">Input</th>
 				<th scope="col">
 					Required
 					<i class="far fa-question-circle" data-toggle="tooltip" title="Controls whether a particular action may be skipped."></i>
@@ -76,39 +75,12 @@
 				<?php $i = 1; ?>
 				<?php foreach ($stages as $stage): ?>
 				<?php foreach ($actions as $action): ?>
-				<?php if ($action->id === $stage->action_id): ?>
+				<?php if ($action['id'] === $stage->action_id): ?>
 
 				<tr>
 					<td><?= $i++ ?>.</td>
-					<td><i class="<?= $action->icon ?>"></i> <?= $action->name ?></td>
-					<td class="small text-muted"><?= $action->summary ?></td>
-					<td>
-
-					<?php switch ($action->input): case 'workflow': ?>
-
-						<select class="custom-select small" onchange="return setStageInput(<?= $stage->id ?>, this.value);" required>
-							<option></option>
-
-							<?php foreach ($workflows as $workflowOpt): ?>
-								<?php if ($workflowOpt->id === $workflow->id): continue; endif; ?>
-
-							<option value="<?= $workflowOpt->id ?>" <?= ($workflowOpt->id === $stage->input) ? 'selected' : '' ?>><?= $workflowOpt->name ?></option>
-
-							<?php endforeach; ?>
-
-						</select>
-
-						<?php break;
-
-case '': break;
-
-default: ?>
-
-						<input name="input" type="<?= $action->input ?>" class="form-control" value="<?= $stage->input ?>" onchange="return setStageInput(<?= $stage->id ?>, this.value);" required>
-
-					<?php endswitch; ?>
-
-					</td>
+					<td><i class="<?= $action['icon'] ?>"></i> <?= $action['name'] ?></td>
+					<td class="small text-muted"><?= $action['summary'] ?></td>
 					<td>
 						<div class="custom-control custom-switch">
 							<input type="checkbox" class="custom-control-input" id="required-<?= $stage->id ?>" value="1" <?= $stage->required ? 'checked' : '' ?> onclick="return setStageRequired(<?= $stage->id ?>, this.checked);">
@@ -132,8 +104,6 @@ default: ?>
 <?= $this->section('footerAssets') ?>
 
 <script>
-	var baseUrl = '<?= base_url() ?>';
-
 	function setStageRequired(stageId, checked) {
 		checked = checked ? 1 : 0;
 		return updateStage(stageId, { required: checked });
@@ -149,7 +119,7 @@ default: ?>
 
 		$.ajax({
 			type: "POST",
-			url: baseUrl + "stages/" + stageId,
+			url: '<?= site_url('stages/') ?>' + stageId,
 			data: data,
 			datatype: "text"
 		}).done(function( data ) {

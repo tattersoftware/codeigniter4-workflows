@@ -3,7 +3,7 @@
 namespace Tatter\Workflows\Controllers;
 
 use CodeIgniter\HTTP\RedirectResponse;
-use Tatter\Workflows\Models\ActionModel;
+use Tatter\Workflows\Factories\ActionFactory;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\WorkflowModel;
 
@@ -38,7 +38,7 @@ class Workflows extends BaseController
             'layout'    => config('Layouts')->manage,
             'workflow'  => model(WorkflowModel::class)->find($workflowId),
             'workflows' => model(WorkflowModel::class)->orderBy('name', 'asc')->findAll(),
-            'actions'   => model(ActionModel::class)->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
+            'actions'   => ActionFactory::getAllAttributes(),
         ];
 
         // Add the stages
@@ -54,14 +54,14 @@ class Workflows extends BaseController
     {
         $data = [
             'layout'  => config('Layouts')->manage,
-            'actions' => model(ActionModel::class)->orderBy('category', 'asc')->orderBy('name', 'asc')->findAll(),
+            'actions' => ActionFactory::getAllAttributes(),
         ];
 
         // Prepare action data to be JSON encoded for JSSortable
         $json = [];
 
         foreach ($data['actions'] as $action) {
-            $json[$action->id] = $action->toArray();
+            $json[$action['id']] = $action;
         }
 
         $data['json'] = json_encode($json);

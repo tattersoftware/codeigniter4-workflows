@@ -19,6 +19,7 @@ class DropActions extends Migration
     {
         // Grab Action IDs to match them when updating Stages
         $actions = [];
+
         foreach ($this->db->table('actions')->get()->getResultArray() as $row) {
             $actions[$row['id']] = $row['uid'];
         }
@@ -29,7 +30,7 @@ class DropActions extends Migration
         $this->forge->modifyColumn('stages', [
             'action_id' => ['type' => 'varchar', 'constraint' => 63],
         ]);
-        
+
         foreach ($actions as $id => $handlerId) {
             $this->db->table('stages')
                 ->where('action_id', $id)
