@@ -2,7 +2,7 @@
 
 namespace Tatter\Workflows\Controllers;
 
-use Tatter\Workflows\Models\ActionModel;
+use Tatter\Workflows\Factories\ActionFactory;
 
 class Actions extends BaseController
 {
@@ -11,11 +11,9 @@ class Actions extends BaseController
      */
     public function index(): string
     {
-        $data = [
+        return view('Tatter\Workflows\Views\actions\index', [
             'layout'  => config('Layouts')->manage,
-            'actions' => model(ActionModel::class)->orderBy('name')->findAll(),
-        ];
-
-        return view('Tatter\Workflows\Views\actions\index', $data);
+            'actions' => ActionFactory::getAllAttributes(),
+        ]);
     }
 }

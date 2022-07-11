@@ -2,10 +2,8 @@
 
 namespace Tatter\Workflows\Factories;
 
-use RuntimeException;
 use Tatter\Handlers\BaseFactory;
 use Tatter\Workflows\BaseAction;
-use Tatter\Workflows\Models\ActionModel;
 
 /**
  * Action Factory Class
@@ -21,30 +19,19 @@ class ActionFactory extends BaseFactory
     public const HANDLER_TYPE = BaseAction::class;
 
     /**
-     * Gathers all Actions and registers their attributes in the database.
-     * Updates existing records as needed.
-     *
-     * @throws RuntimeException for insert failures
+     * Gathers all attributes from Action handlers, ordered by name.
      */
-    public static function register(): void
+    public static function getAllAttributes(): array
     {
-        $actions = model(ActionModel::class);
+        $actions = [];
 
         foreach (self::findAll() as $handler) {
-            $data = $handler::getAttributes();
-
-            // Check for an existing entry
-            if ($action = $actions->where('uid', $data['uid'])->first()) {
-                $result = $actions->update($action->id, $data);
-            } else {
-                $result = $actions->insert($data, false);
-            }
-
-            if ($result === false) {
-                $message = "Unable to register {$handler}: " . implode(' ', $actions->errors());
-
-                throw new RuntimeException($message);
-            }
+            $actions[$handler::HANDLER_ID] = $handler::getAttributes();
         }
+
+        $names = array_column($actions, 'name');
+        array_multisort($names, $actions);
+
+        return $actions;
     }
 }

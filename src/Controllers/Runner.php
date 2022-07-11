@@ -11,9 +11,8 @@ use Tatter\Workflows\Entities\Action;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Exceptions\WorkflowsException;
-use Tatter\Workflows\Models\ActionModel;
+use Tatter\Workflows\Factories\ActionFactory;
 use Tatter\Workflows\Models\StageModel;
-use Tatter\Workflows\Models\WorkflowModel;
 
 /**
  * Class Runner.
@@ -52,7 +51,7 @@ final class Runner extends BaseController
         }
 
         /** @var Stage $stage */
-        return redirect()->to($stage->getAction()->getRoute($this->job->id));
+        return redirect()->to($stage->getRoute() . $this->job->id);
     }
 
     /**
@@ -134,28 +133,22 @@ final class Runner extends BaseController
      */
     protected function parseRoute(array $params)
     {
-        // Strip off the Action & Job identifiers
-        $uid   = array_shift($params);
-        $jobId = array_shift($params);
+        // Verify the Action
+        $actionId = array_shift($params);
 
-        // Verify the ID
-        if (empty($jobId) || ! is_numeric($jobId)) {
-            throw WorkflowsException::forMissingJobId($uid);
-        }
-
-        // Look up the Action by its UID
-        if (! $action = model(ActionModel::class)->where('uid', $uid)->first()) {
+        try {
+            $action = ActionFactory::find($actionId);
+        } catch (RuntimeException $e) {
             throw WorkflowsException::forActionNotFound();
         }
 
-        // Load the Job
-        if (! $job = $this->jobs->find($jobId)) {
-            throw WorkflowsException::forJobNotFound();
+        // Verify the Job
+        $jobId = array_shift($params);
+        if (empty($jobId) || ! is_numeric($jobId)) {
+            throw WorkflowsException::forMissingJobId($actionId);
         }
-
-        // Verify the Workflow
-        if (! $workflow = model(WorkflowModel::class)->find($job->workflow_id)) {
-            throw WorkflowsException::forWorkflowNotFound();
+        if (null === $job = $this->jobs->find($jobId)) {
+            throw WorkflowsException::forJobNotFound();
         }
 
         // stage_id may be empty (completed Job)
@@ -181,7 +174,7 @@ final class Runner extends BaseController
             // Travel to the next Action
             $job->travel($stage->action_id, false);
 
-            return redirect()->to($stage->getAction()->getRoute($job->id));
+            return redirect()->to($stage->getRoute() . $job->id);
         }
 
         // Update the Job as complete

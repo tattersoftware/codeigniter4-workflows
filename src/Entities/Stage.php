@@ -1,18 +1,10 @@
 <?php
 
-/**
- * This file is part of Tatter Workflows.
- *
- * (c) 2021 Tatter Software
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
- */
-
 namespace Tatter\Workflows\Entities;
 
 use CodeIgniter\Entity\Entity;
-use Tatter\Workflows\Models\ActionModel;
+use Tatter\Workflows\BaseAction;
+use Tatter\Workflows\Factories\ActionFactory;
 
 class Stage extends Entity
 {
@@ -21,35 +13,37 @@ class Stage extends Entity
         'updated_at',
     ];
     protected $casts = [
-        'action_id'   => 'int',
+        'action_id'   => 'string',
         'workflow_id' => 'int',
         'required'    => 'bool',
     ];
 
     /**
-     * Cached entity for the associated Action.
+     * Gets the associated Action.
      *
-     * @var Action
+     * @return class-string<BaseAction>
      */
-    private $action;
+    public function getAction(): string
+    {
+        return ActionFactory::find($this->attributes['action_id']);
+    }
 
     /**
      * Passes through name requests to the Action.
      */
     public function getName(): string
     {
-        return $this->getAction()->name;
+        $handler = $this->getAction();
+
+        return $handler::getAttributes()['name'];
     }
 
     /**
-     * Gets the associated Action.
+     * Formulate the route for this Stage (without job ID).
+     * E.g.: $route = $stage->getRoute(); return redirect()->to("$route/1");
      */
-    public function getAction(): Action
+    public function getRoute(): string
     {
-        if ($this->action === null) {
-            $this->action = model(ActionModel::class)->find($this->attributes['action_id']);
-        }
-
-        return $this->action;
+        return '/' . config('Workflows')->routeBase . '/' . $this->attributes['action_id'] . '/';
     }
 }

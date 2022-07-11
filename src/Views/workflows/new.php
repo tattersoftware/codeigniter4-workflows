@@ -65,10 +65,10 @@
 
 					<?php foreach ($actions as $action): ?>
 
-					<button type="button" class="btn btn-outline-primary" onclick="addAction(<?= $action->id ?>);">
+					<button type="button" class="btn btn-outline-primary" onclick="addAction('<?= $action['id'] ?>');">
 						<i class="fas fa-plus-circle"></i>
-						<?= $action->name ?>
-						<small class="text-muted">(<?= $action->uid ?>)</small>
+						<?= $action['name'] ?>
+						<small class="text-muted">(<?= $action['id'] ?>)</small>
 					</button>
 
 					<?php endforeach; ?>
@@ -79,14 +79,14 @@
 
 				<?php foreach (explode(',', old('actions')) as $actionId): ?>
 				<?php foreach ($actions as $action): ?>
-				<?php if ($action->id === $actionId): ?>
+				<?php if ($action['id'] === $actionId): ?>
 
-					<div class="list-group-item" data-id="<?= $action->id ?>">
+					<div class="list-group-item" data-id="<?= $action['id'] ?>">
 						<span class="remove-icon float-right" onclick="this.parentNode.remove();"><i class="fas fa-minus-circle"></i></span>
 						<span class="sort-handle" aria-hidden="true"><i class="fas fa-arrows-alt-v"></i></span>
-						<i class="fas <?= $action->icon ?>"></i>
-						<span class="font-weight-bold mr-3"><?= $action->name ?></span>
-						<small class="text-muted"><?= $action->summary ?></small>
+						<i class="fas <?= $action['icon'] ?>"></i>
+						<span class="font-weight-bold mr-3"><?= $action['name'] ?></span>
+						<small class="text-muted"><?= $action['summary'] ?></small>
 					</div>
 
 				<?php break; endif; ?>

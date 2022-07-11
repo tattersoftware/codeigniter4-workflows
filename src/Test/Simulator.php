@@ -1,19 +1,8 @@
 <?php
 
-/**
- * This file is part of Tatter Workflows.
- *
- * (c) 2021 Tatter Software
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
- */
-
 namespace Tatter\Workflows\Test;
 
 use CodeIgniter\Test\Fabricator;
-use Tatter\Workflows\Factories\ActionFactory;
-use Tatter\Workflows\Models\ActionModel;
 use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\WorkflowModel;
@@ -33,25 +22,9 @@ class Simulator
      *
      * @param array $targets Array of target items to create
      */
-    public static function initialize($targets = ['actions', 'jobs', 'stages', 'workflows']): void
+    public static function initialize($targets = ['jobs', 'stages', 'workflows']): void
     {
         self::reset();
-
-        // Register any Actions and update the count
-        if (in_array('actions', $targets, true)) {
-            ActionFactory::register();
-
-            $actions = model(ActionModel::class)->findAll();
-            $count   = count($actions);
-            Fabricator::setCount('actions', $count);
-
-            // Create actions up to N
-            $count = random_int(10, 20);
-
-            while (Fabricator::getCount('actions') < $count) {
-                fake(ActionModel::class);
-            }
-        }
 
         // Create workflows up to N
         if (in_array('workflows', $targets, true)) {
