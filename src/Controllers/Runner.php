@@ -7,6 +7,7 @@ use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
 use RuntimeException;
+use Tatter\Users\Interfaces\HasPermission;
 use Tatter\Workflows\Entities\Action;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Entities\Stage;
@@ -82,7 +83,7 @@ final class Runner extends BaseController
         }
 
         // If the requested Action differs from the Job's current Action then travel the Workflow
-        if ($action->id !== $stage->action_id) {
+        if ($action::HANDLER_ID !== $stage->action_id) {
             try {
                 $job->travel($action->id);
             } catch (WorkflowsException $e) {
@@ -91,7 +92,7 @@ final class Runner extends BaseController
         }
 
         // Check the Action's role against a potential current user
-        if (! $action->mayAccess()) {
+        if (! $this->checkAccess($action)) {
             return $this->renderMessage(lang('Workflows.jobAwaitingInput', $this->job->name));
         }
 
@@ -103,14 +104,10 @@ final class Runner extends BaseController
 
         // Run the Action method
         try {
-            $result = $action->setJob($job)->{$method}();
+            $instance = new $action($this->job);
+            $result   = $instance->{$method}();
         } catch (WorkflowsException $e) {
-            $this->response->setBody(view($this->config->views['messages'], [
-                'layout' => config('Layouts')->public,
-                'error'  => $e->getMessage(),
-            ]));
-
-            return $this->response;
+            return $this->renderError($e->getMessage());
         }
 
         // If it was a Response then we are done
@@ -119,7 +116,7 @@ final class Runner extends BaseController
         }
 
         // Null means the Stage is complete
-        return $this->progress($job);
+        return $this->progress();
     }
 
     /**
@@ -162,24 +159,43 @@ final class Runner extends BaseController
     }
 
     /**
+     * Checks if the current user can access an Action.
+     */
+    protected function checkAccess(string $action): bool
+    {
+        $role = $action::getAttributes()['role'] ?? '';
+
+        // Allow public Actions
+        if ($role === '') {
+            return true;
+        }
+
+        // Check for a current user
+        if (null === $user = service('users')->findById(user_id())) {
+            return false;
+        }
+
+        /** @var HasPermission $user */
+        return $user->hasPermission($role);
+    }
+
+    /**
      * Progresses a Job after an Action indicates
      * that the current Stage is done.
      */
-    protected function progress(Job $job): ResponseInterface
+    protected function progress(): ResponseInterface
     {
-        $this->setJob($job);
-
         // Get the next Stage
-        if ($stage = $job->next()) {
+        if ($stage = $this->job->next()) {
             // Travel to the next Action
-            $job->travel($stage->action_id, false);
+            $this->job->travel($stage->action_id, false);
 
-            return redirect()->to($stage->getRoute() . $job->id);
+            return redirect()->to($stage->getRoute() . $this->job->id);
         }
 
         // Update the Job as complete
-        $this->jobs->update($job->id, ['stage_id' => null]);
+        $this->jobs->update($this->job->id, ['stage_id' => null]);
 
-        return $this->renderMessage(lang('Workflows.jobAwaitingInput', $this->job->name));
+        return $this->renderMessage(lang('Workflows.jobComplete', $this->job->name));
     }
 }
