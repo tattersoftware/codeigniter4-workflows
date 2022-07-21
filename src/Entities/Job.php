@@ -34,31 +34,27 @@ class Job extends Entity
 
     /**
      * Stored entity for the current Stage. Can be null for completed Jobs.
-     *
-     * @var Stage|null
      */
-    protected $stage;
+    protected ?Stage $stage = null;
 
     /**
-     * Indicates whether the Stage has been loaded.
-     *
-     * @var bool
+     * Whether the Stage has been loaded.
      */
-    protected $stageFlag = false;
+    protected bool $stageChecked = false;
 
     /**
      * Stored entity for the Workflow.
      *
      * @var Workflow
      */
-    protected $workflow;
+    protected ?Workflow $workflow = null;
 
     /**
      * Stored flags from `jobflags`.
      *
      * @var array<string,Time>|null
      */
-    protected $flags;
+    protected ?array $flags = null;
 
     //--------------------------------------------------------------------
 
@@ -167,17 +163,28 @@ class Job extends Entity
     //--------------------------------------------------------------------
 
     /**
-     * Gets the current Stage.
+     * Gets the current Stage, or null for a completed Job.
+     *
+     * @throws RuntimeException
      */
     public function getStage(): ?Stage
     {
-        if (! $this->stageFlag) {
-            $this->stageFlag = true;
+        $this->ensureCreated();
 
-            $this->stage = isset($this->attributes['stage_id'])
-                ? model(StageModel::class)->find($this->attributes['stage_id'])
-                : null;
+        if ($this->stageChecked) {
+            return $this->stage;
         }
+
+        if (empty($this->attributes['stage_id'])) {
+            $stage = null;
+        }
+        // This should *never* happen
+        elseif (null === $stage = model(StageModel::class)->find($this->attributes['stage_id'])) {
+            throw new RuntimeException('Unable to locate Stage ' . $this->attributes['stage_id'] . ' for Job ' . $this->attributes['id']);
+        }
+
+        $this->stage        = $stage;
+        $this->stageChecked = true;
 
         return $this->stage;
     }
