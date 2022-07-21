@@ -2,12 +2,11 @@
 
 namespace Tatter\Workflows\Entities;
 
-use CodeIgniter\Entity\Entity;
 use Config\Services;
 use Tatter\Users\UserEntity;
 use Tatter\Workflows\Models\StageModel;
 
-class Joblog extends Entity
+class Joblog extends BaseEntity
 {
     protected $dates = ['created_at'];
     protected $casts = [

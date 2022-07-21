@@ -34,19 +34,24 @@ final class JobTest extends DatabaseTestCase
 
         $this->assertInstanceOf(Stage::class, $result);
         $this->assertSame($stage->id, $result->id);
+
+        // Must be the same instance from the Workflow node tree
+        $stages = $job->getWorkflow()->getStages();
+        $node   = reset($stages);
+        $this->assertSame($node, $result);
     }
 
-    public function testGetStageThrowsOnMissing(): void
+    public function testGetWorkflowThrowsOnMissing(): void
     {
         /** @var Job $job */
         $job = fake(JobModel::class, [
-            'stage_id' => 42,
+            'workflow_id' => 42,
         ]);
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Unable to locate Stage 42 for Job ' . $job->id);
+        $this->expectExceptionMessage('Unable to locate workflow 42 for job ' . $job->id);
 
-        $job->getStage();
+        $job->getWorkflow();
     }
 
     /* Temporarily disabled until another action is available.

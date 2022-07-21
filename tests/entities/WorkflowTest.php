@@ -36,6 +36,16 @@ final class WorkflowTest extends DatabaseTestCase
         $this->workflow = fake(WorkflowModel::class);
     }
 
+    public function testEnsureCreated(): void
+    {
+        $workflow = new Workflow();
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(Workflow::class . ' must exist in the database.');
+
+        $workflow->getStages();
+    }
+
     public function testGetStages(): void
     {
         $stage = fake(StageModel::class, [
@@ -50,6 +60,26 @@ final class WorkflowTest extends DatabaseTestCase
         $result = reset($result);
         $this->assertInstanceOf(Stage::class, $result);
         $this->assertSame($stage->id, $result->id);
+    }
+
+    public function testGetStageById(): void
+    {
+        $stage = fake(StageModel::class, [
+            'workflow_id' => $this->workflow->id,
+        ]);
+
+        $result = $this->workflow->getStageById($stage->id);
+
+        $this->assertInstanceOf(Stage::class, $result);
+        $this->assertSame($stage->id, $result->id);
+    }
+
+    public function testGetStageByIdFails(): void
+    {
+        $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage('Workflow ' . $this->workflow->id . ' does not contain stage 42');
+
+        $this->workflow->getStageById(42);
     }
 
     public function testMayAccessEmpty(): void

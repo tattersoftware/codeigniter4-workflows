@@ -2,14 +2,13 @@
 
 namespace Tatter\Workflows\Entities;
 
-use CodeIgniter\Entity\Entity;
 use RuntimeException;
 use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\WorkflowModel;
 
-class Job extends Entity
+class Job extends BaseEntity
 {
     use JobFlagTrait;
 
@@ -24,38 +23,11 @@ class Job extends Entity
     ];
 
     /**
-     * Stored entity for the current Stage. Can be null for completed Jobs.
-     */
-    protected ?Stage $stage = null;
-
-    /**
-     * Whether the Stage has been loaded.
-     */
-    protected bool $stageChecked = false;
-
-    /**
      * Stored entity for the Workflow.
      *
      * @var Workflow
      */
     protected ?Workflow $workflow = null;
-
-    /**
-     * Verifies the primary key to prevent operations on
-     * un-created database entries.
-     *
-     * @throws RuntimeException
-     *
-     * @return $this
-     */
-    protected function ensureCreated(): self
-    {
-        if (empty($this->attributes['id'])) {
-            throw new RuntimeException('Job must be created first.');
-        }
-
-        return $this;
-    }
 
     /**
      * Returns the URL to show this Job.
@@ -68,71 +40,38 @@ class Job extends Entity
     }
 
     /**
-     * Gets the current Stage, or null for a completed Job.
-     *
-     * @throws RuntimeException
+     * Gets the current Stage from the Workflow node tree; returns null for a completed Job.
      */
     public function getStage(): ?Stage
     {
         $this->ensureCreated();
 
-        if ($this->stageChecked) {
-            return $this->stage;
+        if ($this->stage_id === null) {
+            return null;
         }
 
-        if (empty($this->attributes['stage_id'])) {
-            $stage = null;
-        }
-        // This should *never* happen
-        elseif (null === $stage = model(StageModel::class)->find($this->attributes['stage_id'])) {
-            throw new RuntimeException('Unable to locate Stage ' . $this->attributes['stage_id'] . ' for Job ' . $this->attributes['id']);
-        }
-
-        $this->stage        = $stage;
-        $this->stageChecked = true;
-
-        return $this->stage;
+        return $this->getWorkflow()->getStageById($this->stage_id);
     }
 
     /**
      * Gets the Workflow.
+     *
+     * @throws RuntimeException
      */
     public function getWorkflow(): Workflow
     {
+        $this->ensureCreated();
+
         if ($this->workflow === null) {
-            $this->workflow = model(WorkflowModel::class)->find($this->attributes['workflow_id']);
+            $this->workflow = model(WorkflowModel::class)->withDeleted()->find($this->attributes['workflow_id']);
+
+            // This should *never* happen
+            if ($this->workflow === null) {
+                throw new RuntimeException('Unable to locate workflow ' . $this->attributes['workflow_id'] . ' for job ' . $this->attributes['id']);
+            }
         }
 
         return $this->workflow;
-    }
-
-    /**
-     * Gets all Stages from the Workflow.
-     *
-     * @return array<Stage>
-     */
-    public function getStages(): array
-    {
-        return $this->getWorkflow()->stages;
-    }
-
-    //--------------------------------------------------------------------
-
-    /**
-     * Returns the next Stage.
-     */
-    public function next(): ?Stage
-    {
-        return $this->_next($this->getStages());
-    }
-
-    /**
-     * Returns the previous Stage.
-     */
-    public function previous(): ?Stage
-    {
-        // Look through all the Stages backwards
-        return $this->_next(array_reverse($this->getStages()));
     }
 
     //--------------------------------------------------------------------
@@ -215,30 +154,5 @@ class Job extends Entity
         $this->stageFlag              = false;
 
         return $results;
-    }
-
-    /**
-     * Returns the next Stage from an array of Stages.
-     *
-     * @param array<Stage> $stages
-     */
-    protected function _next($stages): ?Stage
-    {
-        // look through the stages
-        $stage = current($stages);
-
-        do {
-            // Check if this is the current stage
-            if ($stage->id === $this->attributes['stage_id']) {
-                // Look for the next Stage
-                if (! $stage = next($stages)) {
-                    return null;
-                }
-
-                return $stage;
-            }
-        } while ($stage = next($stages));
-
-        return null;
     }
 }
