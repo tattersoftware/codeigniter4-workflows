@@ -2,17 +2,9 @@
 
 namespace Tatter\Workflows\Language\en;
 
-/**
- * This file is part of Tatter Workflows.
- *
- * (c) 2021 Tatter Software
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
- */
 return [
     // Workflows
-    'noWorkflowAvailable'    => 'There are no available workflows',
+    'noWorkflowAvailable'    => 'There are no available workflows.',
     'workflowNotFound'       => 'Could not find that workflow.',
     'workflowNotPermitted'   => 'You do not have permission to use that workflow.',
     'newWorkflowSuccess'     => 'New workflow created successfully.',
@@ -27,6 +19,7 @@ return [
     'skipRequiredStage'   => 'Cannot skip the required "{0}" action',
     'routeMissingJobId'   => 'Job ID missing for "{0}" action',
     'jobAlreadyComplete'  => 'That job is already complete.',
+    'jobCannotRegress'    => 'That job cannot be regressed.',
     'useDeletedJob'       => 'That job is no longer available.',
     'newJobSuccess'       => 'New job created successfully.',
     'actionMissingMethod' => 'The "{0}" action does not support the "{1}" method.',

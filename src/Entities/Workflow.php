@@ -5,7 +5,9 @@ namespace Tatter\Workflows\Entities;
 use Config\Services;
 use OutOfBoundsException;
 use Tatter\Users\Interfaces\HasPermission;
+use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\Models\ExplicitModel;
+use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\StageModel;
 
 class Workflow extends BaseEntity
@@ -125,5 +127,62 @@ class Workflow extends BaseEntity
         }
 
         return $user->hasPermission($this->attributes['role']);
+    }
+
+    /**
+     * Progresses a Job to the next Stage in this Workflow.
+     *
+     * @throws WorkflowsException
+     */
+    public function progress(Job $job): void
+    {
+        $this->travel($job, true);
+    }
+
+    /**
+     * Progresses a Job to the next Stage in this Workflow.
+     *
+     * @throws WorkflowsException
+     */
+    public function regress(Job $job): void
+    {
+        $this->travel($job, false);
+    }
+
+    /**
+     * Progresses a Job to the next Stage in this Workflow.
+     *
+     * @throws WorkflowsException
+     */
+    private function travel(Job $job, bool $progress): void
+    {
+        if ($job->getStage() === null) {
+            throw new WorkflowsException(lang('Workflows.jobAlreadyComplete'));
+        }
+
+        // Get the appropriate Stage
+        $stage = $progress
+            ? $job->getStage()->getNext()
+            : $job->getStage()->getPrevious();
+
+        if ($stage !== null) {
+            $job->stage_id = $stage->id;
+
+            // Trigger the appropriate Action event
+            $action = $stage->getAction();
+            $method = $progress ? 'up' : 'down';
+            $job    = $action::$method($job);
+        }
+        // No next stage means the job is complete
+        elseif ($progress) {
+            $job->stage_id = null;
+        }
+        // Do not allow regressing before the first Stage
+        else {
+            throw new WorkflowsException(lang('Workflows.jobCannotRegress'));
+        }
+
+        // If all went well then update the Job
+        model(JobModel::class)->save($job);
     }
 }

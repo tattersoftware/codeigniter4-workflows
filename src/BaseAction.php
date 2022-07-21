@@ -62,6 +62,26 @@ abstract class BaseAction extends BaseController
         return $attributes;
     }
 
+    /**
+     * Runs on a Job when it progresses through the workflow.
+     * May throw a WorkflowsException to halt and display a message.
+     * Optionally implemented by child classes.
+     */
+    public static function up(Job $job): Job
+    {
+        return $job;
+    }
+
+    /**
+     * Runs on a Job when it regresses through the workflow.
+     * May throw a WorkflowsException to halt and display a message.
+     * Optionally implemented by child classes.
+     */
+    public static function down(Job $job): Job
+    {
+        return $job;
+    }
+
     //--------------------------------------------------------------------
 
     /**
@@ -82,24 +102,6 @@ abstract class BaseAction extends BaseController
      * Optionally implemented by child classes.
      */
     protected function initialize(): void
-    {
-    }
-
-    //--------------------------------------------------------------------
-
-    /**
-     * Runs when a job progresses forward through the workflow.
-     * Optionally implemented by child classes.
-     */
-    public function up(): void
-    {
-    }
-
-    /**
-     * Runs when job regresses back through the workflow.
-     * Optionally implemented by child classes.
-     */
-    public function down(): void
     {
     }
 }
