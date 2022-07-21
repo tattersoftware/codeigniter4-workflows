@@ -72,6 +72,7 @@ abstract class BaseAction extends BaseController
     {
         parent::__construct();
 
+        $this->initController(service('request'), service('response'), service('logger'));
         $this->setJob($job);
         $this->initialize();
     }

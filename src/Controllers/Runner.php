@@ -16,9 +16,9 @@ use Tatter\Workflows\Factories\ActionFactory;
 use Tatter\Workflows\Models\StageModel;
 
 /**
- * Class Runner.
+ * Runner Controller
  *
- * Functions as a super-controller, routing to their specific
+ * Functions as a super-controller, routing to the specific
  * Action controller and method with job data.
  */
 final class Runner extends BaseController
@@ -61,6 +61,7 @@ final class Runner extends BaseController
      * @param string ...$params Parameters coming from the router (so all strings)
      *
      * @throws PageNotFoundException
+     * @throws RuntimeException
      */
     public function run(string ...$params): ResponseInterface
     {
@@ -68,31 +69,46 @@ final class Runner extends BaseController
             throw PageNotFoundException::forPageNotFound();
         }
 
-        // Parse the route parameters
+        // Verify the Action
+        $actionId = array_shift($params);
+
         try {
-            // Extract parsed variables
-            [$action, $job, $stage] = $this->parseRoute($params);
-        } catch (WorkflowsException $e) {
-            return $this->renderError($e->getMessage());
+            $action = ActionFactory::find($actionId);
+        } catch (RuntimeException $e) {
+            return $this->renderError(lang('Workflows.actionNotFound'));
         }
+
+        // Verify the Job
+        $jobId = array_shift($params);
+        if (empty($jobId) || ! is_numeric($jobId)) {
+            return $this->renderError(lang('Workflows.routeMissingJobId', [$actionId]));
+        }
+        if (null === $job = $this->jobs->withDeleted()->find($jobId)) {
+            return $this->renderError(lang('Workflows.jobNotFound'));
+        }
+
         $this->setJob($job);
+        if ($this->job->deleted_at !== null) {
+            return $this->renderError(lang('Workflows.useDeletedJob'));
+        }
 
         // Intercept Jobs that are already completed
-        if (empty($stage)) {
-            return redirect()->to(site_url($this->config->routeBase . '/show/' . $job->id));
+        if ($this->job->stage_id === null) {
+            return redirect()->to($this->job->getUrl())->with('message', lang('Workflows.jobAlreadyComplete'));
         }
+        $stage = $this->job->getStage();
 
         // If the requested Action differs from the Job's current Action then travel the Workflow
         if ($action::HANDLER_ID !== $stage->action_id) {
             try {
-                $job->travel($action->id);
+                $this->job->travel($action::HANDLER_ID);
             } catch (WorkflowsException $e) {
                 return $this->renderError($e->getMessage());
             }
         }
 
         // Check the Action's role against a potential current user
-        if (! $this->checkAccess($action)) {
+        if (! $this->checkActionAccess($action)) {
             return $this->renderMessage(lang('Workflows.jobAwaitingInput', $this->job->name));
         }
 
@@ -120,48 +136,9 @@ final class Runner extends BaseController
     }
 
     /**
-     * Validates and parses values from a route.
-     *
-     * @param array $params Parameters coming from the router (so all strings)
-     *
-     * @throws WorkflowsException
-     *
-     * @return array Array of parsed data
-     */
-    protected function parseRoute(array $params)
-    {
-        // Verify the Action
-        $actionId = array_shift($params);
-
-        try {
-            $action = ActionFactory::find($actionId);
-        } catch (RuntimeException $e) {
-            throw WorkflowsException::forActionNotFound();
-        }
-
-        // Verify the Job
-        $jobId = array_shift($params);
-        if (empty($jobId) || ! is_numeric($jobId)) {
-            throw WorkflowsException::forMissingJobId($actionId);
-        }
-        if (null === $job = $this->jobs->find($jobId)) {
-            throw WorkflowsException::forJobNotFound();
-        }
-
-        // stage_id may be empty (completed Job)
-        $stage = $job->stage_id ? model(StageModel::class)->find($job->stage_id) : null;
-
-        return [
-            $action,
-            $job,
-            $stage,
-        ];
-    }
-
-    /**
      * Checks if the current user can access an Action.
      */
-    protected function checkAccess(string $action): bool
+    protected function checkActionAccess(string $action): bool
     {
         $role = $action::getAttributes()['role'] ?? '';
 
