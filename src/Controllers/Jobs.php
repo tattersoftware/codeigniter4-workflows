@@ -4,15 +4,11 @@ namespace Tatter\Workflows\Controllers;
 
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\ResponseInterface;
-use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\Models\JoblogModel;
 use Tatter\Workflows\Models\WorkflowModel;
 
 /**
- * Job Controller.
- *
- * Handles basic REST for Jobs.
- * Shares baseRoute with the Runner.
+ * Handles basic CRUD for Jobs.
  */
 class Jobs extends BaseController
 {
@@ -20,8 +16,6 @@ class Jobs extends BaseController
      * Display a job.
      *
      * @param string $jobId ID of the job (int)
-     *
-     * @throws WorkflowsException
      */
     public function show(?string $jobId = null): ResponseInterface
     {
@@ -43,8 +37,6 @@ class Jobs extends BaseController
      * Start a new Job in the given Workflow.
      *
      * @param int|string|null $workflowId ID of the Workflow to use for the new Job (int)
-     *
-     * @throws WorkflowsException
      */
     public function new($workflowId = null): ResponseInterface
     {

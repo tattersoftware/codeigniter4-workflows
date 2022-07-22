@@ -20,6 +20,8 @@ class ActionFactory extends BaseFactory
 
     /**
      * Gathers all attributes from Action handlers, ordered by name.
+     *
+     * @return array<string, array<string, scalar|null>> [HandlerId => Attributes]
      */
     public static function getAllAttributes(): array
     {

@@ -1,5 +1,5 @@
-<?= $this->extend($layout) ?>
-<?= $this->section('main') ?>
+<?php $this->extend($layout); ?>
+<?php $this->section('main'); ?>
 
 	<h2>Select a workflow</h2>
 
@@ -11,4 +11,4 @@
 
 	<p><?= anchor('', 'Home') ?></p>
 
-<?= $this->endSection() ?>
+<?php $this->endSection(); ?>

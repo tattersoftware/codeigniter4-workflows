@@ -1,5 +1,5 @@
-<?= $this->extend($layout, ['menu' => 'workflows']) ?>
-<?= $this->section('main') ?>
+<?php $this->extend($layout); ?>
+<?php $this->section('main'); ?>
 
 <style>
 .remove-icon {
@@ -98,8 +98,8 @@
 		</form>
 	</div>
 
-<?= $this->endSection() ?>
-<?= $this->section('footerAssets') ?>
+<?php $this->endSection(); ?>
+<?php $this->section('footerAssets'); ?>
 
 <script>
 var sortable;
@@ -129,4 +129,4 @@ var actions = <?= $json ?>;
 
 </script>
 
-<?= $this->endSection() ?>
+<?php $this->endSection(); ?>
