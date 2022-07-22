@@ -60,7 +60,7 @@ class Stage extends BaseEntity
      */
     public function getRoute(): string
     {
-        return '/' . config('Workflows')->routeBase . '/' . $this->attributes['action_id'] . '/';
+        return rtrim(config('Workflows')->routeBase, '/ ') . '/' . $this->attributes['action_id'] . '/';
     }
 
     //--------------------------------------------------------------------

@@ -82,6 +82,23 @@ class Workflow extends BaseEntity
     }
 
     /**
+     * Returns the first Stage from the node tree matching the Action ID.
+     * Note that repeated Actions may make using this method seem buggy
+     *
+     * @throws WorkflowsException
+     */
+    public function getStageByAction(string $actionId): Stage
+    {
+        foreach ($this->getStages() as $stage) {
+            if ($stage->action_id === $actionId) {
+                return $stage;
+            }
+        }
+
+        throw new WorkflowsException($this->attributes['name'] . ' does not contain action ' . $actionId);
+    }
+
+    /**
      * Checks if a role filter is set, and if a user (defaults to current)
      * has that permission to access this Workflow.
      *
@@ -136,7 +153,7 @@ class Workflow extends BaseEntity
      */
     public function progress(Job $job): void
     {
-        $this->travel($job, true);
+        $this->step($job, 'up');
     }
 
     /**
@@ -146,22 +163,24 @@ class Workflow extends BaseEntity
      */
     public function regress(Job $job): void
     {
-        $this->travel($job, false);
+        $this->step($job, 'down');
     }
 
     /**
      * Progresses a Job to the next Stage in this Workflow.
      *
+     * @param 'down'|'up' $method
+     *
      * @throws WorkflowsException
      */
-    private function travel(Job $job, bool $progress): void
+    private function step(Job $job, string $method): void
     {
         if ($job->getStage() === null) {
             throw new WorkflowsException(lang('Workflows.jobAlreadyComplete'));
         }
 
         // Get the appropriate Stage
-        $stage = $progress
+        $stage = $method === 'up'
             ? $job->getStage()->getNext()
             : $job->getStage()->getPrevious();
 
@@ -170,11 +189,10 @@ class Workflow extends BaseEntity
 
             // Trigger the appropriate Action event
             $action = $stage->getAction();
-            $method = $progress ? 'up' : 'down';
             $job    = $action::$method($job);
         }
         // No next stage means the job is complete
-        elseif ($progress) {
+        elseif ($method === 'up') {
             $job->stage_id = null;
         }
         // Do not allow regressing before the first Stage
@@ -184,5 +202,46 @@ class Workflow extends BaseEntity
 
         // If all went well then update the Job
         model(JobModel::class)->save($job);
+    }
+
+    /**
+     * Moves a Job through the Workflow skipping non-required Stages
+     * but running their Action functions.
+     *
+     * @throws WorkflowsException
+     */
+    public function travel(Job $job, Stage $target, bool $checkRequired = true): void
+    {
+        // Check for an easy out
+        $current = $job->getStage();
+        if ($current->id === $target->id) {
+            return;
+        }
+
+        // Determine the direction of travel
+        if ($current->id < $target->id) {
+            if ($checkRequired) {
+                // Make sure this won't skip any required stages
+                $required = model(StageModel::class)
+                    ->where('id >=', $current->id)
+                    ->where('id <', $target->id)
+                    ->where('workflow_id', $this->attributes['id'])
+                    ->where('required', 1)
+                    ->first();
+
+                if ($required !== null) {
+                    throw WorkflowsException::forSkipRequiredStage($required->name);
+                }
+            }
+
+            $method = 'up';
+        } else {
+            $method = 'down';
+        }
+
+        // Step until we reach the target Stage
+        while ($job->getStage()->id !== $target->id) {
+            $this->step($job, $method);
+        }
     }
 }

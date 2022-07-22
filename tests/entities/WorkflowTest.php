@@ -3,6 +3,7 @@
 use Tatter\Imposter\Factories\ImposterFactory;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Entities\Workflow;
+use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\Models\ExplicitModel;
 use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\StageModel;
@@ -98,6 +99,27 @@ final class WorkflowTest extends DatabaseTestCase
         $this->expectExceptionMessage('Workflow ' . $this->workflow->id . ' does not contain stage 42');
 
         $this->workflow->getStageById(42);
+    }
+
+    public function testGetStageByAction(): void
+    {
+        $stage = fake(StageModel::class, [
+            'workflow_id' => $this->workflow->id,
+            'action_id'   => 'banana',
+        ]);
+
+        $result = $this->workflow->getStageByAction('banana');
+
+        $this->assertInstanceOf(Stage::class, $result);
+        $this->assertSame($stage->id, $result->id);
+    }
+
+    public function testGetStageByActionFails(): void
+    {
+        $this->expectException(WorkflowsException::class);
+        $this->expectExceptionMessage($this->workflow->name . ' does not contain action falafel');
+
+        $this->workflow->getStageByAction('falafel');
     }
 
     public function testMayAccessEmpty(): void

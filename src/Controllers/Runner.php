@@ -13,7 +13,6 @@ use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\Factories\ActionFactory;
-use Tatter\Workflows\Models\StageModel;
 
 /**
  * Runner Controller
@@ -41,18 +40,12 @@ final class Runner extends BaseController
             return $this->renderError(lang('Workflows.jobNotFound'));
         }
 
-        // If the Job is completed then display a message and quit
+        // If the Job is completed then redirect the the job
         if ($this->job->stage_id === null) {
-            return $this->renderMessage(lang('Workflows.jobAlreadyComplete'));
+            return redirect()->to($this->job->getUrl())->with('message', lang('Workflows.jobAlreadyComplete'));
         }
 
-        // Get the current Stage
-        if (! $stage = model(StageModel::class)->find($this->job->stage_id)) {
-            throw new RuntimeException('Unknown stage ID: ' . $this->job->stage_id);
-        }
-
-        /** @var Stage $stage */
-        return redirect()->to($stage->getRoute() . $this->job->id);
+        return redirect()->to(site_url($this->job->getStage()->getRoute() . $this->job->id));
     }
 
     /**
@@ -96,12 +89,14 @@ final class Runner extends BaseController
         if ($this->job->stage_id === null) {
             return redirect()->to($this->job->getUrl())->with('message', lang('Workflows.jobAlreadyComplete'));
         }
-        $stage = $this->job->getStage();
 
-        // If the requested Action differs from the Job's current Action then travel the Workflow
-        if ($action::HANDLER_ID !== $stage->action_id) {
+        $workflow = $this->job->getWorkflow();
+
+        // If the requested Action differs from the Job's current Action then try to travel
+        if ($action::HANDLER_ID !== $this->job->getStage()->action_id) {
             try {
-                $this->job->travel($action::HANDLER_ID);
+                $stage = $workflow->getStageByAction($action::HANDLER_ID);
+                $workflow->travel($this->job, $stage);
             } catch (WorkflowsException $e) {
                 return $this->renderError($e->getMessage());
             }
@@ -131,8 +126,20 @@ final class Runner extends BaseController
             return $result;
         }
 
-        // Null means the Stage is complete
-        return $this->progress();
+        // Null result means the Stage is complete; progress the Job
+        try {
+            $workflow->progress($job);
+        } catch (WorkflowsException $e) {
+            return $this->renderError($e->getMessage());
+        }
+
+        // Check if this completed the Job
+        if ($this->job->getStage() === null) {
+            return $this->renderMessage(lang('Workflows.jobComplete', [$this->job->name]));
+        }
+
+        // Send to the next Stage
+        return redirect()->to(site_url($this->job->getStage()->getRoute() . $this->job->id));
     }
 
     /**
@@ -154,25 +161,5 @@ final class Runner extends BaseController
 
         /** @var HasPermission $user */
         return $user->hasPermission($role);
-    }
-
-    /**
-     * Progresses a Job after an Action indicates
-     * that the current Stage is done.
-     */
-    protected function progress(): ResponseInterface
-    {
-        // Get the next Stage
-        if ($stage = $this->job->next()) {
-            // Travel to the next Action
-            $this->job->travel($stage->action_id, false);
-
-            return redirect()->to($stage->getRoute() . $this->job->id);
-        }
-
-        // Update the Job as complete
-        $this->jobs->update($this->job->id, ['stage_id' => null]);
-
-        return $this->renderMessage(lang('Workflows.jobComplete', $this->job->name));
     }
 }
