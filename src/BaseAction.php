@@ -82,6 +82,17 @@ abstract class BaseAction extends BaseController
         return $job;
     }
 
+    /**
+     * Checks whether a Job may skip this Stage. Allows skipping Stages
+     * that are marked as "required" (if they meet method criteria).
+     * Optionally implemented by child classes, e.g.:
+     *   return $job->getFlag('Accepted') !== null;
+     */
+    public static function maySkip(Job $job): bool
+    {
+        return false;
+    }
+
     //--------------------------------------------------------------------
 
     /**
