@@ -2,6 +2,7 @@
 
 namespace Tatter\Workflows;
 
+use Tatter\Users\Interfaces\HasPermission;
 use Tatter\Workflows\Controllers\BaseController;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Exceptions\WorkflowsException;
@@ -91,6 +92,23 @@ abstract class BaseAction extends BaseController
     public static function maySkip(Job $job): bool
     {
         return false;
+    }
+
+    /**
+     * Checks whether a user may access this Action.
+     */
+    public static function allowUser(?HasPermission $user): bool
+    {
+        $role = static::getAttributes()['role'];
+
+        // Allow all public Actions
+        if (empty($role)) {
+            return true;
+        }
+
+        return $user === null
+            ? false
+            : $user->hasPermission($role);
     }
 
     //--------------------------------------------------------------------
