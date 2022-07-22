@@ -70,4 +70,18 @@ class Job extends BaseEntity
 
         return $this->workflow;
     }
+
+    /**
+     * Checks whether the current Stage may be skipped
+     * when traveling forward in the workflow.
+     */
+    public function maySkip(): bool
+    {
+        $stage = $this->getStage();
+        if (! $stage->required) {
+            return true;
+        }
+
+        return $stage->getAction()::maySkip($this);
+    }
 }

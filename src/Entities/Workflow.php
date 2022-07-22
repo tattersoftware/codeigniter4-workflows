@@ -210,7 +210,7 @@ class Workflow extends BaseEntity
      *
      * @throws WorkflowsException
      */
-    public function travel(Job $job, Stage $target, bool $checkRequired = true): void
+    public function travel(Job $job, Stage $target): void
     {
         // Check for an easy out
         $current = $job->getStage();
@@ -219,28 +219,15 @@ class Workflow extends BaseEntity
         }
 
         // Determine the direction of travel
-        if ($current->id < $target->id) {
-            if ($checkRequired) {
-                // Make sure this won't skip any required stages
-                $required = model(StageModel::class)
-                    ->where('id >=', $current->id)
-                    ->where('id <', $target->id)
-                    ->where('workflow_id', $this->attributes['id'])
-                    ->where('required', 1)
-                    ->first();
-
-                if ($required !== null) {
-                    throw WorkflowsException::forSkipRequiredStage($required->name);
-                }
-            }
-
-            $method = 'up';
-        } else {
-            $method = 'down';
-        }
+        $method = $current->id < $target->id ? 'up' : 'down';
 
         // Step until we reach the target Stage
         while ($job->getStage()->id !== $target->id) {
+            // If progressing, make sure the current Stage can be skipped
+            if ($method === 'up' && ! $job->maySkip()) {
+                throw WorkflowsException::forSkipRequiredStage($job->getStage()->getName());
+            }
+
             $this->step($job, $method);
         }
     }
