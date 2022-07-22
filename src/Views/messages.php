@@ -1,5 +1,5 @@
-<?= $this->extend($layout) ?>
-<?= $this->section('main') ?>
+<?php $this->extend($layout); ?>
+<?php $this->section('main'); ?>
 
 	<h2><?= $header ?></h2>
 
@@ -15,4 +15,4 @@
 		<a class="btn btn-link" href="<?= base_url() ?>">Home</a>
 	</p>
 
-<?= $this->endSection() ?>
+<?php $this->endSection(); ?>

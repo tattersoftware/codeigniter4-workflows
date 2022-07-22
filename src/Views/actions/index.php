@@ -1,5 +1,5 @@
-<?= $this->extend($layout, ['menu' => 'actions']) ?>
-<?= $this->section('main') ?>
+<?php $this->extend($layout); ?>
+<?php $this->section('main'); ?>
 
 	<h2>Actions</h2>
 
@@ -12,12 +12,13 @@
 	<table class="table">
 		<thead>
 			<tr>
-				<th scope="col">#</th>
+				<th scope="col"></th>
+				<th scope="col">ID</th>
 				<th scope="col">Name</th>
 				<th scope="col">Category</th>
 				<th scope="col">Class</th>
-				<th scope="col">UID</th>
 				<th scope="col">Summary</th>
+				<th scope="col">Role</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -25,12 +26,13 @@
 			<?php foreach ($actions as $action): ?>
 
 			<tr>
-				<th scope="row"><?= $action->id ?></th>
-				<td><i class="<?= $action->icon ?>"></i> <?= $action->name ?></td>
-				<td><?= $action->category ?></td>
-				<td><?= $action->class ?></td>
-				<td><?= $action->uid ?></td>
-				<td><?= $action->summary ?></td>
+				<td><i class="<?= $action['icon'] ?>"></i></td>
+				<th scope="row"><?= $action['id'] ?></th>
+				<td><?= $action['name'] ?></td>
+				<td><?= $action['category'] ?></td>
+				<td><?= $action['class'] ?></td>
+				<td><?= $action['summary'] ?></td>
+				<td><?= $action['role'] ?></td>
 			</tr>
 
 			<?php endforeach; ?>
@@ -38,4 +40,4 @@
 		</tbody>
 	</table>
 
-<?= $this->endSection() ?>
+<?php $this->endSection(); ?>

@@ -28,11 +28,13 @@ $routes->resource('actions', [
     'controller' => '\Tatter\Workflows\Controllers\Actions',
     'filter'     => 'assets:\Tatter\Workflows\Bundles\WorkflowsBundle',
     'websafe'    => 1,
+    'only'       => ['index'],
 ]);
 $routes->resource('stages', [
     'controller' => '\Tatter\Workflows\Controllers\Stages',
     'filter'     => 'assets:\Tatter\Workflows\Bundles\WorkflowsBundle',
     'websafe'    => 1,
+    'only'       => ['update'],
 ]);
 $routes->resource('workflows', [
     'controller' => '\Tatter\Workflows\Controllers\Workflows',

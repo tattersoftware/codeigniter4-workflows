@@ -1,5 +1,5 @@
-<?= $this->extend($layout, ['menu' => 'workflows']) ?>
-<?= $this->section('main') ?>
+<?php $this->extend($layout); ?>
+<?php $this->section('main'); ?>
 
 	<?php if (empty($workflow)): ?>
 
@@ -8,9 +8,8 @@
 	<?php return $this->endSection(); endif; ?>
 
 	<a class="btn btn-primary float-right" href="<?= site_url($config->routeBase . '/new/' . $workflow->id) ?>" role="button"><i class="fas fa-rocket"></i> Launch</a>
-	<h2>Workflow</h2>
 
-	<h3 class="mt-3">Details</h3>
+	<h3 class="mt-3">Workflow Details</h3>
 	<div class="row mt-4">
 		<div id="workflow-card" class="col-xl-4">
 			<div class="card">
@@ -100,8 +99,8 @@
 
 	</div>
 
-<?= $this->endSection() ?>
-<?= $this->section('footerAssets') ?>
+<?php $this->endSection(); ?>
+<?php $this->section('footerAssets'); ?>
 
 <script>
 	function setStageRequired(stageId, checked) {
@@ -133,4 +132,4 @@
 	}
 </script>
 
-<?= $this->endSection() ?>
+<?php $this->endSection(); ?>
