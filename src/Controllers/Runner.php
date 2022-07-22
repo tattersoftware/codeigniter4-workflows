@@ -8,6 +8,7 @@ use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
 use RuntimeException;
 use Tatter\Users\Interfaces\HasPermission;
+use Tatter\Workflows\BaseAction;
 use Tatter\Workflows\Entities\Action;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Entities\Stage;
@@ -80,7 +81,26 @@ final class Runner extends BaseController
             return $this->renderError(lang('Workflows.jobNotFound'));
         }
 
+        // Process the Job, displaying any Workflow exceptions as errors
         $this->setJob($job);
+
+        try {
+            return $this->handleResponse($this->applyAction($action));
+        } catch (WorkflowsException $e) {
+            return $this->renderError($e->getMessage());
+        }
+    }
+
+    /**
+     * Processes the Action on the Job as determined in the run parameters.
+     *
+     * @param class-string<BaseAction> $action
+     *
+     * @throws PageNotFoundException
+     * @throws WorkflowsException
+     */
+    private function applyAction(string $action): ?ResponseInterface
+    {
         if ($this->job->deleted_at !== null) {
             return $this->renderError(lang('Workflows.useDeletedJob'));
         }
@@ -90,16 +110,11 @@ final class Runner extends BaseController
             return redirect()->to($this->job->getUrl())->with('message', lang('Workflows.jobAlreadyComplete'));
         }
 
-        $workflow = $this->job->getWorkflow();
-
         // If the requested Action differs from the Job's current Action then try to travel
         if ($action::HANDLER_ID !== $this->job->getStage()->action_id) {
-            try {
-                $stage = $workflow->getStageByAction($action::HANDLER_ID);
-                $workflow->travel($this->job, $stage);
-            } catch (WorkflowsException $e) {
-                return $this->renderError($e->getMessage());
-            }
+            $workflow = $this->job->getWorkflow();
+            $stage    = $workflow->getStageByAction($action::HANDLER_ID);
+            $workflow->travel($this->job, $stage);
         }
 
         // Check the Action's role against a potential current user
@@ -114,24 +129,25 @@ final class Runner extends BaseController
         }
 
         // Run the Action method
-        try {
-            $instance = new $action($this->job);
-            $result   = $instance->{$method}();
-        } catch (WorkflowsException $e) {
-            return $this->renderError($e->getMessage());
-        }
+        $instance = new $action($this->job);
 
+        return $instance->{$method}();
+    }
+
+    /**
+     * Handles the Action response.
+     *
+     * @throws WorkflowsException
+     */
+    private function handleResponse(?ResponseInterface $response): ResponseInterface
+    {
         // If it was a Response then we are done
-        if ($result instanceof ResponseInterface) {
-            return $result;
+        if ($response instanceof ResponseInterface) {
+            return $response;
         }
 
         // Null result means the Stage is complete; progress the Job
-        try {
-            $workflow->progress($job);
-        } catch (WorkflowsException $e) {
-            return $this->renderError($e->getMessage());
-        }
+        $this->job->getWorkflow()->progress($this->job);
 
         // Check if this completed the Job
         if ($this->job->getStage() === null) {
