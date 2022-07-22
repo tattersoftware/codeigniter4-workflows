@@ -95,10 +95,7 @@ class Jobs extends BaseController
         ]);
 
         // Send to the first action
-        $action = $stage->action;
-        $route  = "/{$this->config->routeBase}/{$action->uid}/{$jobId}";
-
-        return redirect()->to(site_url($route))->with('success', lang('Workflows.newJobSuccess'));
+        return redirect()->to(site_url($stage->getRoute() . $jobId))->with('success', lang('Workflows.newJobSuccess'));
     }
 
     /**

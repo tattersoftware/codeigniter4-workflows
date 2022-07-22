@@ -116,7 +116,7 @@ parameters:
     Service:
       - Config
       - Vendor Config
-  
+
     # Ignore anything in the Vendor layers
     Vendor Model:
       - Config

@@ -1,22 +1,12 @@
 <?php
 
-/**
- * This file is part of Tatter Workflows.
- *
- * (c) 2021 Tatter Software
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
- */
-
 namespace Tatter\Workflows\Entities;
 
-use CodeIgniter\Entity\Entity;
 use Config\Services;
 use Tatter\Users\UserEntity;
 use Tatter\Workflows\Models\StageModel;
 
-class Joblog extends Entity
+class Joblog extends BaseEntity
 {
     protected $dates = ['created_at'];
     protected $casts = [

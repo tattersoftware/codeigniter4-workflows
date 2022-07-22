@@ -7,17 +7,18 @@ use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
 use RuntimeException;
+use Tatter\Users\Interfaces\HasPermission;
+use Tatter\Workflows\BaseAction;
 use Tatter\Workflows\Entities\Action;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\Factories\ActionFactory;
-use Tatter\Workflows\Models\StageModel;
 
 /**
- * Class Runner.
+ * Runner Controller
  *
- * Functions as a super-controller, routing to their specific
+ * Functions as a super-controller, routing to the specific
  * Action controller and method with job data.
  */
 final class Runner extends BaseController
@@ -40,18 +41,12 @@ final class Runner extends BaseController
             return $this->renderError(lang('Workflows.jobNotFound'));
         }
 
-        // If the Job is completed then display a message and quit
+        // If the Job is completed then redirect the the job
         if ($this->job->stage_id === null) {
-            return $this->renderMessage(lang('Workflows.jobAlreadyComplete'));
+            return redirect()->to($this->job->getUrl())->with('message', lang('Workflows.jobAlreadyComplete'));
         }
 
-        // Get the current Stage
-        if (! $stage = model(StageModel::class)->find($this->job->stage_id)) {
-            throw new RuntimeException('Unknown stage ID: ' . $this->job->stage_id);
-        }
-
-        /** @var Stage $stage */
-        return redirect()->to($stage->getRoute() . $this->job->id);
+        return redirect()->to(site_url($this->job->getStage()->getRoute() . $this->job->id));
     }
 
     /**
@@ -60,6 +55,7 @@ final class Runner extends BaseController
      * @param string ...$params Parameters coming from the router (so all strings)
      *
      * @throws PageNotFoundException
+     * @throws RuntimeException
      */
     public function run(string ...$params): ResponseInterface
     {
@@ -67,31 +63,62 @@ final class Runner extends BaseController
             throw PageNotFoundException::forPageNotFound();
         }
 
-        // Parse the route parameters
+        // Verify the Action
+        $actionId = array_shift($params);
+
         try {
-            // Extract parsed variables
-            [$action, $job, $stage] = $this->parseRoute($params);
+            $action = ActionFactory::find($actionId);
+        } catch (RuntimeException $e) {
+            return $this->renderError(lang('Workflows.actionNotFound'));
+        }
+
+        // Verify the Job
+        $jobId = array_shift($params);
+        if (empty($jobId) || ! is_numeric($jobId)) {
+            return $this->renderError(lang('Workflows.routeMissingJobId', [$actionId]));
+        }
+        if (null === $job = $this->jobs->withDeleted()->find($jobId)) {
+            return $this->renderError(lang('Workflows.jobNotFound'));
+        }
+
+        // Process the Job, displaying any Workflow exceptions as errors
+        $this->setJob($job);
+
+        try {
+            return $this->handleResponse($this->applyAction($action));
         } catch (WorkflowsException $e) {
             return $this->renderError($e->getMessage());
         }
-        $this->setJob($job);
+    }
 
-        // Intercept Jobs that are already completed
-        if (empty($stage)) {
-            return redirect()->to(site_url($this->config->routeBase . '/show/' . $job->id));
+    /**
+     * Processes the Action on the Job as determined in the run parameters.
+     *
+     * @param class-string<BaseAction> $action
+     *
+     * @throws PageNotFoundException
+     * @throws WorkflowsException
+     */
+    private function applyAction(string $action): ?ResponseInterface
+    {
+        if ($this->job->deleted_at !== null) {
+            return $this->renderError(lang('Workflows.useDeletedJob'));
         }
 
-        // If the requested Action differs from the Job's current Action then travel the Workflow
-        if ($action->id !== $stage->action_id) {
-            try {
-                $job->travel($action->id);
-            } catch (WorkflowsException $e) {
-                return $this->renderError($e->getMessage());
-            }
+        // Intercept Jobs that are already completed
+        if ($this->job->stage_id === null) {
+            return redirect()->to($this->job->getUrl())->with('message', lang('Workflows.jobAlreadyComplete'));
+        }
+
+        // If the requested Action differs from the Job's current Action then try to travel
+        if ($action::HANDLER_ID !== $this->job->getStage()->action_id) {
+            $workflow = $this->job->getWorkflow();
+            $stage    = $workflow->getStageByAction($action::HANDLER_ID);
+            $workflow->travel($this->job, $stage);
         }
 
         // Check the Action's role against a potential current user
-        if (! $action->mayAccess()) {
+        if (! $this->checkActionAccess($action)) {
             return $this->renderMessage(lang('Workflows.jobAwaitingInput', $this->job->name));
         }
 
@@ -102,84 +129,53 @@ final class Runner extends BaseController
         }
 
         // Run the Action method
-        try {
-            $result = $action->setJob($job)->{$method}();
-        } catch (WorkflowsException $e) {
-            $this->response->setBody(view($this->config->views['messages'], [
-                'layout' => config('Layouts')->public,
-                'error'  => $e->getMessage(),
-            ]));
+        $instance = new $action($this->job);
 
-            return $this->response;
-        }
-
-        // If it was a Response then we are done
-        if ($result instanceof ResponseInterface) {
-            return $result;
-        }
-
-        // Null means the Stage is complete
-        return $this->progress($job);
+        return $instance->{$method}();
     }
 
     /**
-     * Validates and parses values from a route.
-     *
-     * @param array $params Parameters coming from the router (so all strings)
+     * Handles the Action response.
      *
      * @throws WorkflowsException
-     *
-     * @return array Array of parsed data
      */
-    protected function parseRoute(array $params)
+    private function handleResponse(?ResponseInterface $response): ResponseInterface
     {
-        // Verify the Action
-        $actionId = array_shift($params);
-
-        try {
-            $action = ActionFactory::find($actionId);
-        } catch (RuntimeException $e) {
-            throw WorkflowsException::forActionNotFound();
+        // If it was a Response then we are done
+        if ($response instanceof ResponseInterface) {
+            return $response;
         }
 
-        // Verify the Job
-        $jobId = array_shift($params);
-        if (empty($jobId) || ! is_numeric($jobId)) {
-            throw WorkflowsException::forMissingJobId($actionId);
-        }
-        if (null === $job = $this->jobs->find($jobId)) {
-            throw WorkflowsException::forJobNotFound();
+        // Null result means the Stage is complete; progress the Job
+        $this->job->getWorkflow()->progress($this->job);
+
+        // Check if this completed the Job
+        if ($this->job->getStage() === null) {
+            return $this->renderMessage(lang('Workflows.jobComplete', [$this->job->name]));
         }
 
-        // stage_id may be empty (completed Job)
-        $stage = $job->stage_id ? model(StageModel::class)->find($job->stage_id) : null;
-
-        return [
-            $action,
-            $job,
-            $stage,
-        ];
+        // Send to the next Stage
+        return redirect()->to(site_url($this->job->getStage()->getRoute() . $this->job->id));
     }
 
     /**
-     * Progresses a Job after an Action indicates
-     * that the current Stage is done.
+     * Checks if the current user can access an Action.
      */
-    protected function progress(Job $job): ResponseInterface
+    protected function checkActionAccess(string $action): bool
     {
-        $this->setJob($job);
+        $role = $action::getAttributes()['role'] ?? '';
 
-        // Get the next Stage
-        if ($stage = $job->next()) {
-            // Travel to the next Action
-            $job->travel($stage->action_id, false);
-
-            return redirect()->to($stage->getRoute() . $job->id);
+        // Allow public Actions
+        if ($role === '') {
+            return true;
         }
 
-        // Update the Job as complete
-        $this->jobs->update($job->id, ['stage_id' => null]);
+        // Check for a current user
+        if (null === $user = service('users')->findById(user_id())) {
+            return false;
+        }
 
-        return $this->renderMessage(lang('Workflows.jobAwaitingInput', $this->job->name));
+        /** @var HasPermission $user */
+        return $user->hasPermission($role);
     }
 }

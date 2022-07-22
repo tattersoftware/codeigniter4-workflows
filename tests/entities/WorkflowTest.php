@@ -1,18 +1,11 @@
 <?php
 
-/**
- * This file is part of Tatter Workflows.
- *
- * (c) 2021 Tatter Software
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
- */
-
 use Tatter\Imposter\Factories\ImposterFactory;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Entities\Workflow;
+use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\Models\ExplicitModel;
+use Tatter\Workflows\Models\JobModel;
 use Tatter\Workflows\Models\StageModel;
 use Tatter\Workflows\Models\WorkflowModel;
 use Tests\Support\DatabaseTestCase;
@@ -36,6 +29,42 @@ final class WorkflowTest extends DatabaseTestCase
         $this->workflow = fake(WorkflowModel::class);
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        unset($_SESSION['logged_in']);
+        ImposterFactory::reset();
+    }
+
+    /**
+     * Create a fake explicit to test with.
+     *
+     * @return array|object
+     */
+    private function createExplicit(array $data = [])
+    {
+        $user = $this->fakeUser();
+
+        $data = array_merge([
+            'user_id'     => $user->id,
+            'workflow_id' => $this->workflow->id,
+            'permitted'   => 1,
+        ], $data);
+
+        return fake(ExplicitModel::class, $data);
+    }
+
+    public function testEnsureCreated(): void
+    {
+        $workflow = new Workflow();
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(Workflow::class . ' must exist in the database.');
+
+        $workflow->getStages();
+    }
+
     public function testGetStages(): void
     {
         $stage = fake(StageModel::class, [
@@ -50,6 +79,47 @@ final class WorkflowTest extends DatabaseTestCase
         $result = reset($result);
         $this->assertInstanceOf(Stage::class, $result);
         $this->assertSame($stage->id, $result->id);
+    }
+
+    public function testGetStageById(): void
+    {
+        $stage = fake(StageModel::class, [
+            'workflow_id' => $this->workflow->id,
+        ]);
+
+        $result = $this->workflow->getStageById($stage->id);
+
+        $this->assertInstanceOf(Stage::class, $result);
+        $this->assertSame($stage->id, $result->id);
+    }
+
+    public function testGetStageByIdFails(): void
+    {
+        $this->expectException(OutOfBoundsException::class);
+        $this->expectExceptionMessage('Workflow ' . $this->workflow->id . ' does not contain stage 42');
+
+        $this->workflow->getStageById(42);
+    }
+
+    public function testGetStageByAction(): void
+    {
+        $stage = fake(StageModel::class, [
+            'workflow_id' => $this->workflow->id,
+            'action_id'   => 'banana',
+        ]);
+
+        $result = $this->workflow->getStageByAction('banana');
+
+        $this->assertInstanceOf(Stage::class, $result);
+        $this->assertSame($stage->id, $result->id);
+    }
+
+    public function testGetStageByActionFails(): void
+    {
+        $this->expectException(WorkflowsException::class);
+        $this->expectExceptionMessage($this->workflow->name . ' does not contain action falafel');
+
+        $this->workflow->getStageByAction('falafel');
     }
 
     public function testMayAccessEmpty(): void
@@ -81,15 +151,6 @@ final class WorkflowTest extends DatabaseTestCase
         $this->assertTrue($this->workflow->mayAccess($user));
     }
 
-    public function testMayAccessExplicitWithExplicits(): void
-    {
-        $explicit = $this->createExplicit();
-
-        $this->workflow->role = 'restricted';
-
-        $this->assertTrue($this->workflow->mayAccess(null, [$explicit->id => $explicit->permitted]));
-    }
-
     public function testMayAccessExplicitWithBoth(): void
     {
         $explicit = $this->createExplicit();
@@ -99,7 +160,7 @@ final class WorkflowTest extends DatabaseTestCase
 
         $this->workflow->role = 'restricted';
 
-        $this->assertTrue($this->workflow->mayAccess($user, [$explicit->id => $explicit->permitted]));
+        $this->assertTrue($this->workflow->mayAccess($user, [$explicit->workflow_id => $explicit->permitted]));
     }
 
     public function testMayNotAccess(): void
@@ -131,15 +192,6 @@ final class WorkflowTest extends DatabaseTestCase
         $this->assertFalse($this->workflow->mayAccess($user));
     }
 
-    public function testMayNotAccessExplicitWithExplicits(): void
-    {
-        $explicit = $this->createExplicit(['permitted' => 0]);
-
-        $this->workflow->role = '';
-
-        $this->assertFalse($this->workflow->mayAccess(null, [$explicit->id => $explicit->permitted]));
-    }
-
     public function testMayNotAccessExplicitWithBoth(): void
     {
         $explicit = $this->createExplicit(['permitted' => 0]);
@@ -149,24 +201,32 @@ final class WorkflowTest extends DatabaseTestCase
 
         $this->workflow->role = '';
 
-        $this->assertFalse($this->workflow->mayAccess($user, [$explicit->id => $explicit->permitted]));
+        $this->assertFalse($this->workflow->mayAccess($user, [$explicit->workflow_id => $explicit->permitted]));
     }
 
-    /**
-     * Create a fake explicit to test with.
-     *
-     * @return array|object
-     */
-    private function createExplicit(array $data = [])
+    public function testProgress(): void
     {
-        $user = $this->fakeUser();
+        // Create the requirements
+        /** @var Workflow $workflow */
+        $workflow = fake(WorkflowModel::class);
+        $stage1   = fake(StageModel::class, [
+            'action_id'   => 'info',
+            'workflow_id' => $workflow->id,
+            'required'    => 1,
+        ]);
+        $stage2 = fake(StageModel::class, [
+            'action_id'   => 'info',
+            'workflow_id' => $workflow->id,
+            'required'    => 0,
+        ]);
 
-        $data = array_merge([
-            'user_id'     => $user->id,
-            'workflow_id' => $this->workflow->id,
-            'permitted'   => 1,
-        ], $data);
+        $job = fake(JobModel::class, [
+            'workflow_id' => $workflow->id,
+            'stage_id'    => $stage1->id,
+        ]);
 
-        return fake(ExplicitModel::class, $data);
+        $workflow->progress($job);
+
+        $this->assertSame($stage2->id, $job->stage_id);
     }
 }
