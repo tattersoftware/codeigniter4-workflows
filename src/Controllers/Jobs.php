@@ -40,13 +40,15 @@ class Jobs extends BaseController
      */
     public function new($workflowId = null): ResponseInterface
     {
+        $user = $this->getUser();
+
         // If no Workflow was specified then load available
         if ($workflowId === null) {
             // Find available Workflows
             $workflows = [];
 
             foreach (model(WorkflowModel::class)->findAll() as $workflow) {
-                if ($workflow->mayAccess()) {
+                if ($workflow->allowsUser($user)) {
                     $workflows[] = $workflow;
                 }
             }
@@ -68,7 +70,7 @@ class Jobs extends BaseController
         }
 
         // Verify access
-        if (! $workflow->mayAccess()) {
+        if (! $workflow->allowsUser($user)) {
             return $this->renderError(lang('Workflows.workflowNotPermitted'));
         }
 

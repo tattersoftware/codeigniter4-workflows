@@ -2,7 +2,6 @@
 
 namespace Tatter\Workflows\Entities;
 
-use Config\Services;
 use OutOfBoundsException;
 use Tatter\Users\Interfaces\HasPermission;
 use Tatter\Workflows\Exceptions\WorkflowsException;
@@ -99,7 +98,7 @@ class Workflow extends BaseEntity
     }
 
     /**
-     * Checks if a role filter is set, and if a user (defaults to current)
+     * Checks if a role filter is set, and if a user
      * has that permission to access this Workflow.
      *
      * @param array<int,bool>|null $explicits An array of explicit associations from
@@ -107,15 +106,9 @@ class Workflow extends BaseEntity
      *                                        checking many Workflows at once to prevent
      *                                        duplicate database calls
      */
-    public function mayAccess(?HasPermission $user = null, ?array $explicits = null): bool
+    public function allowsUser(?HasPermission $user, ?array $explicits = null): bool
     {
         $this->ensureCreated();
-
-        // If no user was provided then try for the current user
-        if ($user === null && $userId = user_id()) {
-            /** @var HasPermission|null $user */
-            $user = Services::users()->findById($userId);
-        }
 
         // Check explicits first
         if ($user !== null) {

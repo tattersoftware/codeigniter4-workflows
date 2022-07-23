@@ -97,7 +97,7 @@ abstract class BaseAction extends BaseController
     /**
      * Checks whether a user may access this Action.
      */
-    public static function allowUser(?HasPermission $user): bool
+    public static function allowsUser(?HasPermission $user): bool
     {
         $role = static::getAttributes()['role'];
 
