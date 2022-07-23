@@ -13,6 +13,7 @@ use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\Factories\ActionFactory;
+use Tatter\Workflows\Interfaces\OwnsJob;
 
 /**
  * Runner Controller
@@ -80,6 +81,15 @@ final class Runner extends BaseController
             return $this->renderError(lang('Workflows.jobNotFound'));
         }
 
+        // Check User permission - requires enforced authentication
+        if (
+            ($user = $this->getUser())
+            && $user instanceof OwnsJob
+            && ! $user->ownsJob($job)
+        ) {
+            return $this->renderError(lang('Workflows.jobNotAllowed'));
+        }
+
         // Process the Job, displaying any Workflow exceptions as errors
         $this->setJob($job);
 
@@ -117,8 +127,7 @@ final class Runner extends BaseController
         }
 
         // Check the Action's role against the current user
-        $user = user_id() ? service('users')->findById(user_id()) : null;
-        if (! $action::allowUser($user)) {
+        if (! $action::allowsUser($this->getUser())) {
             return $this->renderMessage(lang('Workflows.jobAwaitingInput', $this->job->name));
         }
 

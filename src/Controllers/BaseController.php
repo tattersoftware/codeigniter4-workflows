@@ -4,6 +4,7 @@ namespace Tatter\Workflows\Controllers;
 
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\ResponseInterface;
+use Tatter\Users\Interfaces\HasPermission;
 use Tatter\Workflows\Config\Workflows as WorkflowsConfig;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Models\JobModel;
@@ -78,5 +79,19 @@ abstract class BaseController extends Controller
     protected function renderError(string $message): ResponseInterface
     {
         return $this->renderMessage($message, 'danger', 'Error Message');
+    }
+
+    /**
+     * Gets the current User, if authenticated.
+     */
+    protected function getUser(): ?HasPermission
+    {
+        if (! function_exists('user_id')) {
+            return null;
+        }
+
+        return user_id()
+            ? service('users')->findById(user_id())
+            : null;
     }
 }
