@@ -1,14 +1,5 @@
 <?php
 
-/**
- * This file is part of Tatter Workflows.
- *
- * (c) 2021 Tatter Software
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
- */
-
 namespace Tatter\Workflows\Models;
 
 use CodeIgniter\Model;
@@ -39,7 +30,7 @@ class JoblogModel extends Model
     public function findWithStages(int $jobId): ?array
     {
         $logs = $this->where('job_id', $jobId)->orderBy('created_at', 'asc')->findAll();
-        if (empty($logs)) {
+        if ($logs === []) {
             return null;
         }
 
@@ -49,7 +40,7 @@ class JoblogModel extends Model
         // Get the stages and store them by their ID
         $stages = [];
 
-        foreach ((new StageModel())->find($stageIds) as $stage) {
+        foreach (model(StageModel::class)->find($stageIds) as $stage) {
             $stages[$stage->id] = $stage;
         }
 
