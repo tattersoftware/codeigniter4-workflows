@@ -1,14 +1,5 @@
 <?php
 
-/**
- * This file is part of Tatter Workflows.
- *
- * (c) 2021 Tatter Software
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
- */
-
 namespace Tatter\Workflows\Models;
 
 use CodeIgniter\Model;
@@ -91,7 +82,8 @@ class WorkflowModel extends Model
         $workflows = [];
 
         foreach ($this->findAll() as $workflow) {
-            if ($workflow->mayAccess($user, $explicits)) {
+            /** @var Workflow $workflow */
+            if ($workflow->allowsUser($user, $explicits)) {
                 $workflows[] = $workflow;
             }
         }
