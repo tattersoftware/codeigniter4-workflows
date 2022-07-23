@@ -27,4 +27,5 @@ return [
     'jobAwaitingInput'    => 'Your job "{0}" is currently waiting for staff input.',
     'jobComplete'         => 'Your job "{0}" completed successfully.',
     'jobDeleted'          => 'Your job "{0}" has been removed.',
+    'jobNotAllowed'       => 'You do not have permission to do that.',
 ];

@@ -7,13 +7,13 @@ use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
 use RuntimeException;
-use Tatter\Users\Interfaces\HasPermission;
 use Tatter\Workflows\BaseAction;
 use Tatter\Workflows\Entities\Action;
 use Tatter\Workflows\Entities\Job;
 use Tatter\Workflows\Entities\Stage;
 use Tatter\Workflows\Exceptions\WorkflowsException;
 use Tatter\Workflows\Factories\ActionFactory;
+use Tatter\Workflows\Interfaces\OwnsJob;
 
 /**
  * Runner Controller
@@ -81,6 +81,15 @@ final class Runner extends BaseController
             return $this->renderError(lang('Workflows.jobNotFound'));
         }
 
+        // Check User permission - requires enforced authentication
+        if (
+            ($user = $this->getUser())
+            && $user instanceof OwnsJob
+            && ! $user->ownsJob($job)
+        ) {
+            return $this->renderError(lang('Workflows.jobNotAllowed'));
+        }
+
         // Process the Job, displaying any Workflow exceptions as errors
         $this->setJob($job);
 
@@ -117,8 +126,8 @@ final class Runner extends BaseController
             $workflow->travel($this->job, $stage);
         }
 
-        // Check the Action's role against a potential current user
-        if (! $this->checkActionAccess($action)) {
+        // Check the Action's role against the current user
+        if (! $action::allowsUser($this->getUser())) {
             return $this->renderMessage(lang('Workflows.jobAwaitingInput', $this->job->name));
         }
 
@@ -156,26 +165,5 @@ final class Runner extends BaseController
 
         // Send to the next Stage
         return redirect()->to(site_url($this->job->getStage()->getRoute() . $this->job->id));
-    }
-
-    /**
-     * Checks if the current user can access an Action.
-     */
-    protected function checkActionAccess(string $action): bool
-    {
-        $role = $action::getAttributes()['role'] ?? '';
-
-        // Allow public Actions
-        if ($role === '') {
-            return true;
-        }
-
-        // Check for a current user
-        if (null === $user = service('users')->findById(user_id())) {
-            return false;
-        }
-
-        /** @var HasPermission $user */
-        return $user->hasPermission($role);
     }
 }
