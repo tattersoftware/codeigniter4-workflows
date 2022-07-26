@@ -21,8 +21,6 @@ class Job extends BaseEntity
 
     /**
      * Stored entity for the Workflow.
-     *
-     * @var Workflow
      */
     protected ?Workflow $workflow = null;
 
