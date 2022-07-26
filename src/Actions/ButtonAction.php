@@ -5,6 +5,7 @@ namespace Tatter\Workflows\Actions;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
 use Tatter\Workflows\BaseAction;
+use Tatter\Workflows\Entities\Job;
 
 class ButtonAction extends BaseAction
 {
@@ -15,22 +16,15 @@ class ButtonAction extends BaseAction
         'role'     => '',
         'icon'     => 'fas fa-dot-circle',
         'summary'  => 'Prompts the user to press a button.',
+        'view'     => 'Tatter\Workflows\Views\actions\button',
+        'prompt'   => 'By clicking below I agree to the terms.',
+        'flag'     => 'Accepted',
     ];
 
-    /**
-     * Form view to display
-     */
-    protected string $view = 'Tatter\Workflows\Views\actions\button';
-
-    /**
-     * Prompt text
-     */
-    protected string $prompt = 'By clicking below I agree to the terms.';
-
-    /**
-     * Job flag to set on success
-     */
-    protected string $flag = 'Accepted';
+    public static function maySkip(Job $job): bool
+    {
+        return $job->getFlag(static::getAttributes()['flag']) !== null;
+    }
 
     /**
      * Display the button form.
@@ -39,8 +33,10 @@ class ButtonAction extends BaseAction
      */
     public function get(): ResponseInterface
     {
-        return $this->render($this->view, [
-            'prompt' => $this->prompt,
+        $attributes = static::getAttributes();
+
+        return $this->render($attributes['view'], [
+            'prompt' => $attributes['prompt'],
         ]);
     }
 
@@ -57,7 +53,7 @@ class ButtonAction extends BaseAction
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $this->job->setFlag($this->flag);
+        $this->job->setFlag(static::getAttributes()['flag']);
 
         return null;
     }
