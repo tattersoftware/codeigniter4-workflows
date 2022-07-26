@@ -5,7 +5,7 @@
 
 	<h4>Basic info</h4>
 
-	<?php if (! $job->getStage()->required && $stage = $job->getStage()->getNext()): ?>
+	<?php if ($job->maySkip() && $stage = $job->getStage()->getNext()): ?>
 
 		<a class="btn btn-link float-right" href="<?= site_url($stage->getRoute() . $job->id) ?>" role="button"><i class="fas fa-arrow-circle-right"></i> Skip</a>
 

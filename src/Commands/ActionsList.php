@@ -24,7 +24,19 @@ class ActionsList extends BaseCommand
 
     public function run(array $params = []): void
     {
-        $actions = ActionFactory::getAllAttributes();
+        $actions = [];
+
+        foreach (ActionFactory::getAllAttributes() as $attributes) {
+            $actions[] = array_intersect_key($attributes, array_flip([
+                'id',
+                'name',
+                'role',
+                'icon',
+                'category',
+                'summary',
+                'class',
+            ]));
+        }
 
         if ($actions === []) {
             CLI::write('There are no available actions.', 'yellow');
