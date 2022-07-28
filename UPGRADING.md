@@ -8,6 +8,7 @@
 * `Tatter\Handlers` version 3 improves class discovery and attribute access - all Actions should be updated (compare to `InfoAction`)
 * Actions are now proper Controllers; this shouldn't affect most implementations, but make sure there are not method collisions
 * A number of view files have been removed or consolidated; check `Config\Workflows::$views` to ensure the views you need still exist
+* Almost all classes have had breaking changes, so if you extended these for some reason make sure your extensions are compatible
 
 ## Version 3 to 4
 ***

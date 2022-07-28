@@ -22,20 +22,24 @@ write their own actions as classes and then string them together for job flow co
 
 Install easily via Composer to take advantage of CodeIgniter 4's autoloading capabilities
 and always be up-to-date:
-* `> composer require tatter/workflows`
+```shell
+> composer require tatter/workflows
+```
 
 Or, install manually by downloading the source files and adding the directory to
-`app/Config/Autoload.php`.
+**app/Config/Autoload.php**.
 
 Once the files are downloaded and included in the autoload, run any library migrations
 to ensure the database is setup correctly:
-* `> php spark migrate -all`
+```shell
+> php spark migrate -all
+```
 
 ## Configuration (optional)
 
 The library's default behavior can be altered by extending its config file. Copy
 **examples/Workflows.php** to **app/Config/** and follow the instructions
-in the comments. If no config file is found in app/Config the library will use its own.
+in the comments. If no config file is found in **app/Config/** the library will use its own.
 
 **Workflows** uses [Tatter\Users](https://github.com/tattersoftware/codeigniter4-users) to
 work with user records. Follow the instructions to verify you have a compatible authentication
@@ -43,13 +47,14 @@ library with classes that implement the `UserEntity` and `HasPermission` interfa
 
 ## Usage
 
-The CLI command `spark actions:register` will search all namespaces for valid action files
-and register them. Action files are identified by:
-* Located in the Actions subfolder within the root of a namespace
-* Implementing **Tatter\Workflows\Interfaces\ActionInterface**
+The CLI command `spark actions:list` will search all namespaces for valid action files
+and display them. Action files are identified as follows:
+* Located in the **Actions** subfolder within the root of a namespace
+* Extends `Tatter\Workflows\BaseAction`
+* Supplies a unique `HANDLER_ID` and descriptive `ATTRIBUTES` class constants
 
 You may write your own actions or import them from existing packages. Once actions are
-registered you can create workflows from a series of those actions by visiting the
+available you can create workflows from a series of those actions by visiting the
 `/workflows` route.
 
 ## Job control
@@ -85,19 +90,19 @@ managed from the `Job` entity methods:
 
 For example, an `Action` may require a user to accept the "Terms of Service" agreement
 before proceeding. Its code may look like this:
-```
+```php
 public function get()
 {
 	if (! $this->job->getFlag('accepted'))
 	{
-		return service('response')->setBody(view('accept_form'));
+		return $this->render('accept_form');
 	}
 
 	// Null returns indicate "Action complete"
 	return null;
 }
 
-public function accept_submit()
+public function post()
 {
 	$this->job->setFlag('accepted');
 
