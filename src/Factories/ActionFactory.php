@@ -8,7 +8,7 @@ use Tatter\Workflows\BaseAction;
 /**
  * Action Factory Class
  *
- * Used to discover and register Actions.
+ * Used to discover and identify Actions.
  *
  * @method static class-string<BaseAction>   find(string $id)
  * @method static class-string<BaseAction>[] findAll()
