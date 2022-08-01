@@ -24,8 +24,7 @@ abstract class BaseAction extends BaseController
     public const HANDLER_ID = '';
 
     /**
-     * Action attributes to register in the database.
-     * Set by child classes.
+     * Action attributes, set by child classes.
      *
      * @see getAttributes()
      *
