@@ -128,7 +128,7 @@ final class Runner extends BaseController
 
         // Check the Action's role against the current user
         if (! $action::allowsUser($this->getUser())) {
-            return $this->renderMessage(lang('Workflows.jobAwaitingInput', $this->job->name));
+            return $this->renderMessage(lang('Workflows.jobAwaitingInput', [$this->job->name]));
         }
 
         // Determine the request method and verify the corresponding Action method exists
