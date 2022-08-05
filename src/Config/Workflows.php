@@ -28,6 +28,5 @@ class Workflows extends BaseConfig
         'job'      => 'Tatter\Workflows\Views\job',
         'workflow' => 'Tatter\Workflows\Views\workflow',
         'messages' => 'Tatter\Workflows\Views\messages',
-        'info'     => 'Tatter\Workflows\Views\actions\info',
     ];
 }
