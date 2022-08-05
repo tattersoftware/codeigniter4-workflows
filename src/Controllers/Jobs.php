@@ -111,6 +111,6 @@ class Jobs extends BaseController
         // Delete the job (soft)
         $this->jobs->delete($jobId);
 
-        return $this->renderMessage(lang('Workflows.jobDeleted', $this->job->name));
+        return $this->renderMessage(lang('Workflows.jobDeleted', [$this->job->name]));
     }
 }
