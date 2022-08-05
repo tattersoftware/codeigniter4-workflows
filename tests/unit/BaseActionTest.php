@@ -1,14 +1,5 @@
 <?php
 
-/**
- * This file is part of Tatter Workflows.
- *
- * (c) 2021 Tatter Software
- *
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
- */
-
 use CodeIgniter\Config\Factories;
 use CodeIgniter\Test\CIUnitTestCase;
 use Tatter\Workflows\BaseAction;
@@ -44,5 +35,19 @@ final class BaseActionTest extends CIUnitTestCase
         };
 
         $this->assertTrue($action->initialized);
+    }
+
+    public function testAttributes(): void
+    {
+        $action                     = new class (new Job()) extends BaseAction {
+            public const ATTRIBUTES = [
+                'name' => 'Banana',
+            ];
+        };
+        $result = $action::getAttributes();
+
+        $this->assertSame('fas fa-tasks', $result['icon']);
+        $this->assertSame('Banana', $result['name']);
+        $this->assertSame('Banana', $action::attr('name'));
     }
 }
