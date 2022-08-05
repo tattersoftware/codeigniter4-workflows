@@ -12,9 +12,9 @@ namespace Config;
  *
  */
  
-use Tatter\Workflows\Config\Workflows as BaseWorkflows;
+use Tatter\Workflows\Config\Workflows as BaseConfig;
 
-class Workflows extends BaseWorkflows
+class Workflows extends BaseConfig
 {
     /**
      * Route base to use for Runner Controller.
@@ -37,9 +37,5 @@ class Workflows extends BaseWorkflows
         'job'      => 'Tatter\Workflows\Views\job',
         'workflow' => 'Tatter\Workflows\Views\workflow',
         'messages' => 'Tatter\Workflows\Views\messages',
-        'complete' => 'Tatter\Workflows\Views\complete',
-        'deleted'  => 'Tatter\Workflows\Views\deleted',
-        'filter'   => 'Tatter\Workflows\Views\filter',
-        'info'     => 'Tatter\Workflows\Views\actions\info',
     ];
 }
