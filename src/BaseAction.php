@@ -2,6 +2,7 @@
 
 namespace Tatter\Workflows;
 
+use OutOfBoundsException;
 use Tatter\Users\Interfaces\HasPermission;
 use Tatter\Workflows\Controllers\BaseController;
 use Tatter\Workflows\Entities\Job;
@@ -60,6 +61,24 @@ abstract class BaseAction extends BaseController
         $attributes['class'] = static::class;
 
         return $attributes;
+    }
+
+    /**
+     * Returns a single attribute.
+     *
+     * @throws OutOfBoundsException
+     *
+     * @return scalar|null
+     */
+    final public static function attr(string $key)
+    {
+        $attributes = self::getAttributes();
+
+        if (! array_key_exists($key, $attributes)) {
+            throw new OutOfBoundsException('Attribute does not exist: ' . $key);
+        }
+
+        return $attributes[$key];
     }
 
     /**
